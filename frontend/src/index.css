@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -14,6 +18,10 @@
   -webkit-text-size-adjust: 100%;
 }
 
+* {
+  margin: 0;
+  padding: 0;
+}
 a {
   font-weight: 500;
   color: #646cff;
