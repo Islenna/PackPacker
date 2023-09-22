@@ -1,21 +1,32 @@
 from fastapi import APIRouter, HTTPException, Depends, status
 from typing import List
 from sqlalchemy.orm import Session
-from config.database import get_db
+from config.database import get_db, SessionLocal
 from models.Instrument import Instrument as InstrumentModel
 from schemas.instrument_schemas import InstrumentCreate, InstrumentResponse
 
 router = APIRouter()
 
-#Create a new instrument
-@router.post("/instrument/new", response_model=InstrumentResponse, status_code = status.HTTP_201_CREATED)
+# Create a new instrument
+@router.post("/instrument/new", response_model=InstrumentResponse, status_code=status.HTTP_201_CREATED)
 def create_instrument(instrument: InstrumentCreate, db: Session = Depends(get_db)):
-    db_instrument = InstrumentModel(name = instrument.name, description = instrument.description, img_url = instrument.img_url)
-    db.add(db_instrument)
-    db.commit()
-    db.refresh(db_instrument)
+    # Check if the instrument name already exists
+    existing_instrument = db.query(InstrumentModel).filter_by(name=instrument.name).first()
+    if existing_instrument:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Instrument with this name already exists")
+
+    # If the instrument name is unique, create the new instrument
+    db_instrument = InstrumentModel(name=instrument.name, description=instrument.description, img_url=instrument.img_url)
+    
+    # Use SessionLocal to create a new database session
+    db_session = SessionLocal()
+    db_session.add(db_instrument)
+    db_session.commit()
+    db_session.refresh(db_instrument)
 
     return db_instrument
+
+
 
 #Get all instruments
 @router.get("/instruments", response_model=List[InstrumentResponse])

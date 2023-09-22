@@ -1,10 +1,12 @@
 from sqlalchemy.orm import relationship
+from sqlalchemy import Table, Column, Integer, ForeignKey
 from config.database import Base
-from sqlalchemy.orm import relationship
 
-class InstrumentsAndProcedures(Base):
-    # ... (other columns)
-
-    instruments = relationship("Instrument", secondary=instruments_and_procedures, back_populates="procedures")
-    procedures = relationship("Procedure", secondary=instruments_and_procedures, back_populates="instruments")
+# Define the table for the many-to-many relationship
+instruments_and_procedures = Table(
+    "instruments_and_procedures",
+    Base.metadata,
+    Column("instrument_id", Integer, ForeignKey("instruments.id")),
+    Column("procedure_id", Integer, ForeignKey("procedures.id")),
+)
 

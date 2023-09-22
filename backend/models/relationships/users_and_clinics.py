@@ -1,9 +1,11 @@
 from sqlalchemy.orm import relationship
+from sqlalchemy import Table, Column, Integer, ForeignKey
 from config.database import Base
-from sqlalchemy.orm import relationship
 
-class UsersAndClinics(Base):
-    # ... (other columns)
-
-    users = relationship("User", secondary=users_and_clinics, back_populates="clinics")
-    clinics = relationship("Clinic", secondary=users_and_clinics, back_populates="users")
+# For the, "table", many-to-many relationship between clinics and users.
+users_and_clinics = Table(
+    "users_and_clinics",
+    Base.metadata,
+    Column("clinic_id", Integer, ForeignKey("clinics.id")), 
+    Column("user_id", Integer, ForeignKey("users.id")),  
+)

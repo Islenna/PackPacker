@@ -11,7 +11,7 @@ router = APIRouter()
 #Register a new clinic
 @router.post("/clinic/new", response_model=ClinicResponse, status_code = status.HTTP_201_CREATED)
 def create_clinic(clinic: ClinicCreate, db: Session = Depends(get_db)):
-    db_clinic = ClinicModel(name = clinic.name, address = clinic.address, phone = clinic.phone, email = clinic.email)
+    db_clinic = ClinicModel(name = clinic.name, clinicLoc = clinic.clinicLoc, phone = clinic.phone, email = clinic.email)
     db.add(db_clinic)
     db.commit()
     db.refresh(db_clinic)
@@ -22,7 +22,6 @@ def create_clinic(clinic: ClinicCreate, db: Session = Depends(get_db)):
 @router.get("/clinics", response_model=List[ClinicResponse])
 def get_clinics(db: Session = Depends(get_db)):
     return db.query(ClinicModel).all()
-
 
 #Get a single clinic
 @router.get("/clinic/{clinic_id}", response_model=ClinicResponse)
@@ -39,13 +38,12 @@ def update_clinic(clinic_id: int, clinic: ClinicCreate, db: Session = Depends(ge
     if not db_clinic:
         raise HTTPException(status_code = status.HTTP_404_NOT_FOUND, detail = "Clinic not found")
     db_clinic.name = clinic.name
-    db_clinic.address = clinic.address
+    db_clinic.clinicLoc = clinic.clinicLoc
     db_clinic.phone = clinic.phone
     db_clinic.email = clinic.email
     db.commit()
     db.refresh(db_clinic)
     return db_clinic
-
 
 #Delete a clinic
 @router.delete("/clinic/{clinic_id}", response_model=ClinicResponse)
@@ -56,3 +54,4 @@ def delete_clinic(clinic_id: int, db: Session = Depends(get_db)):
     db.delete(db_clinic)
     db.commit()
     return {"message": "Pack successfully deleted"}
+

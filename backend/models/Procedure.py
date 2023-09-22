@@ -1,5 +1,9 @@
 from sqlalchemy import Column, Integer, String, DateTime, func
+from sqlalchemy.orm import relationship
 from config.database import Base
+from models.relationships.instruments_and_procedures import instruments_and_procedures
+from models.relationships.packs_and_procedures import packs_and_procedures
+from models.relationships.clinics_and_procedures import clinics_and_procedures
 
 class Procedure(Base):
     __tablename__ = "procedures"
@@ -10,5 +14,6 @@ class Procedure(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
-    # packs = relationship("Pack", secondary=packs_and_procedures, back_populates="procedures")
-    # instruments = relationship("Instrument", secondary=instruments_and_procedures, back_populates="procedures")
+    instruments = relationship("Instrument", secondary=instruments_and_procedures, back_populates="procedures")
+    packs = relationship("Pack", secondary=packs_and_procedures, back_populates="procedures")
+    clinics = relationship("Clinic", secondary=clinics_and_procedures, back_populates="procedures")

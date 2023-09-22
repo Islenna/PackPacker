@@ -1,7 +1,0 @@
-#Frontend
-    - [ ] Everything.
-
-
-#Backend
-    - [ ] Everything.
-
