@@ -9,11 +9,15 @@ class InstrumentBase(BaseModel):
     description: str
     img_url: str
 
-class InstrumentCreate(InstrumentBase):
-    pass
+class InstrumentCreate(BaseModel):
+    name: str
+    description: Optional[str] = None
+    onHand: Optional[int] = None
+    img_url: Optional[str] = None
 
 class InstrumentResponse(InstrumentBase):
     id: int
+    onHand: int
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 

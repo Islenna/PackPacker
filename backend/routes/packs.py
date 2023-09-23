@@ -11,7 +11,7 @@ router = APIRouter()
 #Create a new pack
 @router.post("/pack/new", response_model=PackResponse, status_code = status.HTTP_201_CREATED)
 def create_pack(pack: PackCreate, db: Session = Depends(get_db)):
-    db_pack = PackModel(name = pack.name)
+    db_pack = PackModel(name=pack.name, notes=pack.notes)
     db.add(db_pack)
     db.commit()
     db.refresh(db_pack)
@@ -61,8 +61,9 @@ def get_pack(pack_id: int, db: Session = Depends(get_db)):
 def update_pack(pack_id: int, pack: PackCreate, db: Session = Depends(get_db)):
     db_pack = db.query(PackModel).filter(PackModel.id == pack_id).first()
     if not db_pack:
-        raise HTTPException(status_code = status.HTTP_404_NOT_FOUND, detail = "Pack not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Pack not found")
     db_pack.name = pack.name
+    db_pack.notes = pack.notes  # Update the notes field
     db.commit()
     db.refresh(db_pack)
     return db_pack

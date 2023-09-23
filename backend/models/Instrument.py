@@ -17,6 +17,7 @@ class Instrument(Base):
     name = Column(String(255), unique=True, index=True)
     description = Column(String(255))
     img_url = Column(String(255))
+    onHand = Column(Integer, default=0)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 

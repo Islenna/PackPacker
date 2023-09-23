@@ -7,12 +7,14 @@ class PackBase(BaseModel):
     name: str
 
 class PackCreate(PackBase):
-    pass
+    notes: Optional[str] = None
 
 class PackResponse(PackBase):
     id: int
+    notes: Optional[str] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
+
 
     class Config:
         orm_mode = True
