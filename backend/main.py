@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from config.database import Base, engine
+from fastapi.middleware.cors import CORSMiddleware
 
 #models
 from models.User import User
@@ -14,7 +15,14 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-
+# Allow all origins (for development, you can restrict this in production)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Change this to frontend's URL in production
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 
