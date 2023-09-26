@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.32, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.34, for Win64 (x86_64)
 --
--- Host: 127.0.0.1    Database: packpacker
+-- Host: localhost    Database: packpacker
 -- ------------------------------------------------------
--- Server version	8.0.32
+-- Server version	8.0.34
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -113,7 +113,7 @@ CREATE TABLE `instruments` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `ix_instruments_name` (`name`),
   KEY `ix_instruments_id` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -122,7 +122,7 @@ CREATE TABLE `instruments` (
 
 LOCK TABLES `instruments` WRITE;
 /*!40000 ALTER TABLE `instruments` DISABLE KEYS */;
-INSERT INTO `instruments` VALUES (2,'Dingman Periosteal Elevator','Bendy-tipped scrapy-boi.','https://www.integralife.com/dingman-periosteal-elevator/product/surgical-instruments-hospitals-surgery-centers-tissue-banks-padgett-plastic-reconstructive-surgery-elevator-dingman-periosteal-elevator','2023-09-21 19:57:16',NULL,5),(3,'Mini Hohmann Retractor','Knee-looker-inner','https://www.integralife.com/mini-hohmann-retractor/product/surgical-instruments-miltex-instruments-veterinary-orthopedic-mini-hohmann-retractor','2023-09-21 20:07:11',NULL,1),(4,'Frazier Suction Tip','Comes in a variety of French','https://www.integralife.com/frazier-suction-tube/product/surgical-instruments-hospitals-surgery-centers-tissue-banks-ruggles-redmond-suction-tubes-accessories-frazier-suction-tube','2023-09-21 20:49:59',NULL,1),(5,'Gold-handled Pin Cutters','Gold-handled Pin Cutters','https://surgicalmart.com/shop/orthopedic-instruments/wire-pin-cutters/t-c-wire-pin-cutter-18-5-side-cutting-with-adjustable-bolt-sm3610/','2023-09-23 13:04:43',NULL,0);
+INSERT INTO `instruments` VALUES (2,'Dingman Periosteal Elevator','Bendy-tipped scrapy-boi.','https://www.integralife.com/dingman-periosteal-elevator/product/surgical-instruments-hospitals-surgery-centers-tissue-banks-padgett-plastic-reconstructive-surgery-elevator-dingman-periosteal-elevator','2023-09-21 19:57:16',NULL,5),(3,'Mini Hohmann Retractor','Knee-looker-inner','https://www.integralife.com/mini-hohmann-retractor/product/surgical-instruments-miltex-instruments-veterinary-orthopedic-mini-hohmann-retractor','2023-09-21 20:07:11',NULL,1),(4,'Frazier Suction Tip','Comes in a variety of French','https://www.integralife.com/frazier-suction-tube/product/surgical-instruments-hospitals-surgery-centers-tissue-banks-ruggles-redmond-suction-tubes-accessories-frazier-suction-tube','2023-09-21 20:49:59',NULL,1),(5,'Gold-handled Pin Cutters','Gold-handled Pin Cutters','https://surgicalmart.com/shop/orthopedic-instruments/wire-pin-cutters/t-c-wire-pin-cutter-18-5-side-cutting-with-adjustable-bolt-sm3610/','2023-09-23 13:04:43',NULL,0),(6,'Senn Retractor','Rakey-man, grabby-fella, nurse-stabbinator.','','2023-09-26 11:19:22',NULL,5),(7,'Balfour, Baby','Wee baby balfour for openin\' bellies.','','2023-09-26 11:19:44',NULL,1),(8,'Finochetto, small','Cranky-chest crackinator.','','2023-09-26 11:20:10',NULL,1),(9,'Finochetto, medium','Cranky-chest crackinator.','','2023-09-26 11:20:19',NULL,1),(10,'Finochetto, large','Cranky-chest crackinator.','','2023-09-26 11:20:40',NULL,1),(11,'Freer','Frees things','','2023-09-26 11:21:49',NULL,20),(12,'Allis Tissue Forceps','Clamp for hookin\' hoses and saccules','','2023-09-26 11:22:33',NULL,40),(13,'Hemostat, Kelly','All the way','','2023-09-26 11:22:54',NULL,40),(14,'Hemostat, Mosquito','Wee snappy boy','','2023-09-26 11:23:06',NULL,40),(15,'Thumb Forceps, Debakey','Can be holey or un-holey.','','2023-09-26 11:23:25',NULL,20),(16,'Lone Star Retractor','Mark\'s Favorite Toy','','2023-09-26 11:23:40',NULL,2);
 /*!40000 ALTER TABLE `instruments` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -169,7 +169,7 @@ CREATE TABLE `packs` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `ix_packs_name` (`name`),
   KEY `ix_packs_id` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -178,7 +178,7 @@ CREATE TABLE `packs` (
 
 LOCK TABLES `packs` WRITE;
 /*!40000 ALTER TABLE `packs` DISABLE KEYS */;
-INSERT INTO `packs` VALUES (1,'Ortho Pack','2023-09-21 20:17:35',NULL,NULL),(2,'Arthrex Drill 1','2023-09-23 12:55:21',NULL,NULL),(3,'Arthrex Drill 2','2023-09-23 12:57:15',NULL,NULL);
+INSERT INTO `packs` VALUES (1,'Ortho Pack','2023-09-21 20:17:35',NULL,NULL),(2,'Arthrex Drill 1','2023-09-23 12:55:21',NULL,NULL),(3,'Arthrex Drill 2','2023-09-23 12:57:15',NULL,NULL),(4,'Basic Pack','2023-09-26 08:17:33',NULL,'Part of every good setup'),(5,'TPLO Complete Set','2023-09-26 10:02:12',NULL,'Instruments, Screws, and plates.'),(6,'TPLO Locking Set','2023-09-26 10:02:27',NULL,'Instruments, Screws, and plates.'),(7,'TPLO Mini Set','2023-09-26 10:02:36',NULL,'Instruments, Screws, and plates.'),(8,'Mini Frag Set','2023-09-26 10:02:54',NULL,'Instruments, Screws, and plates.'),(9,'Small Frag Set','2023-09-26 10:03:00',NULL,'Instruments, Screws, and plates.'),(10,'MicroAire Drill','2023-09-26 10:03:30',NULL,'Instruments, Screws, and plates.'),(11,'TPLO Saw','2023-09-26 10:04:02',NULL,'Saw, hose, 24 blade.'),(12,'Saggital Saw','2023-09-26 10:04:16',NULL,'Saw, hose.'),(13,'Oscillating Saw','2023-09-26 10:04:29',NULL,'Saw, hose.'),(14,'Minor Pack','2023-09-26 10:05:11',NULL,'Blue towel with gauze, needle holders, scissors.'),(15,'Pin Pack','2023-09-26 10:05:34',NULL,'Variety of pins.'),(16,'Back Pack','2023-09-26 10:06:00',NULL,'Stuff and a Hall air drill.'),(17,'Dental Pack','2023-09-26 10:06:16',NULL,'Stuff for dentals.'),(18,'Laparoscopy Tray','2023-09-26 10:06:46',NULL,'Stuff for laparoscopies.'),(19,'Arthroscopy Tray','2023-09-26 10:07:03',NULL,'Stuff for arthroscopies.'),(20,'Scope camera and light source','2023-09-26 10:07:25',NULL,'Scope camera and light source.'),(21,'Arthroscopy Stifle Tray','2023-09-26 10:07:49',NULL,'Instruments for Arthroscopy.'),(22,'1.9 Scope','2023-09-26 10:08:19',NULL,'Scope.'),(23,'2,7 Scope','2023-09-26 10:08:26',NULL,'Scope.'),(24,'Tabletop Plate Bender','2023-09-26 10:08:44',NULL,'Bends plates on the table.'),(25,'Tightrope Pack','2023-09-26 10:09:03',NULL,'Has stuff.'),(26,'K-Wire Pack','2023-09-26 10:09:21',NULL,'Has k-wires of a variety of sizes.'),(27,'Cruciate Crimping Pack','2023-09-26 10:12:11',NULL,'Has stuff.'),(28,'1.5-4.0 Instruments and Plates','2023-09-26 10:12:28',NULL,'Has stuff.');
 /*!40000 ALTER TABLE `packs` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -326,4 +326,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-09-25 15:07:13
+-- Dump completed on 2023-09-26 12:06:00

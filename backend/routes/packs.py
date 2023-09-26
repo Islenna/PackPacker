@@ -52,7 +52,8 @@ def get_pack(pack_id: int, db: Session = Depends(get_db)):
             id=instrument.id,
             name=instrument.name,
             description=instrument.description,
-            img_url=instrument.img_url
+            img_url=instrument.img_url,
+            onHand=instrument.onHand
         )
         instruments.append(instrument_response)
 
@@ -60,6 +61,7 @@ def get_pack(pack_id: int, db: Session = Depends(get_db)):
     pack_response = PacksWithInstrumentsResponse(
         id=db_pack.id,
         name=db_pack.name,
+        notes=db_pack.notes,
         created_at=db_pack.created_at,
         updated_at=db_pack.updated_at,
         instruments=instruments,
