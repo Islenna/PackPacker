@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends, status
 from typing import List
 from sqlalchemy.orm import Session
-from config.database import get_db
+from config.database import get_db, SessionLocal
 from models.Procedure import Procedure as ProcedureModel
 from schemas.procedure_schemas import ProcedureCreate, ProcedureResponse
 
@@ -10,6 +10,11 @@ router = APIRouter()
 #Create a new procedure
 @router.post("/procedure/new", response_model=ProcedureResponse, status_code = status.HTTP_201_CREATED)
 def create_procedure(procedure: ProcedureCreate, db: Session = Depends(get_db)):
+    #Check if the procedure name already exists
+    existing_procedure = db.query(ProcedureModel).filter_by(name = procedure.name).first()
+    if existing_procedure:
+        raise HTTPException(status_code = status.HTTP_400_BAD_REQUEST, detail = "Procedure with this name already exists")
+    
     db_procedure = ProcedureModel(name = procedure.name, description = procedure.description)
     db.add(db_procedure)
     db.commit()

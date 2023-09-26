@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends, status
 from typing import List
 from sqlalchemy.orm import Session, joinedload
-from config.database import get_db
+from config.database import get_db, SessionLocal
 from models.Pack import Pack as PackModel
 from schemas.pack_schemas import PackCreate, PackResponse, PacksWithInstrumentsResponse
 from schemas.instrument_schemas import InstrumentResponse
@@ -9,14 +9,24 @@ from schemas.instrument_schemas import InstrumentResponse
 router = APIRouter()
 
 #Create a new pack
-@router.post("/pack/new", response_model=PackResponse, status_code = status.HTTP_201_CREATED)
+@router.post("/pack/new", response_model=PackResponse, status_code=status.HTTP_201_CREATED)
 def create_pack(pack: PackCreate, db: Session = Depends(get_db)):
+    # Check if the pack name already exists
+    existing_pack = db.query(PackModel).filter_by(name=pack.name).first()
+    if existing_pack:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Pack with this name already exists")
+
+    # If the pack name is unique, create the new pack
     db_pack = PackModel(name=pack.name, notes=pack.notes)
-    db.add(db_pack)
-    db.commit()
-    db.refresh(db_pack)
+    
+    # Use SessionLocal to create a new database session
+    db_session = SessionLocal()
+    db_session.add(db_pack)
+    db_session.commit()
+    db_session.refresh(db_pack)
 
     return db_pack
+
 
 #Get all packs
 @router.get("/packs", response_model=List[PackResponse])

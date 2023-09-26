@@ -75,3 +75,16 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+.modal-overlay {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5); /* This will give a dark transparent overlay */
+  z-index: 1000; /* Ensure it's on top */
+}
