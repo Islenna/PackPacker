@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import Optional
 from sqlalchemy.orm import Session
 from models.Instrument import instrument_name_exists_in_database
+from typing import List
 
 class InstrumentBase(BaseModel):
     name: str
@@ -27,3 +28,8 @@ class InstrumentResponse(InstrumentBase):
 class InstrumentUpdate(InstrumentBase):
     pass
 
+class PaginatedInstrumentResponse(BaseModel):
+    instruments: List[InstrumentResponse]
+    page: int
+    total_pages: int
+    total_records: int
