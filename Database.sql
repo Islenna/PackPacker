@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.34, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.32, for Win64 (x86_64)
 --
--- Host: localhost    Database: packpacker
+-- Host: 127.0.0.1    Database: packpacker
 -- ------------------------------------------------------
--- Server version	8.0.34
+-- Server version	8.0.32
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -113,7 +113,7 @@ CREATE TABLE `instruments` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `ix_instruments_name` (`name`),
   KEY `ix_instruments_id` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -122,7 +122,7 @@ CREATE TABLE `instruments` (
 
 LOCK TABLES `instruments` WRITE;
 /*!40000 ALTER TABLE `instruments` DISABLE KEYS */;
-INSERT INTO `instruments` VALUES (2,'Dingman Periosteal Elevator','Bendy-tipped scrapy-boi.','https://www.integralife.com/dingman-periosteal-elevator/product/surgical-instruments-hospitals-surgery-centers-tissue-banks-padgett-plastic-reconstructive-surgery-elevator-dingman-periosteal-elevator','2023-09-21 19:57:16',NULL,5),(3,'Mini Hohmann Retractor','Knee-looker-inner','https://www.integralife.com/mini-hohmann-retractor/product/surgical-instruments-miltex-instruments-veterinary-orthopedic-mini-hohmann-retractor','2023-09-21 20:07:11',NULL,1),(4,'Frazier Suction Tip','Comes in a variety of French','https://www.integralife.com/frazier-suction-tube/product/surgical-instruments-hospitals-surgery-centers-tissue-banks-ruggles-redmond-suction-tubes-accessories-frazier-suction-tube','2023-09-21 20:49:59',NULL,1),(5,'Gold-handled Pin Cutters','Gold-handled Pin Cutters','https://surgicalmart.com/shop/orthopedic-instruments/wire-pin-cutters/t-c-wire-pin-cutter-18-5-side-cutting-with-adjustable-bolt-sm3610/','2023-09-23 13:04:43',NULL,0),(6,'Senn Retractor','Rakey-man, grabby-fella, nurse-stabbinator.','','2023-09-26 11:19:22',NULL,5),(7,'Balfour, Baby','Wee baby balfour for openin\' bellies.','','2023-09-26 11:19:44',NULL,1),(8,'Finochetto, small','Cranky-chest crackinator.','','2023-09-26 11:20:10',NULL,1),(9,'Finochetto, medium','Cranky-chest crackinator.','','2023-09-26 11:20:19',NULL,1),(10,'Finochetto, large','Cranky-chest crackinator.','','2023-09-26 11:20:40',NULL,1),(11,'Freer','Frees things','','2023-09-26 11:21:49',NULL,20),(12,'Allis Tissue Forceps','Clamp for hookin\' hoses and saccules','','2023-09-26 11:22:33',NULL,40),(13,'Hemostat, Kelly','All the way','','2023-09-26 11:22:54',NULL,40),(14,'Hemostat, Mosquito','Wee snappy boy','','2023-09-26 11:23:06',NULL,40),(15,'Thumb Forceps, Debakey','Can be holey or un-holey.','','2023-09-26 11:23:25',NULL,20),(16,'Lone Star Retractor','Mark\'s Favorite Toy','','2023-09-26 11:23:40',NULL,2);
+INSERT INTO `instruments` VALUES (2,'Dingman Periosteal Elevator','Bendy-tipped scrapy-boi.','https://www.integralife.com/dingman-periosteal-elevator/product/surgical-instruments-hospitals-surgery-centers-tissue-banks-padgett-plastic-reconstructive-surgery-elevator-dingman-periosteal-elevator','2023-09-21 19:57:16',NULL,5),(3,'Mini Hohmann Retractor','Knee-looker-inner','https://www.integralife.com/mini-hohmann-retractor/product/surgical-instruments-miltex-instruments-veterinary-orthopedic-mini-hohmann-retractor','2023-09-21 20:07:11',NULL,1),(4,'Frazier Suction Tip','Comes in a variety of French','https://www.integralife.com/frazier-suction-tube/product/surgical-instruments-hospitals-surgery-centers-tissue-banks-ruggles-redmond-suction-tubes-accessories-frazier-suction-tube','2023-09-21 20:49:59',NULL,1),(5,'Gold-handled Pin Cutters','Gold-handled Pin Cutters','https://surgicalmart.com/shop/orthopedic-instruments/wire-pin-cutters/t-c-wire-pin-cutter-18-5-side-cutting-with-adjustable-bolt-sm3610/','2023-09-23 13:04:43',NULL,0),(6,'Senn Retractor','Rakey-man, grabby-fella, nurse-stabbinator.','','2023-09-26 11:19:22',NULL,5),(7,'Balfour, Baby','Wee baby balfour for openin\' bellies.','','2023-09-26 11:19:44',NULL,1),(8,'Finochetto, small','Cranky-chest crackinator.','','2023-09-26 11:20:10',NULL,1),(9,'Finochetto, medium','Cranky-chest crackinator.','','2023-09-26 11:20:19',NULL,1),(10,'Finochetto, large','Cranky-chest crackinator.','','2023-09-26 11:20:40',NULL,1),(11,'Freer','Frees things','','2023-09-26 11:21:49',NULL,20),(12,'Allis Tissue Forceps','Clamp for hookin\' hoses and saccules','','2023-09-26 11:22:33',NULL,40),(13,'Hemostat, Kelly','All the way','','2023-09-26 11:22:54',NULL,40),(14,'Hemostat, Mosquito','Wee snappy boy','','2023-09-26 11:23:06',NULL,40),(15,'Thumb Forceps, Debakey','Can be holey or un-holey.','','2023-09-26 11:23:25',NULL,20),(16,'Lone Star Retractor','Mark\'s Favorite Toy','','2023-09-26 11:23:40',NULL,2),(17,'Gauze, Square','Gauze','','2023-09-26 21:00:26',NULL,150),(18,'Frazier Tip Suction, 10 Fr','10 Fr Frazier Tip','','2023-09-26 21:01:24',NULL,3),(19,'Frazier Tip Suction, 12 Fr','Frazier Tip Suction 12 Fr','','2023-09-26 21:01:43',NULL,5),(20,'Poole Tip, Curved','Two pieces, inner and outer.','','2023-09-26 21:01:59',NULL,8),(21,'Poole Tip, Straight','Nobody likes these.','','2023-09-26 21:02:10',NULL,5),(22,'Ioban','Skin prep, push to use.','','2023-09-26 21:02:36',NULL,30),(23,'Duraprep','Sterile drape for wrapping legs.','','2023-09-26 21:02:48',NULL,20),(24,'Balfour, CSU','CSU Balfour','','2023-09-26 21:06:16',NULL,1);
 /*!40000 ALTER TABLE `instruments` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -326,4 +326,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-09-26 12:06:00
+-- Dump completed on 2023-09-26 21:14:37
