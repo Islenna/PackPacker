@@ -11,7 +11,7 @@ function Instruments() {
     const [isLoading, setIsLoading] = useState(true);
     const [instrument, setInstrument] = useState(null);
     const [itemsPerPage] = useState(10);
-    
+
 
     //Filtering
     const [searchTerm, setSearchTerm] = useState("");
@@ -90,6 +90,9 @@ function Instruments() {
         fetchData();
     }, [currentPage, itemsPerPage, searchTerm, modal, editModal]);
 
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchTerm]);
 
     const handleSearch = (e) => {
         setSearchTerm(e.target.value);

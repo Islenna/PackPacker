@@ -2,12 +2,16 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { Link } from 'react-router-dom'
 import Pagination from '../Pagination'
+import PackForm from './PackForm'
+import AddToPacksModal from './AddToPacksModal'
 
 function Packs() {
     const [packs, setPacks] = useState([]);
     const [modal, setModal] = useState(false);
+    const [editModal, setEditModal] = useState(false);
     const [filteredPacks, setFilteredPacks] = useState([]);
     const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [selectedPack, setSelectedPack] = useState({});
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
 
@@ -15,15 +19,25 @@ function Packs() {
         const fetchData = async () => {
             try {
                 const res = await axios.get(`http://127.0.0.1:8000/api/packs?page=${currentPage}&items_per_page=${itemsPerPage}&search=${searchTerm}`)
-                setPacks(res.data)
-                setFilteredPacks(res.data)
+                const filteredData = res.data.filter((pack) => {
+                    const packName = pack.name.toLowerCase();
+                    const packNotes = (pack.notes || '').toLowerCase(); // Handle null by using an empty string
+                    const searchTermLower = searchTerm.toLowerCase();
                 
+                    return (
+                        packName.includes(searchTermLower) ||
+                        packNotes.includes(searchTermLower)
+                    );
+                });
+                setPacks(filteredData)
+                setFilteredPacks(filteredData)
+
             } catch (err) {
                 console.log(err)
             }
         }
         fetchData();
-    }, [searchTerm, currentPage, itemsPerPage])
+    }, [searchTerm, currentPage, itemsPerPage, searchTerm, modal, editModal])
 
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -42,6 +56,20 @@ function Packs() {
         setModal(!modal);
     };
 
+    const handleSearch = (e) => {
+        setSearchTerm(e.target.value);
+    };
+
+    const toggleEditModal = () => {
+        setEditModal(!editModal);
+    };
+
+    const handlePackClick = (pack) => {
+        setSelectedPack(pack);
+        toggleEditModal();
+    }
+    
+
     return (
         <>
             <section className="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
@@ -57,7 +85,15 @@ function Packs() {
                                                 <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
                                             </svg>
                                         </div>
-                                        <input type="text" id="simple-search" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Search" required="" />
+                                        <input
+                                            type="text"
+                                            id="simple-search"
+                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                            placeholder="Search"
+                                            required=""
+                                            value={searchTerm}
+                                            onChange={handleSearch}
+                                        />
                                     </div>
                                 </form>
                             </div>
@@ -114,7 +150,10 @@ function Packs() {
                                 </thead>
                                 <tbody>
                                     {currentItems.map((pack) => (
-                                        <tr key={pack.id} className="border-b dark:border-gray-700">
+                                        <tr key={pack.id} 
+                                        className="border-b hover:bg-gray-100 dark:hover:bg-gray-700 dark:border-gray-700"
+                                        onClick = {() => handlePackClick(pack)}
+                                        >
                                             <th scope="row" className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">{pack.name}</th>
                                             <td className="px-4 py-3">
                                             </td>
@@ -123,6 +162,9 @@ function Packs() {
                                     ))}
                                 </tbody>
                             </table>
+                                {editModal && (
+                            <AddToPacksModal id={selectedPack.id}onClose={toggleEditModal} />
+                        )}
                         </div>
                         <Pagination
                             currentPage={currentPage}
