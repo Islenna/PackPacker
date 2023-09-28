@@ -18,7 +18,7 @@ class InstrumentCreate(BaseModel):
 
 class InstrumentResponse(InstrumentBase):
     id: int
-    onHand: int
+    onHand: Optional[int] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 

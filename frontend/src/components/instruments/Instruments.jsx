@@ -1,31 +1,35 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-import InstrumentForm from '../instruments/InstrumentForm'
+import InstrumentForm from '../instruments/InstrumentComponents/InstrumentForm'
+import InstrumentEditModal from '../instruments/InstrumentComponents/InstrumentEditModal'
+import Pagination from '../Pagination'
 
 function Instruments() {
     const [instruments, setInstruments] = useState([]);
     const [modal, setModal] = useState(false);
+    const [editModal, setEditModal] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+    const [instrument, setInstrument] = useState(null);
+    const [itemsPerPage] = useState(10);
+    
 
     //Filtering
     const [searchTerm, setSearchTerm] = useState("");
     const [filteredInventory, setFilteredInventory] = useState([]);
 
-    //Add To Button
-    const [actionsDropdownVisible, setActionsDropdownVisible] = useState(false);
-    const [filterDropdownVisible, setFilterDropdownVisible] = useState(false);
+    //Dropdown
+    const [isActionsDropdownOpen, setIsActionsDropdownOpen] = useState(false);
 
     const toggleActionsDropdown = () => {
-        setActionsDropdownVisible(!actionsDropdownVisible);
-    };
-    // Toggle filter dropdown visibility
-    const toggleFilterDropdown = () => {
-        setFilterDropdownVisible(!filterDropdownVisible);
+        setIsActionsDropdownOpen(!isActionsDropdownOpen);
     };
 
+
     // Pagination
+
+    const totalPages = Math.ceil(filteredInventory.length / itemsPerPage);
+
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(10);
 
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -38,8 +42,23 @@ function Instruments() {
     const handlePageChange = async (pageNumber) => {
         setCurrentPage(pageNumber);
     };
+    const maxPageNumbersToShow = 3;
+    const leftPageNumber = Math.max(1, currentPage - Math.floor(maxPageNumbersToShow / 2));
+    const rightPageNumber = Math.min(
+        leftPageNumber + maxPageNumbersToShow - 1,
+        Math.ceil(filteredInventory.length / itemsPerPage)
+    );
 
+    const pageNumbersToDisplay = [];
+    for (let i = leftPageNumber; i <= rightPageNumber; i++) {
+        pageNumbersToDisplay.push(i);
+    }
 
+    //Edit Modal
+    const handleInstrumentClick = (instrument) => {
+        setInstrument(instrument);
+        setEditModal(true);
+    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -62,11 +81,14 @@ function Instruments() {
                 setFilteredInventory(filteredData);
             } catch (err) {
                 console.log(err);
+                console.log("Axios Error:", err);
+                console.log("Response Data:", err.response?.data);
+
             }
         };
 
         fetchData();
-    }, [currentPage, itemsPerPage, searchTerm]);
+    }, [currentPage, itemsPerPage, searchTerm, modal, editModal]);
 
 
     const handleSearch = (e) => {
@@ -74,8 +96,13 @@ function Instruments() {
     };
 
 
-    const toggleModal = () => {
+    const toggleAddModal = () => {
         setModal(!modal);
+    };
+
+    const toggleEditModal = (instrumentId) => {
+        // Pass the instrumentId to the edit modal function
+        setEditModal(!editModal);
     };
 
     return (
@@ -106,14 +133,14 @@ function Instruments() {
                                 </form>
                             </div>
                             <div className="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
-                                <button onClick={toggleModal} type="button" className="flex items-center justify-center text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
+                                <button onClick={toggleAddModal} type="button" className="flex items-center justify-center text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
                                     <svg className="h-3.5 w-3.5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                         <path clipRule="evenodd" fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
                                     </svg>
                                     Add Instrument
                                 </button>
                                 {modal && (
-                                    <InstrumentForm onClose={toggleModal} />
+                                    <InstrumentForm onClose={toggleAddModal} />
                                 )}
 
                                 <div className="flex items-center space-x-3 w-full md:w-auto">
@@ -128,7 +155,7 @@ function Instruments() {
                                         </svg>
                                         Add To
                                     </button>
-                                    <div id="actionsDropdown" className="hidden z-10 w-44 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600">
+                                    <div id="actionsDropdown" className={`z-10 w-44 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 ${isActionsDropdownOpen ? 'block' : 'hidden'}`}>
                                         <ul className="py-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="actionsDropdownButton">
                                             <li>
                                                 <a href="#" className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Add to Pack</a>
@@ -150,8 +177,9 @@ function Instruments() {
                                 </div>
                             </div>
                         </div>
-                        <div className="overflow-x-auto">
+                        <div className="table-container" style={{ width: '800px', height: '530px', overflowY: 'auto' }}>
                             <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+
                                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                     <tr>
                                         <th scope="col" className="px-4 py-3">Instrument Name</th>
@@ -165,7 +193,10 @@ function Instruments() {
                                 </thead>
                                 <tbody>
                                     {instruments.slice(indexOfFirstItem, indexOfLastItem).map(instrument => (
-                                        <tr key={instrument.id} className="border-b dark:border-gray-700">
+                                        <tr key={instrument.id}
+                                            className="border-b hover:bg-gray-100 dark:hover:bg-gray-700 dark:border-gray-700 "
+                                            onClick={() => handleInstrumentClick(instrument)}
+                                        >
                                             <th scope="row" className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">{instrument.name}</th>
                                             <td className="px-4 py-3">
                                                 <a href={instrument.img_url} target="_blank" rel="noopener noreferrer">
@@ -179,49 +210,15 @@ function Instruments() {
                                 </tbody>
                             </table>
                         </div>
-                        <nav className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-3 md:space-y-0 p-4" aria-label="Table navigation">
-                            <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
-                                Showing
-                                <span className="font-semibold text-gray-900 dark:text-white">{Math.min(indexOfFirstItem + 1, instruments.length)}</span>
-                                -
-                                <span className="font-semibold text-gray-900 dark:text-white">{Math.min(indexOfLastItem, instruments.length)}</span>
-                                of
-                                <span className="font-semibold text-gray-900 dark:text-white">{instruments.length}</span>
-                            </span>
-                            <ul className="inline-flex items-stretch -space-x-px">
-                                <li>
-                                    <button
-                                        onClick={() => setCurrentPage(currentPage - 1)}
-                                        disabled={currentPage === 1}
-                                        className={`flex items-center justify-center h-full py-1.5 px-3 ml-0 text-gray-500 bg-white rounded-l-lg border ${currentPage === 1 ? 'bg-gray-200 cursor-not-allowed' : 'border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'}`}
-                                        type="button"
-                                    >
-                                        <span className="sr-only">Previous</span>
-                                        <svg className="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="httpwww.w3.org/2000/svg">
-                                            <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
-                                        </svg>
-                                    </button>
-                                </li>
-                                {pageNumbers.map((number) => (
-                                    <li key={number}>
-                                        <button onClick={() => handlePageChange(number)} className="flex items-center justify-center text-sm py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">{number}</button>
-                                    </li>
-                                ))}
-                                <li>
-                                    <button
-                                        onClick={() => setCurrentPage(currentPage + 1)}
-                                        disabled={indexOfLastItem >= instruments.length}
-                                        className={`flex items-center justify-center h-full py-1.5 px-3 ml-0 text-gray-500 bg-white rounded-r-lg border ${indexOfLastItem >= instruments.length ? 'bg-gray-200 cursor-not-allowed' : 'border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'}`}
-                                        type="button"
-                                    >
-                                        <span className="sr-only">Next</span>
-                                        <svg className="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="httpwww.w3.org/2000/svg">
-                                            <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                                        </svg>
-                                    </button>
-                                </li>
-                            </ul>
-                        </nav>
+                        {editModal && (
+                            <InstrumentEditModal id={instrument.id} onClose={toggleEditModal} />
+                        )}
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            onPageChange={handlePageChange}
+                            totalItems={filteredInventory.length}
+                        />
                     </div>
                 </div>
             </section>

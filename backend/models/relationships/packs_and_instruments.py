@@ -7,4 +7,5 @@ packs_and_instruments  = Table(
     Base.metadata,
     Column("pack_id", Integer, ForeignKey("packs.id")),
     Column("instrument_id", Integer, ForeignKey("instruments.id")),
+    Column("quantity", Integer, default=1),
 )

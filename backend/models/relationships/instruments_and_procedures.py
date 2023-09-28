@@ -8,5 +8,6 @@ instruments_and_procedures = Table(
     Base.metadata,
     Column("instrument_id", Integer, ForeignKey("instruments.id")),
     Column("procedure_id", Integer, ForeignKey("procedures.id")),
+    Column("quantity", Integer, default=1),
 )
 

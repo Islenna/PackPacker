@@ -5,6 +5,7 @@ from config.database import get_db, SessionLocal
 from models.Pack import Pack as PackModel
 from schemas.pack_schemas import PackCreate, PackResponse, PacksWithInstrumentsResponse
 from schemas.instrument_schemas import InstrumentResponse
+from repositories.repositories import query_pack_database, calculate_total_pack_records
 
 router = APIRouter()
 
@@ -68,6 +69,33 @@ def get_pack(pack_id: int, db: Session = Depends(get_db)):
     )
 
     return pack_response
+
+#Get paginated packs.
+@router.get("/packs/pages")
+async def get_paginated_packs(
+    page: int = 1,  # Default page is 1
+    items_per_page: int = 10,  # Default items per page is 10
+    db: Session = Depends(get_db),  # Dependency injection to get the database session
+):
+    # Calculate offset based on page and items per page
+    offset = (page - 1) * items_per_page
+
+    # Query the database for a specific range of records
+    packs = query_pack_database(db, offset, items_per_page)
+
+    # Calculate the total number of records (total_records) for the query
+    total_records = calculate_total_pack_records(db)
+
+    # Calculate the total number of pages (total_pages)
+    total_pages = (total_records + items_per_page - 1) // items_per_page
+
+    return {
+        "packs": packs,
+        "page": page,
+        "total_pages": total_pages,
+        "total_records": total_records,
+    }
+
 #Update a pack
 @router.patch("/pack/{pack_id}", response_model=PackResponse)
 def update_pack(pack_id: int, pack: PackCreate, db: Session = Depends(get_db)):
