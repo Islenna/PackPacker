@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 // AddToPackModal component
-function AddToPacksModal({ id, onClose }) {
+function PackEditModal({ id, onClose }) {
     const [name, setName] = useState('');
     const [notes, setNotes] = useState('');
 
@@ -90,4 +90,4 @@ function AddToPacksModal({ id, onClose }) {
     );
 }
 
-export default AddToPacksModal;
+export default PackEditModal;

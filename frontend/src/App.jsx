@@ -11,6 +11,7 @@ import PackEdit from './components/packs/PackEdit'
 import Procedures from './components/procedures/Procedures'
 import Procedure from './components/procedures/Procedure'
 import ProcedureEdit from './components/procedures/ProcedureEdit'
+import PacksAndInstruments from './components/views/PacksAndInstruments'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -28,6 +29,7 @@ function App() {
           <Route path="/procedures" element={<Procedures />} />
           <Route path="/procedures/:id" element={<Procedure />} />
           <Route path="/procedures/:id/edit" element={<ProcedureEdit />} />
+          <Route path="/pack/:id/instruments" element={<PacksAndInstruments />} />
         </Routes>
       </Router>
     </>

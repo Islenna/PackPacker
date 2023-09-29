@@ -3,7 +3,7 @@ import axios from 'axios'
 import { Link } from 'react-router-dom'
 import Pagination from '../Pagination'
 import PackForm from './PackForm'
-import AddToPacksModal from './AddToPacksModal'
+import PackEditModal from './PackEditModal'
 
 function Packs() {
     const [packs, setPacks] = useState([]);
@@ -163,7 +163,7 @@ function Packs() {
                                 </tbody>
                             </table>
                                 {editModal && (
-                            <AddToPacksModal id={selectedPack.id}onClose={toggleEditModal} />
+                            <PackEditModal id={selectedPack.id}onClose={toggleEditModal} />
                         )}
                         </div>
                         <Pagination
