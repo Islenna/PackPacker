@@ -1,11 +1,13 @@
 from fastapi import APIRouter, HTTPException, Depends, status
 from typing import List
-from sqlalchemy.orm import Session, joinedload
+from sqlalchemy.orm import Session, joinedload, aliased
 from config.database import get_db, SessionLocal
 from models.Pack import Pack as PackModel
 from schemas.pack_schemas import PackCreate, PackResponse, PacksWithInstrumentsResponse
 from schemas.instrument_schemas import InstrumentResponse
 from repositories.repositories import query_pack_database, calculate_total_pack_records
+from models.relationships.packs_and_instruments import packs_and_instruments
+from models.Instrument import Instrument
 
 router = APIRouter()
 
@@ -28,14 +30,11 @@ def create_pack(pack: PackCreate, db: Session = Depends(get_db)):
 
     return db_pack
 
-
-#Get all packs
-@router.get("/packs", response_model=List[PackResponse])
-def get_packs(db: Session = Depends(get_db)):
-    return db.query(PackModel).all()
-# Get a single pack
 @router.get("/pack/{pack_id}", response_model=PacksWithInstrumentsResponse)
 def get_pack(pack_id: int, db: Session = Depends(get_db)):
+    # Create an alias for the packs_and_instruments table
+    pai = aliased(packs_and_instruments)
+
     db_pack = (
         db.query(PackModel)
         .filter(PackModel.id == pack_id)
@@ -46,15 +45,24 @@ def get_pack(pack_id: int, db: Session = Depends(get_db)):
     if not db_pack:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Pack not found")
 
-    # Convert the loaded instruments into valid responses
+    # Retrieve the instruments and quantities associated with the pack
+    instruments_and_quantities = (
+        db.query(Instrument, pai.c.quantity)
+        .join(pai, Instrument.id == pai.c.instrument_id)
+        .filter(pai.c.pack_id == pack_id)
+        .all()
+    )
+
+    # Convert the loaded instruments and quantities into valid responses
     instruments = []
-    for instrument in db_pack.instruments:
+    for instrument, quantity in instruments_and_quantities:
         instrument_response = InstrumentResponse(
             id=instrument.id,
             name=instrument.name,
             description=instrument.description,
             img_url=instrument.img_url,
-            onHand=instrument.onHand
+            onHand=instrument.onHand,
+            quantity=quantity,  # Include the quantity attribute
         )
         instruments.append(instrument_response)
 
@@ -69,6 +77,12 @@ def get_pack(pack_id: int, db: Session = Depends(get_db)):
     )
 
     return pack_response
+
+#Get all packs
+@router.get("/packs", response_model=List[PackResponse])
+def get_packs(db: Session = Depends(get_db)):
+    return db.query(PackModel).all()
+
 
 #Get paginated packs.
 @router.get("/packs/pages")
@@ -117,3 +131,5 @@ def delete_pack(pack_id: int, db: Session = Depends(get_db)):
     db.delete(db_pack)
     db.commit()
     return {"message": "Pack successfully deleted"}
+
+

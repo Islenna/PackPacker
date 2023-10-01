@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { useParams } from 'react-router-dom'
+import InstrumentTable from '../instruments/InstrumentComponents/InstrumentTable'
 
 function PacksAndInstruments() {
     const { id } = useParams()
@@ -37,15 +38,10 @@ function PacksAndInstruments() {
 
     return (
         <>
-            {pack.name}
+            <h1>{pack.name}</h1>
 
-            {instruments.map((instrument) => {
-                return (
-                    <div key={instrument.id}>
-                        {instrument.name}
-                    </div>
-                )
-            })}
+            <InstrumentTable instruments={instruments} />
+
         </>
     )
 }

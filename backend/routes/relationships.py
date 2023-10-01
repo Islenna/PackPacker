@@ -4,6 +4,7 @@ from config.database import get_db
 from models.Procedure import Procedure
 from models.Instrument import Instrument
 from models.Pack import Pack
+from models.relationships.packs_and_instruments import packs_and_instruments
 
 router = APIRouter()
 
@@ -73,18 +74,28 @@ def delete_instrument_from_procedure(
     
     return {"message": "Procedure or instrument not found"}
 
-#Add an instrument to a pack:
+# Add an instrument to a pack with a specific quantity
 @router.post("/pack/{pack_id}/add-instrument/{instrument_id}")
 def add_instrument_to_pack(
-    pack_id: int, instrument_id: int, db: Session = Depends(get_db)
+    pack_id: int,
+    instrument_id: int,
+    quantity: int,  # Include the quantity parameter
+    db: Session = Depends(get_db)
 ):
-    # Perform the logic to add the instrument to the pack
+    # Retrieve the pack and instrument
     pack = db.query(Pack).filter(Pack.id == pack_id).first()
     instrument = db.query(Instrument).filter(Instrument.id == instrument_id).first()
     
-    if pack and instrument:
-        pack.instruments.append(instrument)
-        db.commit()
-        return {"message": "Instrument added to pack successfully"}
+    if not pack or not instrument:
+        raise HTTPException(status_code=404, detail="Pack or instrument not found")
     
-    return {"message": "Pack or instrument not found"}
+    # Create a PacksAndInstruments object to represent the relationship with quantity
+    packs_and_instruments_entry = packs_and_instruments.insert().values(
+        pack_id=pack_id, instrument_id=instrument_id, quantity=quantity
+    )
+    
+    # Add the PacksAndInstruments object to the database
+    db.execute(packs_and_instruments_entry)
+    db.commit()
+    
+    return {"message": f"{quantity} instruments added to pack successfully"}
