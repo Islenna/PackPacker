@@ -57,6 +57,7 @@ function Packs() {
     };
 
     const handleSearch = (e) => {
+        setCurrentPage(1); // Reset to page 1 when a new search term is entered
         setSearchTerm(e.target.value);
     };
 

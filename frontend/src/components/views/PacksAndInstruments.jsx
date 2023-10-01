@@ -39,9 +39,7 @@ function PacksAndInstruments() {
     return (
         <>
             <h1>{pack.name}</h1>
-
             <InstrumentTable instruments={instruments} />
-
         </>
     )
 }
