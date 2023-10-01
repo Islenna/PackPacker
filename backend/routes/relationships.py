@@ -1,10 +1,16 @@
 from fastapi import APIRouter, HTTPException, Depends
+from sqlalchemy import insert
 from sqlalchemy.orm import Session
 from config.database import get_db
 from models.Procedure import Procedure
 from models.Instrument import Instrument
 from models.Pack import Pack
 from models.relationships.packs_and_instruments import packs_and_instruments
+from schemas.instrument_schemas import InstrumentResponse, BulkAddInstrumentsRequest
+from schemas.pack_schemas import PackResponse
+from schemas.procedure_schemas import ProcedureResponse
+
+from typing import List
 
 router = APIRouter()
 
@@ -74,7 +80,7 @@ def delete_instrument_from_procedure(
     
     return {"message": "Procedure or instrument not found"}
 
-# Add an instrument to a pack with a specific quantity
+# Add an instrument to a pack
 @router.post("/pack/{pack_id}/add-instrument/{instrument_id}")
 def add_instrument_to_pack(
     pack_id: int,
@@ -99,3 +105,78 @@ def add_instrument_to_pack(
     db.commit()
     
     return {"message": f"{quantity} instruments added to pack successfully"}
+
+#Bulk add instruments to a pack
+@router.post("/pack/{pack_id}/add-instruments")
+def bulk_add_instruments_to_pack(
+    pack_id: int,
+    request_data: BulkAddInstrumentsRequest,  # Use the Pydantic model
+    db: Session = Depends(get_db)
+):
+    selected_instruments = request_data.instruments
+
+    # Retrieve the pack
+    pack = db.query(Pack).filter(Pack.id == pack_id).first()
+    
+    if not pack:
+        raise HTTPException(status_code=404, detail="Pack not found")
+    
+    # Create a list of PacksAndInstruments objects to represent the relationships
+    packs_and_instruments_entries = []
+    for instrument_id in request_data.instruments:
+        packs_and_instruments_entries.append(
+        insert(packs_and_instruments).values(
+            pack_id=pack_id,
+            instrument_id=instrument_id,
+            quantity=1,  # Defaults to 1.
+        )
+    )
+        
+    for entry in packs_and_instruments_entries:
+        db.execute(entry)
+
+    db.commit()  # Commit once after all the inserts are done
+    
+    return {"message": f"{len(selected_instruments)} instruments added to pack successfully"}
+
+# Remove an instrument from a pack
+@router.delete("/pack/{pack_id}/delete-instrument/{instrument_id}")
+def delete_instrument_from_pack(
+    pack_id: int, instrument_id: int, db: Session = Depends(get_db)
+):
+    # Perform the logic to delete the instrument from the pack
+    pack = db.query(Pack).filter(Pack.id == pack_id).first()
+    instrument = db.query(Instrument).filter(Instrument.id == instrument_id).first()
+    
+    if pack and instrument:
+        pack.instruments.remove(instrument)
+        db.commit()
+        return {"message": "Instrument deleted from pack successfully"}
+    
+    return {"message": "Pack or instrument not found"}
+
+#Update quantity of an instrument in a pack
+@router.put("/pack/{pack_id}/update-instrument/{instrument_id}")
+def update_quantity_of_instrument_in_pack(
+    pack_id: int,
+    instrument_id: int,
+    quantity: int,  # Include the quantity parameter
+    db: Session = Depends(get_db)
+):
+    # Perform the logic to update the quantity of the instrument in the pack
+    pack = db.query(Pack).filter(Pack.id == pack_id).first()
+    instrument = db.query(Instrument).filter(Instrument.id == instrument_id).first()
+    
+    if pack and instrument:
+        # Find the PacksAndInstruments object that represents the relationship
+        packs_and_instruments_entry = db.query(packs_and_instruments).filter(
+            packs_and_instruments.c.pack_id == pack_id,
+            packs_and_instruments.c.instrument_id == instrument_id,
+        ).first()
+        
+        # Update the quantity
+        packs_and_instruments_entry.quantity = quantity
+        db.commit()
+        return {"message": "Instrument quantity updated successfully"}
+    
+    return {"message": "Pack or instrument not found"}

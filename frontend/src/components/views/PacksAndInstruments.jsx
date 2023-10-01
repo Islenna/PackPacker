@@ -7,17 +7,8 @@ function PacksAndInstruments() {
     const { id } = useParams()
     const [pack, setPack] = useState([])
     const [instruments, setInstruments] = useState([])
-    const [quantity, setQuantity] = useState(1);
-    const [selectedInstruments, setSelectedInstruments] = useState([]);
+    const [refreshKey, setRefreshKey] = useState(false);
 
-    const addToSelectedInstruments = (instrument) => {
-        setSelectedInstruments([...selectedInstruments, instrument]);
-    };
-
-    // Function to commit selected instruments to the pack
-    const commitSelectedInstruments = () => {
-        // Implement the logic to add selected instruments to the pack
-    };
 
     useEffect(() => {
         const getPack = async () => {
@@ -26,7 +17,6 @@ function PacksAndInstruments() {
                 const packData = response.data
                 setPack(packData)
                 setInstruments(packData.instruments)
-                setQuantity(packData.quantity)
             }
             catch (err) {
                 console.log(err)
@@ -34,12 +24,12 @@ function PacksAndInstruments() {
         }
         getPack()
     }
-        , [id])
+        , [id, refreshKey])
 
     return (
         <>
             <h1>{pack.name}</h1>
-            <InstrumentTable instruments={instruments} />
+            <InstrumentTable instruments={instruments} onRefresh={() => setRefreshKey(!refreshKey)}/>
         </>
     )
 }

@@ -34,3 +34,6 @@ class PaginatedInstrumentResponse(BaseModel):
     page: int
     total_pages: int
     total_records: int
+
+class BulkAddInstrumentsRequest(BaseModel):
+    instruments: List[int]

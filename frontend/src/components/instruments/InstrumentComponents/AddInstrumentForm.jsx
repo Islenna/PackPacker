@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import Pagination from '../../Pagination'
+import { useParams } from 'react-router-dom'
 
 function AddInstrumentForm({ onClose }) {
+    const { id } = useParams();
     const [searchTerm, setSearchTerm] = useState('');
     const [quantity, setQuantity] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
@@ -70,14 +72,19 @@ function AddInstrumentForm({ onClose }) {
 
     const isInstrumentSelected = (instrument) => selectedInstruments.includes(instrument.id);
 
-    // Function to commit selected instruments to the pack
-    const handleBulkCommit = () => {
-
-        console.log('Selected instrument IDs:', selectedInstruments);
-        // Reset the selected instruments
-        setSelectedInstruments([]);
-
-        // Implement the logic to add selected instruments to the pack
+    // Commit selected instruments to the pack
+    const handleBulkCommit = async () => {
+        try {
+            const res = await axios.post(`http://127.0.0.1:8000/api/pack/${id}/add-instruments`, {
+                instruments: selectedInstruments,
+            });
+            console.log('Selected instrument IDs:', selectedInstruments);
+            console.log('Response:', res);
+        } catch (err) {
+            console.log(err);
+        }
+        // Close the modal
+        onClose();
     };
 
 
@@ -85,7 +92,6 @@ function AddInstrumentForm({ onClose }) {
     return (
         <>
             <div className={onClose ? "fixed inset-0 flex items-center justify-center z-50" : "hidden"}>
-
                 {/* <!-- Main modal --> */}
                 <div id="defaultModal" tabIndex="-1" aria-hidden="true">
                     <div className="relative p-4 w-full max-w-2xl h-full md:h-auto">

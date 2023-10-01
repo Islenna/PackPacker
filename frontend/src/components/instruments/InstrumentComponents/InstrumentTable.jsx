@@ -1,13 +1,25 @@
 import React, { useState, useEffect } from 'react'
 import AddInstrumentForm from './AddInstrumentForm'
 
-function InstrumentTable({ instruments }) {
+function InstrumentTable({ instruments, onRefresh }) {
     const [modal, setModal] = useState(false);
+    const [editModal, setEditModal] = useState(false);
+    
 
     const toggleAddModal = () => {
         setModal(!modal);
+        if (modal) { // it means modal is about to close
+            onRefresh(); // Assuming you've destructured onRefresh from props.
+        }
+    };
+
+    const onInstrumentClick = (instrument) => {
+        setEditModal(!editModal);
+        if (editModal) { // it means modal is about to close
+            onRefresh(); // Assuming you've destructured onRefresh from props.
+        }
     }
-    
+
 
     return (
         <section className="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">

@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { Link } from 'react-router-dom'
 import Pagination from '../Pagination'
-import PackForm from './PackForm'
-import PackEditModal from './PackEditModal'
+import PackForm from './PackComponents/PackForm'
+import PackEditModal from './PackComponents/PackEditModal'
 
 function Packs() {
     const [packs, setPacks] = useState([]);
