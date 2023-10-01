@@ -1,11 +1,9 @@
-from sqlalchemy import Table, Column, Integer, ForeignKey
+from sqlalchemy import Integer, ForeignKey, Column
 from config.database import Base
 
-# For the, "table", many-to-many relationship between packs and instruments.
-packs_and_instruments  = Table(
-    "packs_and_instruments",
-    Base.metadata,
-    Column("pack_id", Integer, ForeignKey("packs.id")),
-    Column("instrument_id", Integer, ForeignKey("instruments.id")),
-    Column("quantity", Integer, default=1),
-)
+class PacksAndInstruments(Base):
+    __tablename__ = "packs_and_instruments"
+
+    pack_id = Column(Integer, ForeignKey("packs.id"), primary_key=True)
+    instrument_id = Column(Integer, ForeignKey("instruments.id"), primary_key=True)
+    quantity = Column(Integer, default=1)

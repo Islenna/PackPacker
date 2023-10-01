@@ -29,7 +29,10 @@ function PacksAndInstruments() {
     return (
         <>
             <h1>{pack.name}</h1>
-            <InstrumentTable instruments={instruments} onRefresh={() => setRefreshKey(!refreshKey)}/>
+            <InstrumentTable 
+            instruments={instruments} 
+            packId={id}
+            onRefresh={() => setRefreshKey(!refreshKey)}/>
         </>
     )
 }

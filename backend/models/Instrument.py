@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, String, DateTime, func
 from sqlalchemy.orm import relationship, Session
 from config.database import Base
 from models.relationships.instruments_and_procedures import instruments_and_procedures
-from models.relationships.packs_and_instruments import packs_and_instruments
+from models.relationships.packs_and_instruments import PacksAndInstruments
 
 # Assume you have a function to check if an instrument name exists in the database
 def instrument_name_exists_in_database(db: Session, name: str):
@@ -22,4 +22,4 @@ class Instrument(Base):
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
     procedures = relationship("Procedure", secondary=instruments_and_procedures, back_populates="instruments")
-    packs = relationship("Pack", secondary= packs_and_instruments, back_populates="instruments")
+    packs = relationship("Pack", secondary=PacksAndInstruments.__table__, back_populates="instruments")

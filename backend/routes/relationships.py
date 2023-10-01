@@ -5,7 +5,7 @@ from config.database import get_db
 from models.Procedure import Procedure
 from models.Instrument import Instrument
 from models.Pack import Pack
-from models.relationships.packs_and_instruments import packs_and_instruments
+from models.relationships.packs_and_instruments import PacksAndInstruments
 from schemas.instrument_schemas import InstrumentResponse, BulkAddInstrumentsRequest
 from schemas.pack_schemas import PackResponse
 from schemas.procedure_schemas import ProcedureResponse
@@ -48,7 +48,7 @@ def add_pack_to_procedure(
 
 # Route to get all packs and instruments for a procedure:
 @router.get("/procedure/{procedure_id}/get-equipment")
-def get_packs_and_instruments_for_procedure(
+def get_PacksAndInstruments_for_procedure(
     procedure_id: int, db: Session = Depends(get_db)
 ):
     # Perform the logic to get all packs and instruments for a procedure
@@ -96,12 +96,12 @@ def add_instrument_to_pack(
         raise HTTPException(status_code=404, detail="Pack or instrument not found")
     
     # Create a PacksAndInstruments object to represent the relationship with quantity
-    packs_and_instruments_entry = packs_and_instruments.insert().values(
+    PacksAndInstruments_entry = PacksAndInstruments.insert().values(
         pack_id=pack_id, instrument_id=instrument_id, quantity=quantity
     )
     
     # Add the PacksAndInstruments object to the database
-    db.execute(packs_and_instruments_entry)
+    db.execute(PacksAndInstruments_entry)
     db.commit()
     
     return {"message": f"{quantity} instruments added to pack successfully"}
@@ -122,17 +122,17 @@ def bulk_add_instruments_to_pack(
         raise HTTPException(status_code=404, detail="Pack not found")
     
     # Create a list of PacksAndInstruments objects to represent the relationships
-    packs_and_instruments_entries = []
+    PacksAndInstruments_entries = []
     for instrument_id in request_data.instruments:
-        packs_and_instruments_entries.append(
-        insert(packs_and_instruments).values(
+        PacksAndInstruments_entries.append(
+        insert(PacksAndInstruments).values(
             pack_id=pack_id,
             instrument_id=instrument_id,
             quantity=1,  # Defaults to 1.
         )
     )
         
-    for entry in packs_and_instruments_entries:
+    for entry in PacksAndInstruments_entries:
         db.execute(entry)
 
     db.commit()  # Commit once after all the inserts are done
@@ -155,28 +155,31 @@ def delete_instrument_from_pack(
     
     return {"message": "Pack or instrument not found"}
 
-#Update quantity of an instrument in a pack
+#Update the quantity of an instrument in a pack
 @router.put("/pack/{pack_id}/update-instrument/{instrument_id}")
 def update_quantity_of_instrument_in_pack(
     pack_id: int,
     instrument_id: int,
-    quantity: int,  # Include the quantity parameter
+    quantity: int,
     db: Session = Depends(get_db)
 ):
-    # Perform the logic to update the quantity of the instrument in the pack
-    pack = db.query(Pack).filter(Pack.id == pack_id).first()
-    instrument = db.query(Instrument).filter(Instrument.id == instrument_id).first()
-    
-    if pack and instrument:
+
+    # Check if the quantity is a valid number
+    if not isinstance(quantity, int):
+        raise HTTPException(status_code=422, detail="Invalid quantity value")
+
+    with db.begin():
         # Find the PacksAndInstruments object that represents the relationship
-        packs_and_instruments_entry = db.query(packs_and_instruments).filter(
-            packs_and_instruments.c.pack_id == pack_id,
-            packs_and_instruments.c.instrument_id == instrument_id,
+        PacksAndInstruments_entry = db.query(PacksAndInstruments).filter(
+            PacksAndInstruments.pack_id == pack_id,
+            PacksAndInstruments.instrument_id == instrument_id,
         ).first()
-        
-        # Update the quantity
-        packs_and_instruments_entry.quantity = quantity
-        db.commit()
-        return {"message": "Instrument quantity updated successfully"}
-    
-    return {"message": "Pack or instrument not found"}
+
+        if PacksAndInstruments_entry:
+            # Update the quantity
+            PacksAndInstruments_entry.quantity = quantity
+            db.commit()
+            return {"message": "Instrument quantity updated successfully"}
+        else:
+            db.rollback()
+            raise HTTPException(status_code=404, detail="Pack or instrument not found")

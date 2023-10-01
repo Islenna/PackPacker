@@ -6,7 +6,7 @@ from models.Pack import Pack as PackModel
 from schemas.pack_schemas import PackCreate, PackResponse, PacksWithInstrumentsResponse
 from schemas.instrument_schemas import InstrumentResponse
 from repositories.repositories import query_pack_database, calculate_total_pack_records
-from models.relationships.packs_and_instruments import packs_and_instruments
+from models.relationships.packs_and_instruments import PacksAndInstruments
 from models.Instrument import Instrument
 
 router = APIRouter()
@@ -30,10 +30,9 @@ def create_pack(pack: PackCreate, db: Session = Depends(get_db)):
 
     return db_pack
 
+# Get a pack and its instruments
 @router.get("/pack/{pack_id}", response_model=PacksWithInstrumentsResponse)
 def get_pack(pack_id: int, db: Session = Depends(get_db)):
-    # Create an alias for the packs_and_instruments table
-    pai = aliased(packs_and_instruments)
 
     db_pack = (
         db.query(PackModel)
@@ -47,9 +46,9 @@ def get_pack(pack_id: int, db: Session = Depends(get_db)):
 
     # Retrieve the instruments and quantities associated with the pack
     instruments_and_quantities = (
-        db.query(Instrument, pai.c.quantity)
-        .join(pai, Instrument.id == pai.c.instrument_id)
-        .filter(pai.c.pack_id == pack_id)
+        db.query(Instrument, PacksAndInstruments.quantity)
+        .join(PacksAndInstruments, Instrument.id == PacksAndInstruments.instrument_id)
+        .filter(PacksAndInstruments.pack_id == pack_id)
         .all()
     )
 
