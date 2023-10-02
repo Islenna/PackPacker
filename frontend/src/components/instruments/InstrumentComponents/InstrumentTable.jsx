@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import AddInstrumentForm from './AddInstrumentForm'
 import PackEditInstrumentModal from '../../packs/PackComponents/PackEditInstrumentModal';
+import ProcedureEditInstrumentModal from '../../procedures/ProcedureComponents/ProcedureEditInstrumentModal';
 
-function InstrumentTable({ instruments, packId, onRefresh }) {
+function InstrumentTable({ instruments = [], parentId, type, onRefresh }) {
     const [modal, setModal] = useState(false);
     const [editModal, setEditModal] = useState(false);
     const [selectedInstrumentId, setSelectedInstrumentId] = useState(null);
     const [selectedInstrument, setSelectedInstrument] = useState(null);
+
 
 
     const toggleAddModal = () => {
@@ -29,6 +31,7 @@ function InstrumentTable({ instruments, packId, onRefresh }) {
             onRefresh(); // Assuming you've destructured onRefresh from props.
         }
     };
+    const EditModal = type === 'pack' ? PackEditInstrumentModal : ProcedureEditInstrumentModal;
 
     return (
         <section className="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
@@ -88,15 +91,17 @@ function InstrumentTable({ instruments, packId, onRefresh }) {
                             </tbody>
                         </table>
                         {editModal && (
-                            <PackEditInstrumentModal 
-                            instrument={selectedInstrument}
-                            packId={packId}
-                            onClose={onInstrumentClick} />
+                            <EditModal
+                                instrument={selectedInstrument}
+                                parentId={parentId}
+                                onClose={onInstrumentClick}
+                            />
                         )}
                     </div>
                 </div>
             </div>
-        </section>)
+        </section>
+    )
 }
 
 export default InstrumentTable

@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams, Link } from 'react-router-dom';
+import InstrumentTable from '../instruments/InstrumentComponents/InstrumentTable';
 
 function Procedure() {
     let { id } = useParams();
     const [procedure, setProcedure] = useState({});
+    const [instruments, setInstruments] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -37,9 +39,11 @@ function Procedure() {
                     <li key={instrument.name}>{instrument.name}</li>
                 ))}
             </ul>
-            <Link to={`/procedures/${procedure.id}/edit`}>
-                <button>Update</button>
-            </Link>
+                <InstrumentTable
+                    instruments={procedure.instruments}
+                    parentId={id} 
+                    type="procedure"
+                    onRefresh={() => setRefreshKey(!refreshKey)} />
         </>
     );
 }

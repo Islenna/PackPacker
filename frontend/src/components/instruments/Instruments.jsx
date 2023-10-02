@@ -3,6 +3,7 @@ import axios from 'axios'
 import InstrumentForm from '../instruments/InstrumentComponents/InstrumentForm'
 import InstrumentEditModal from '../instruments/InstrumentComponents/InstrumentEditModal'
 import Pagination from '../Pagination'
+import useSearch from '../../hooks/useSearch'
 
 function Instruments() {
     const [instruments, setInstruments] = useState([]);
@@ -14,7 +15,7 @@ function Instruments() {
 
 
     //Filtering
-    const [searchTerm, setSearchTerm] = useState("");
+    const { handleSearch, filteredData, searchTerm } = useSearch();
     const [filteredInventory, setFilteredInventory] = useState([]);
 
     //Dropdown
@@ -77,7 +78,7 @@ function Instruments() {
                     );
                 });
 
-                setInstruments(filteredData);
+                setInstruments(res.data);
                 setFilteredInventory(filteredData);
             } catch (err) {
                 console.log(err);
@@ -94,9 +95,6 @@ function Instruments() {
         setCurrentPage(1);
     }, [searchTerm]);
 
-    const handleSearch = (e) => {
-        setSearchTerm(e.target.value);
-    };
 
 
     const toggleAddModal = () => {
@@ -111,6 +109,7 @@ function Instruments() {
     return (
         <>
             <section className="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
+                <h1>Instruments</h1>
                 <div className="mx-auto max-w-screen-xl px-4 lg:px-12">
                     <div className="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
                         <div className="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
@@ -128,7 +127,6 @@ function Instruments() {
                                             id="simple-search"
                                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                             placeholder="Search"
-                                            required=""
                                             value={searchTerm}
                                             onChange={handleSearch}
                                         />
@@ -195,7 +193,7 @@ function Instruments() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {instruments.slice(indexOfFirstItem, indexOfLastItem).map(instrument => (
+                                    {currentItems.map(instrument => (
                                         <tr key={instrument.id}
                                             className="border-b hover:bg-gray-100 dark:hover:bg-gray-700 dark:border-gray-700 "
                                             onClick={() => handleInstrumentClick(instrument)}

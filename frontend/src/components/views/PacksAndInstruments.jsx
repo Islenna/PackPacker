@@ -31,7 +31,8 @@ function PacksAndInstruments() {
             <h1>{pack.name}</h1>
             <InstrumentTable 
             instruments={instruments} 
-            packId={id}
+            parentId={id} 
+            type="pack" 
             onRefresh={() => setRefreshKey(!refreshKey)}/>
         </>
     )
