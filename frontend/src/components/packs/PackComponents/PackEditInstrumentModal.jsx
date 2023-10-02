@@ -10,7 +10,6 @@ function PackEditInstrumentModal({ parentId, instrument, onClose }) {
         e.preventDefault();
         try {
             await axios.put(`http://127.0.0.1:8000/api/pack/${parentId}/update-instrument/${instrument.id}?quantity=${quantity}`);
-            alert('Quantity updated successfully!');
             onClose();
 
         } catch (error) {
@@ -19,7 +18,7 @@ function PackEditInstrumentModal({ parentId, instrument, onClose }) {
     }
     const handleDelete = async () => {
         try {
-            await axios.delete(`http://127.0.0.1:8000/api/pack/${packId}/delete-instrument/${instrument.id}`);
+            await axios.delete(`http://127.0.0.1:8000/api/pack/${parentId}/delete-instrument/${instrument.id}`);
             alert('Instrument removed from pack successfully!');
             onClose();
         } catch (error) {
