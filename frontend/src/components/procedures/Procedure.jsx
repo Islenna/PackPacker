@@ -34,11 +34,6 @@ function Procedure() {
             </ul>
 
             <h2>Instruments:</h2>
-            <ul>
-                {procedure.instruments && procedure.instruments.map((instrument) => (
-                    <li key={instrument.name}>{instrument.name}</li>
-                ))}
-            </ul>
                 <InstrumentTable
                     instruments={procedure.instruments}
                     parentId={id} 
