@@ -2,7 +2,7 @@
 
 ## Overview
 
-PackPacker is a web application that allows users to create and manage packs of instruments or items for various purposes. Whether you're planning a trip, a camping adventure, or just need to keep track of your equipment, PackPacker makes it easy to organize and manage your packs.
+Pack Packer is a web application that allows users to create and manage three tables: Procedures, Packs, and Instruments. Procedures can be modularized to surgeon preference, and there can be multiple packs to facilitate that same need. 
 
 ## Features
 
@@ -25,31 +25,31 @@ PackPacker is a web application that allows users to create and manage packs of 
 
 1. Clone the repository:
 
-    git clone https://github.com/yourusername/PackPacker.git
+    > git clone https://github.com/yourusername/PackPacker.git
 
 2. Change to the project directory:
 
-    cd PackPacker
+    > cd PackPacker
 
 3. Install Python dependencies:
 
-    poetry install
+    > poetry install
 
 4. Install JavaScript dependencies for the frontend (inside the frontend directory):
 
-    cd frontend
-    npm install
+    > cd frontend
+    > npm install
 
 
 ### Configuration
 
 1. Create a `.env` file in the project's root directory and set your environment variables, including database configuration and secret keys:
     
-    DATABASE_URL=postgresql://username:password@localhost/dbname
-    SECRET_KEY=your_secret_key_here
+    >DATABASE_URL=postgresql://username:password@localhost/dbname
+    >SECRET_KEY=your_secret_key_here
 
 2. Initialize the database:
-    poetry run alembic upgrade head
+    >poetry run alembic upgrade head
 
 ### Usage
 
