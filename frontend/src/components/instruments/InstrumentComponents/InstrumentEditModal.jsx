@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-
+import Draggable from 'react-draggable'
 
 function InstrumentEditModal({ id, onClose }) {
     const [name, setName] = useState("")
@@ -42,6 +42,7 @@ function InstrumentEditModal({ id, onClose }) {
     }
     return (
         <>
+        <Draggable>
             <div className={onClose ? "fixed inset-0 flex items-center justify-center z-50" : "hidden"}>
                 {/* <!-- Main modal --> */}
                 <div id="defaultModal" tabIndex="-1" aria-hidden="true">
@@ -95,6 +96,7 @@ function InstrumentEditModal({ id, onClose }) {
                     </div>
                 </div>
             </div>
+            </Draggable>
         </>
     );
 }
