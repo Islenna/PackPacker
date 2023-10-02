@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import Draggable from 'react-draggable';
 
-function PackEditInstrumentModal({ packId, instrument, onClose }) {
+function PackEditInstrumentModal({ parentId, instrument, onClose }) {
 
     const [quantity, setQuantity] = useState("")
 
     const changeQuantity = async (e) => {
         e.preventDefault();
         try {
-            await axios.put(`http://127.0.0.1:8000/api/pack/${packId}/update-instrument/${instrument.id}?quantity=${quantity}`);
+            await axios.put(`http://127.0.0.1:8000/api/pack/${parentId}/update-instrument/${instrument.id}?quantity=${quantity}`);
             alert('Quantity updated successfully!');
             onClose();
 
