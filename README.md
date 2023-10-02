@@ -25,7 +25,7 @@ Pack Packer is a web application that allows users to create and manage three ta
 
 1. Clone the repository:
 
-    > git clone https://github.com/yourusername/PackPacker.git
+    > git clone https://github.com/Islenna/PackPacker.git
 
 2. Change to the project directory:
 
