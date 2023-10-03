@@ -121,14 +121,27 @@ def update_pack(pack_id: int, pack: PackCreate, db: Session = Depends(get_db)):
     db.refresh(db_pack)
     return db_pack
 
-#Delete a pack
 @router.delete("/pack/{pack_id}", response_model=PackResponse)
 def delete_pack(pack_id: int, db: Session = Depends(get_db)):
+    # Retrieve the pack
     db_pack = db.query(PackModel).filter(PackModel.id == pack_id).first()
     if not db_pack:
-        raise HTTPException(status_code = status.HTTP_404_NOT_FOUND, detail = "Pack not found")
-    db.delete(db_pack)
-    db.commit()
-    return {"message": "Pack successfully deleted"}
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Pack not found")
 
+    try:
+        # Delete associated instruments
+        associated_instruments = db.query(PacksAndInstruments).filter(PacksAndInstruments.pack_id == pack_id).all()
+        for instrument in associated_instruments:
+            db.delete(instrument)
 
+        # Delete the main pack
+        db.delete(db_pack)
+
+        # Commit the transaction
+        db.commit()
+        
+        return {"message": "Pack successfully deleted"}
+
+    except Exception as e:
+        db.rollback()  # Explicitly rolling back in case of error
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))

@@ -24,3 +24,14 @@
     Added onHand to inventory, notes to Packs using Alembic.
     - [ x ] Consider backend pagination for instruments. Expecting ~1,039,000 characters, which may mean long loading times, but that is for the future.
     - [ x ] Pagination for backend (packs, instruments, procedures) implemented.
+
+    - [ x ] CRUD for Packs, Procedures, and Instruments.
+    - [ x ] Similar UI/UX (tables) across all PPI, with similar functionality.
+
+#ToDo:
+    -[ ] Validation
+    -[ ] Smoother error handling
+    -[ ] UI/UX Improvements.
+    -[ ] Modularize More?
+    -[ ] Double check naming conventions (this is madness).
+    

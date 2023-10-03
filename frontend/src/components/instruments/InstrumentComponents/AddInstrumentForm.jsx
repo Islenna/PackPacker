@@ -74,11 +74,21 @@ function AddInstrumentForm({ onClose, type }) {
     // Commit selected instruments to the pack
     const handleBulkCommit = async () => {
         try {
-            const res = await axios.post(`http://127.0.0.1:8000/api/pack/${id}/add-instruments`, {
-                instruments: selectedInstruments,
-            });
-            console.log('Selected instrument IDs:', selectedInstruments);
-            console.log('Response:', res);
+            if (type === 'pack') {
+                // Handle bulk commit for Packs
+                const res = await axios.post(`http://127.0.0.1:8000/api/pack/${id}/add-instruments`, {
+                    instruments: selectedInstruments,
+                });
+                console.log('Selected instrument IDs for Packs:', selectedInstruments);
+                console.log('Response:', res);
+            } else if (type === 'procedure') {
+                // Handle bulk commit for Procedures
+                const res = await axios.post(`http://127.0.0.1:8000/api/procedure/${id}/add-instruments`, {
+                    instruments: selectedInstruments,
+                });
+                console.log('Selected instrument IDs for Procedures:', selectedInstruments);
+                console.log('Response:', res);
+            }
         } catch (err) {
             console.log(err);
         }
@@ -90,6 +100,7 @@ function AddInstrumentForm({ onClose, type }) {
 
     return (
         <>
+
                 <div className={onClose ? "fixed inset-0 flex items-center justify-center z-50" : "hidden"}>
                     {/* <!-- Main modal --> */}
                     <div id="defaultModal" tabIndex="-1" aria-hidden="true">

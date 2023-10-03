@@ -174,8 +174,12 @@ def bulk_add_instruments_to_procedure(
 
     db.commit()  # Commit once after all the inserts are done
 
-    return {"message": f"{len(selected_instruments)} instruments added to procedure successfully"}
-
+    return {
+        "id": procedure.id,
+        "name": procedure.name,
+        "description": procedure.description,
+        
+}
 # Bulk Add Packs to Procedure
 @router.post("/procedure/{procedure_id}/add-packs", response_model=ProcedureResponse)
 def bulk_add_packs_to_procedure(

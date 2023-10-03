@@ -17,7 +17,6 @@ function ProcedureEditPackModal({parentId, pack, onClose}) {
 
     return (
         <>
-
             <div className={onClose ? "fixed inset-0 flex items-center justify-center z-50" : "hidden"}>
                 {/* <!-- Main modal --> */}
                 <div id="defaultModal" tabIndex="-1" aria-hidden="true">
@@ -39,7 +38,7 @@ function ProcedureEditPackModal({parentId, pack, onClose}) {
                                 <svg className="mr-1 -ml-1 w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 12H6" />
                                 </svg>
-                                Remove from Pack
+                                Remove from Procedure
                             </button>
                         </div>
                     </div>

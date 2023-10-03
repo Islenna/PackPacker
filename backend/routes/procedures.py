@@ -5,6 +5,10 @@ from config.database import get_db, SessionLocal
 from models.Procedure import Procedure as ProcedureModel
 from schemas.procedure_schemas import ProcedureCreate, ProcedureResponse
 from repositories.repositories import query_procedure_database, calculate_total_procedure_records
+from models.relationships.instruments_and_procedures import InstrumentsAndProcedures
+from models.relationships.packs_and_procedures import PacksAndProcedures
+from models.Instrument import Instrument
+from models.Pack import Pack
 
 
 router = APIRouter()
@@ -81,7 +85,27 @@ def update_procedure(procedure_id: int, procedure: ProcedureCreate, db: Session 
 def delete_procedure(procedure_id: int, db: Session = Depends(get_db)):
     db_procedure = db.query(ProcedureModel).filter(ProcedureModel.id == procedure_id).first()
     if not db_procedure:
-        raise HTTPException(status_code = status.HTTP_404_NOT_FOUND, detail = "Procedure not found")
-    db.delete(db_procedure)
-    db.commit()
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Procedure not found")
+
+    try:
+        # Delete associated instruments
+        associated_instruments = db.query(InstrumentsAndProcedures).filter(InstrumentsAndProcedures.procedure_id == procedure_id).all()
+        for instrument in associated_instruments:
+            db.delete(instrument)
+
+        # Delete associated packs
+        associated_packs = db.query(PacksAndProcedures).filter(PacksAndProcedures.procedure_id == procedure_id).all()
+        for pack in associated_packs:
+            db.delete(pack)
+
+        # After removing all associations, delete the main procedure
+        db.delete(db_procedure)
+
+        # Commit all changes at once
+        db.commit()
+
+    except Exception as e:
+        db.rollback()  # Explicitly rolling back in case of error
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+
     return db_procedure
