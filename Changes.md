@@ -9,6 +9,7 @@
         - [ x ] Implement Search functionality.
         - [ x ] Functionality for adding instruments to packs.
     - [ ] Modularizing more
+    - [ ] Removed Draggable - it's throwing DOM errors.
 
 
 #Backend

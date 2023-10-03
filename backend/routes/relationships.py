@@ -5,9 +5,11 @@ from config.database import get_db
 from models.Procedure import Procedure
 from models.Instrument import Instrument
 from models.Pack import Pack
+from models.relationships.instruments_and_procedures import InstrumentsAndProcedures
 from models.relationships.packs_and_instruments import PacksAndInstruments
+from models.relationships.packs_and_procedures import PacksAndProcedures
 from schemas.instrument_schemas import InstrumentResponse, BulkAddInstrumentsRequest
-from schemas.pack_schemas import PackResponse
+from schemas.pack_schemas import PackResponse, BulkAddPackRequest
 from schemas.procedure_schemas import ProcedureResponse
 
 from typing import List
@@ -139,6 +141,80 @@ def bulk_add_instruments_to_pack(
     
     return {"message": f"{len(selected_instruments)} instruments added to pack successfully"}
 
+
+
+#Bulk Add Instruments to Procedure
+@router.post("/procedure/{procedure_id}/add-instruments", response_model=ProcedureResponse)
+def bulk_add_instruments_to_procedure(
+    procedure_id: int,
+    request_data: BulkAddInstrumentsRequest,  # Use the Pydantic model
+    db: Session = Depends(get_db)
+):
+    selected_instruments = request_data.instruments
+
+    # Retrieve the procedure
+    procedure = db.query(Procedure).filter(Procedure.id == procedure_id).first()
+
+    if not procedure:
+        raise HTTPException(status_code=404, detail="Procedure not found")
+    
+    # Create a list of InstrumentsAndProcedures objects to represent the relationships
+    InstrumentsAndProcedures_entries = []
+    for instrument_id in request_data.instruments:
+        InstrumentsAndProcedures_entries.append(
+        insert(InstrumentsAndProcedures).values(
+            procedure_id=procedure_id,
+            instrument_id=instrument_id,
+            quantity=1,  # Defaults to 1.
+        )
+    )
+        
+    for entry in InstrumentsAndProcedures_entries:
+        db.execute(entry)
+
+    db.commit()  # Commit once after all the inserts are done
+
+    return {"message": f"{len(selected_instruments)} instruments added to procedure successfully"}
+
+# Bulk Add Packs to Procedure
+@router.post("/procedure/{procedure_id}/add-packs", response_model=ProcedureResponse)
+def bulk_add_packs_to_procedure(
+    procedure_id: int,
+    request_data: BulkAddPackRequest,  # Use the Pydantic model for the request
+    db: Session = Depends(get_db)
+):
+    selected_packs = request_data.packs
+
+    # Retrieve the procedure
+    procedure = db.query(Procedure).filter(Procedure.id == procedure_id).first()
+
+    if not procedure:
+        raise HTTPException(status_code=404, detail="Procedure not found")
+    
+    # Create a list of InstrumentsAndProcedures objects to represent the relationships
+    PacksAndProcedures_entries = []
+    for pack_id in request_data.packs:
+        PacksAndProcedures_entries.append(
+            insert(PacksAndProcedures).values(
+                procedure_id=procedure_id,
+                pack_id=pack_id,
+            )
+        )
+        
+    for entry in PacksAndProcedures_entries:
+        db.execute(entry)
+
+    db.commit()
+
+    # Return the response data (ProcedureResponse) here
+    return {
+    "id": procedure.id,
+    "name": procedure.name,
+    "description": procedure.description,
+    # include any other necessary fields
+}
+
+
 # Remove an instrument from a pack
 @router.delete("/pack/{pack_id}/delete-instrument/{instrument_id}")
 def delete_instrument_from_pack(
@@ -154,6 +230,22 @@ def delete_instrument_from_pack(
         return {"message": "Instrument deleted from pack successfully"}
     
     return {"message": "Pack or instrument not found"}
+
+#Remove a pack from a procedure
+@router.delete("/procedure/{procedure_id}/delete-pack/{pack_id}")
+def delete_pack_from_procedure(
+    procedure_id: int, pack_id: int, db: Session = Depends(get_db)
+):
+    # Perform the logic to delete the pack from the procedure
+    procedure = db.query(Procedure).filter(Procedure.id == procedure_id).first()
+    pack = db.query(Pack).filter(Pack.id == pack_id).first()
+    
+    if procedure and pack:
+        procedure.packs.remove(pack)
+        db.commit()
+        return {"message": "Pack deleted from procedure successfully"}
+    
+    return {"message": "Procedure or pack not found"}
 
 #Update the quantity of an instrument in a pack
 @router.put("/pack/{pack_id}/update-instrument/{instrument_id}")

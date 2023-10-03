@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import AddInstrumentForm from './AddInstrumentForm'
 import PackEditInstrumentModal from '../../packs/PackComponents/PackEditInstrumentModal';
 import ProcedureEditInstrumentModal from '../../procedures/ProcedureComponents/ProcedureEditInstrumentModal';
@@ -6,14 +6,20 @@ import ProcedureEditInstrumentModal from '../../procedures/ProcedureComponents/P
 function InstrumentTable({ instruments = [], parentId, type, onRefresh }) {
     const [modal, setModal] = useState(false);
     const [editModal, setEditModal] = useState(false);
+    const [packModal, setPackModal] = useState(false);
     const [selectedInstrumentId, setSelectedInstrumentId] = useState(null);
     const [selectedInstrument, setSelectedInstrument] = useState(null);
-
-
 
     const toggleAddModal = () => {
         setModal(!modal);
         if (modal) { // it means modal is about to close
+            onRefresh(); // Assuming you've destructured onRefresh from props.
+        }
+    };
+
+    const togglePackModal = () => {
+        setPackModal(!packModal);
+        if (packModal) { // it means modal is about to close
             onRefresh(); // Assuming you've destructured onRefresh from props.
         }
     };
@@ -31,6 +37,7 @@ function InstrumentTable({ instruments = [], parentId, type, onRefresh }) {
             onRefresh(); // Assuming you've destructured onRefresh from props.
         }
     };
+    
     const EditModal = type === 'pack' ? PackEditInstrumentModal : ProcedureEditInstrumentModal;
 
     return (
@@ -51,7 +58,7 @@ function InstrumentTable({ instruments = [], parentId, type, onRefresh }) {
                                         Add Instrument
                                     </button>
                                     {modal && (
-                                        <AddInstrumentForm onClose={toggleAddModal} />
+                                        <AddInstrumentForm onClose={toggleAddModal} type={type} />
                                     )}
                                 </div>
                             </div>

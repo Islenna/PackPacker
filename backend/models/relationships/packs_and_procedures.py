@@ -1,10 +1,10 @@
 from sqlalchemy import Table, Column, Integer, ForeignKey
 from config.database import Base
 
-# Define the table for the many-to-many relationship
-packs_and_procedures = Table(
-    "packs_and_procedures",
-    Base.metadata,
-    Column("pack_id", Integer, ForeignKey("packs.id")),
-    Column("procedure_id", Integer, ForeignKey("procedures.id")),
-)
+
+class PacksAndProcedures(Base):
+    __tablename__ = "packs_and_procedures"
+
+    pack_id = Column(Integer, ForeignKey("packs.id"), primary_key=True)
+    procedure_id = Column(Integer, ForeignKey("procedures.id"), primary_key=True)
+    

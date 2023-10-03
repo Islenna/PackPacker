@@ -1,7 +1,6 @@
 // InstrumentForm.jsx
 import React, { useState } from 'react';
 import axios from 'axios';
-import Draggable from 'react-draggable';
 
 function InstrumentForm({ onClose }) {
     const [name, setName] = useState('');
@@ -33,7 +32,7 @@ function InstrumentForm({ onClose }) {
 
     return (
         <>
-            <Draggable>
+            < >
 
                 <div className={onClose ? "fixed inset-0 flex items-center justify-center z-50" : "hidden"}>
 
@@ -89,7 +88,7 @@ function InstrumentForm({ onClose }) {
                         </div>
                     </div>
                 </div>
-            </Draggable>
+            </ >
         </>
     );
 }

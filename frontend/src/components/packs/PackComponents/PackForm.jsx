@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import Draggable from 'react-draggable';
 
 function PackForm({ onClose }) {
     const [name, setName] = useState('');
@@ -24,7 +23,7 @@ function PackForm({ onClose }) {
 
     return (
         <>
-            <Draggable>
+            < >
 
                 <div className={onClose ? "fixed inset-0 flex items-center justify-center z-50" : "hidden"}>
 
@@ -69,7 +68,7 @@ function PackForm({ onClose }) {
                         </div>
                     </div>
                 </div>
-            </Draggable>
+            </ >
         </>
     );
 }

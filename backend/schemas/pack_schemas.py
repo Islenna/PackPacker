@@ -30,6 +30,9 @@ class PacksWithInstrumentsResponse(PackBase):
     class Config:
         orm_mode = True
 
+class BulkAddPackRequest(BaseModel):
+    packs: List[int]
+
 class PackUpdate(PackBase):
     pass
 

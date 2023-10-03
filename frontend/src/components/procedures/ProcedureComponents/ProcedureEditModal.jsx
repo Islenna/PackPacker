@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import Draggable from 'react-draggable';
 
 // AddToPackModal component
 function ProcedureEditModal({ id, onClose }) {
@@ -40,7 +39,7 @@ function ProcedureEditModal({ id, onClose }) {
 
     return (
         <>
-            <Draggable>
+            < >
 
                 <div className={onClose ? "fixed inset-0 flex items-center justify-center z-50" : "hidden"}>
 
@@ -97,7 +96,7 @@ function ProcedureEditModal({ id, onClose }) {
                         </div>
                     </div>
                 </div>
-            </Draggable>
+            </ >
         </>
     );
 }

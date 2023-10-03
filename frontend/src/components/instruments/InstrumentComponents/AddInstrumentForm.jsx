@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import Pagination from '../../Pagination'
 import { useParams } from 'react-router-dom'
-import Draggable from 'react-draggable'
 
-function AddInstrumentForm({ onClose }) {
+function AddInstrumentForm({ onClose, type }) {
     const { id } = useParams();
     const [searchTerm, setSearchTerm] = useState('');
     const [quantity, setQuantity] = useState(1);
@@ -32,7 +31,6 @@ function AddInstrumentForm({ onClose }) {
                         instrumentDescription.includes(searchTermLower)
                     );
                 });
-
                 setInstruments(filteredData);
                 setFilteredInventory(filteredData);
             } catch (err) {
@@ -92,8 +90,6 @@ function AddInstrumentForm({ onClose }) {
 
     return (
         <>
-            <Draggable>
-
                 <div className={onClose ? "fixed inset-0 flex items-center justify-center z-50" : "hidden"}>
                     {/* <!-- Main modal --> */}
                     <div id="defaultModal" tabIndex="-1" aria-hidden="true">
@@ -171,7 +167,6 @@ function AddInstrumentForm({ onClose }) {
                         </div>
                     </div>
                 </div>
-            </Draggable>
         </>
     )
 }

@@ -1,8 +1,11 @@
 import React from 'react'
 
-function ProcedureEditInstrumentModal() {
+function ProcedureEditInstrumentModal({ parentId, instrument, onClose}) {
+    const nodeRef = React.useRef(null);
     return (
-        <div>ProcedureEditInstrumentModal</div>
+        <>
+        <h1>Hi</h1>
+        </>
     )
 }
 
