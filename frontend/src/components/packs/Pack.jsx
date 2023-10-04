@@ -20,7 +20,6 @@ function Pack() {
     return (
         <>
         <h1>{pack.name}</h1>
-
         <ul>
                 {pack.instruments && pack.instruments.map((instrument) => (
                     <li key={instrument.name}>{instrument.name}</li>

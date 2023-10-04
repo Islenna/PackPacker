@@ -28,12 +28,14 @@ function PacksAndInstruments() {
 
     return (
         <>
-            <h1>{pack.name}</h1>
-            <InstrumentTable 
-            instruments={instruments} 
-            parentId={id} 
-            type="pack" 
-            onRefresh={() => setRefreshKey(!refreshKey)}/>
+            <section className="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
+                <h1>{pack.name}</h1>
+            </section>
+            <InstrumentTable
+                instruments={instruments}
+                parentId={id}
+                type="pack"
+                onRefresh={() => setRefreshKey(!refreshKey)} />
         </>
     )
 }

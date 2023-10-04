@@ -88,3 +88,8 @@ button:focus-visible {
   background: rgba(0, 0, 0, 0.5); /* This will give a dark transparent overlay */
   z-index: 1000; /* Ensure it's on top */
 }
+
+.button-container {
+  display: space-between;
+  align-items: center;
+}
