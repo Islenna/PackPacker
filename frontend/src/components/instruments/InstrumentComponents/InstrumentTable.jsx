@@ -90,6 +90,7 @@ function InstrumentTable({ instruments = [], parentId, type, onRefresh }) {
                                             </a>
                                         </td>
                                         <td className="px-4 py-3">{instrument.description}</td>
+                                        
                                         <td className="px-4 py-3">{instrument.quantity}</td>
                                     </tr>
                                 ))}

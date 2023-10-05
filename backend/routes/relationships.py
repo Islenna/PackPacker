@@ -279,3 +279,32 @@ def update_quantity_of_instrument_in_pack(
         else:
             db.rollback()
             raise HTTPException(status_code=404, detail="Pack or instrument not found")
+
+#Update the quantity of an instrument in a procedure
+@router.put("/procedure/{procedure_id}/update-instrument/{instrument_id}")
+def update_quantity_of_instrument_in_procedure(
+    procedure_id: int,
+    instrument_id: int,
+    quantity: int,
+    db: Session = Depends(get_db)
+):
+    
+        # Check if the quantity is a valid number
+        if not isinstance(quantity, int):
+            raise HTTPException(status_code=422, detail="Invalid quantity value")
+    
+        with db.begin():
+            # Find the InstrumentsAndProcedures object that represents the relationship
+            InstrumentsAndProcedures_entry = db.query(InstrumentsAndProcedures).filter(
+                InstrumentsAndProcedures.procedure_id == procedure_id,
+                InstrumentsAndProcedures.instrument_id == instrument_id,
+            ).first()
+    
+            if InstrumentsAndProcedures_entry:
+                # Update the quantity
+                InstrumentsAndProcedures_entry.quantity = quantity
+                db.commit()
+                return {"message": "Instrument quantity updated successfully"}
+            else:
+                db.rollback()
+                raise HTTPException(status_code=404, detail="Procedure or instrument not found")
