@@ -47,6 +47,7 @@ def add_pack_to_procedure(
         return {"message": "Pack added to procedure successfully"}
     
     return {"message": "Procedure or pack not found"}
+
 # Route to get all packs and instruments for a procedure
 @router.get("/procedure/{procedure_id}/get-equipment")
 def get_PacksAndInstruments_for_procedure(
@@ -72,6 +73,7 @@ def get_PacksAndInstruments_for_procedure(
                 {
                     "id": pack.id,
                     "name": pack.name,
+                    "notes": pack.notes,
                     # Include other pack details as needed
                 }
                 for pack in packs
@@ -90,6 +92,7 @@ def get_PacksAndInstruments_for_procedure(
             instrument_data = {
                 "id": instrument.id,
                 "name": instrument.name,
+                "description": instrument.description,
                 "quantity": instrument_quantity  # Include quantity
             }
 
