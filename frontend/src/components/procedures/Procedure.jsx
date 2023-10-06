@@ -9,18 +9,21 @@ function Procedure() {
     const [procedure, setProcedure] = useState({});
     const [refreshKey, setRefreshKey] = useState(false);
     const [showPacks, setShowPacks] = useState(true);
+    const [equipment, setEquipment] = useState([]); 
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const res = await axios.get(`http://127.0.0.1:8000/api/procedure/${id}/get-equipment`);
                 setProcedure(res.data.procedure);
+                setEquipment(res.data);
             } catch (err) {
                 console.log(err);
             }
         };
         fetchData();
     }, [id, refreshKey]);
+    
 
     const toggleTable = () => {
         setShowPacks(!showPacks);
@@ -39,14 +42,14 @@ function Procedure() {
             </section>
             {showPacks ? (
                 <PackTable
-                    packs={procedure.packs}
+                    packs={equipment.packs}
                     parentId={id}
                     type="pack"
                     onRefresh={() => { setRefreshKey(!refreshKey) }}
                 />
             ) : (
                 <InstrumentTable
-                    instruments={procedure.instruments}
+                    instruments={equipment.instruments}
                     parentId={id}
                     type="procedure"
                     onRefresh={() => setRefreshKey(!refreshKey)}

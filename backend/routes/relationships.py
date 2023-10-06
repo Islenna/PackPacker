@@ -47,8 +47,7 @@ def add_pack_to_procedure(
         return {"message": "Pack added to procedure successfully"}
     
     return {"message": "Procedure or pack not found"}
-
-# Route to get all packs and instruments for a procedure:
+# Route to get all packs and instruments for a procedure
 @router.get("/procedure/{procedure_id}/get-equipment")
 def get_PacksAndInstruments_for_procedure(
     procedure_id: int, db: Session = Depends(get_db)
@@ -58,12 +57,46 @@ def get_PacksAndInstruments_for_procedure(
     
     if procedure:
         # Load the associated packs and instruments using the relationship
-        packs = procedure.packs  # Assuming you have a "packs" relationship defined
-        instruments = procedure.instruments  # Assuming you have an "instruments" relationship defined
+        packs = procedure.packs  
+        instruments = procedure.instruments  
         
-        return {
-            "procedure": procedure,
+        # Create a dictionary with procedure details, packs, and instruments
+        procedure_details = {
+            "procedure": {
+                "id": procedure.id,
+                "name": procedure.name,
+                "description": procedure.description,
+                # Include other procedure details as needed
+            },
+            "packs": [
+                {
+                    "id": pack.id,
+                    "name": pack.name,
+                    # Include other pack details as needed
+                }
+                for pack in packs
+            ],
+            "instruments": [],
         }
+
+        # Fetch the quantity information for each instrument
+        for instrument in instruments:
+            instrument_quantity = db.query(InstrumentsAndProcedures.quantity).filter(
+                InstrumentsAndProcedures.procedure_id == procedure_id,
+                InstrumentsAndProcedures.instrument_id == instrument.id
+            ).scalar()
+            
+            # Create a dictionary for each instrument with quantity
+            instrument_data = {
+                "id": instrument.id,
+                "name": instrument.name,
+                "quantity": instrument_quantity  # Include quantity
+            }
+
+            procedure_details["instruments"].append(instrument_data)
+        
+        return procedure_details
+
     return {"message": "Procedure not found"}
 
 #Delete an instrument from a procedure:
