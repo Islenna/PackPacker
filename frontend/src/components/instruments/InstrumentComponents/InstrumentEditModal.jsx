@@ -7,7 +7,9 @@ function InstrumentEditModal({ id, onClose }) {
     const [onHand, setOnHand] = useState("")
     const [img_url, setImgUrl] = useState("")
     const [description, setDescription] = useState("")
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [manufacturer, setManufacturer] = useState("")
+    const [serial_number, setSerialNumber] = useState("")
+    const [isModalOpen, setIsModalOpen] = useState(false)
 
 
     useEffect(() => {
@@ -18,6 +20,8 @@ function InstrumentEditModal({ id, onClose }) {
                 setOnHand(res.data.onHand)
                 setImgUrl(res.data.img_url)
                 setDescription(res.data.description)
+                setManufacturer(res.data.manufacturer)
+                setSerialNumber(res.data.serial_number)
             })
             .catch((err) => {
                 console.log(err)
@@ -30,7 +34,9 @@ function InstrumentEditModal({ id, onClose }) {
             name: name,
             onHand: onHand,
             img_url: img_url,
-            description: description
+            description: description,
+            manufacturer: manufacturer,
+            serial_number: serial_number
         })
             .then((res) => {
                 setIsModalOpen(!onClose)
@@ -89,6 +95,18 @@ function InstrumentEditModal({ id, onClose }) {
                                             <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Image URL</label>
                                             <input type="text" name="name" id="name" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder={img_url}
                                                 onChange={(e) => setImgUrl(e.target.value)} value={img_url}
+                                            />
+                                        </div>
+                                        <div>
+                                            <label htmlFor="serial_number" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Serial Number:</label>
+                                            <input type="text" name="img_url" id="img_url" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder={serial_number}required=""
+                                                onChange={(e) => setSerialNumber(e.target.value)} value={serial_number}
+                                            />
+                                        </div>
+                                        <div>
+                                            <label htmlFor="manufacturer" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Manufacturer</label>
+                                            <input type="text" name="manufacturer" id="name" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder={manufacturer}
+                                                onChange={(e) => setManufacturer(e.target.value)} value={manufacturer}
                                             />
                                         </div>
                                         <div className="sm:col-span-2">

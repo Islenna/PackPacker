@@ -9,12 +9,16 @@ class InstrumentBase(BaseModel):
     name: str
     description: str
     img_url: str
+    manufacturer: Optional[str] = None
+    serial_number:Optional[str] = None
 
 class InstrumentCreate(BaseModel):
     name: str
     description: Optional[str] = None
     onHand: Optional[int] = None
     img_url: Optional[str] = None
+    manufacturer: Optional[str] = None
+    serial_number:Optional[str] = None
 
 class InstrumentResponse(InstrumentBase):
     id: int
@@ -22,7 +26,7 @@ class InstrumentResponse(InstrumentBase):
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
     quantity: Optional[int] = None
-
+    
     class Config:
         orm_mode = True
 

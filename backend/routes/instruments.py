@@ -17,7 +17,13 @@ def create_instrument(instrument: InstrumentCreate, db: Session = Depends(get_db
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Instrument with this name already exists")
 
     # If the instrument name is unique, create the new instrument
-    db_instrument = InstrumentModel(name=instrument.name, description=instrument.description, onHand = instrument.onHand, img_url=instrument.img_url)
+    db_instrument = InstrumentModel(
+        name=instrument.name, 
+        description=instrument.description, 
+        onHand = instrument.onHand, 
+        img_url=instrument.img_url, 
+        manufacturer=instrument.manufacturer, 
+        serial_number=instrument.serial_number)
     
     # Use SessionLocal to create a new database session
     db_session = SessionLocal()
@@ -78,6 +84,8 @@ def update_instrument(instrument_id: int, instrument: InstrumentCreate, db: Sess
     db_instrument.description = instrument.description
     db_instrument.img_url = instrument.img_url
     db_instrument.onHand = instrument.onHand
+    db_instrument.manufacturer = instrument.manufacturer
+    db_instrument.serial_number = instrument.serial_number
     db.commit()
     db.refresh(db_instrument)
     return db_instrument

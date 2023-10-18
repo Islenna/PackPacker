@@ -169,9 +169,8 @@ function Instruments() {
                                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                     <tr>
                                         <th scope="col" className="px-4 py-3">Instrument Name</th>
-                                        <th scope="col" className="px-4 py-3">Instrument Image</th>
                                         <th scope="col" className="px-4 py-3">Description</th>
-                                        <th scope="col" className="px-4 py-3">On Hand</th>
+                                        <th scope="col" className="px-4 py-3">Manufacturer</th>
                                         <th scope="col" className="px-4 py-3">
                                             <span className="sr-only">Actions</span>
                                         </th>
@@ -184,13 +183,8 @@ function Instruments() {
                                             onClick={() => handleInstrumentClick(instrument)}
                                         >
                                             <th scope="row" className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">{instrument.name}</th>
-                                            <td className="px-4 py-3">
-                                                <a href={instrument.img_url} target="_blank" rel="noopener noreferrer">
-                                                    View Image
-                                                </a>
-                                            </td>
                                             <td className="px-4 py-3">{instrument.description}</td>
-                                            <td className="px-4 py-3">{instrument.onHand}</td>
+                                            <td className="px-4 py-3">{instrument.manufacturer}</td>
                                         </tr>
                                     ))}
                                 </tbody>

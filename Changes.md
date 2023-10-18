@@ -9,7 +9,6 @@
         - [ x ] Implement Search functionality.
         - [ x ] Functionality for adding instruments to packs.
     - [ ] Modularizing more
-    - [ ] Removed Draggable - it's throwing DOM errors.
 
 
 #Backend
@@ -34,4 +33,7 @@
     -[ ] UI/UX Improvements.
     -[ ] Modularize More?
     -[ ] Double check naming conventions (this is madness).
-    
+    -[ X ] Pictures to packs
+    -[ X ] Manufacturer on instruments
+    -[ X ] SN on instruments
+        -[ ] Refactor routes for PackPics, Manufacturer, SNs. 

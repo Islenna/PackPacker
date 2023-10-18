@@ -7,6 +7,8 @@ function InstrumentForm({ onClose }) {
     const [onHand, setOnHand] = useState('');
     const [img_url, setImgUrl] = useState('');
     const [description, setDescription] = useState('');
+    const [manufacturer, setManufacturer] = useState('');
+    const [serial_number, setSerialNumber] = useState('');
 
 
     const handleSubmit = async (e) => {
@@ -16,7 +18,9 @@ function InstrumentForm({ onClose }) {
                 name,
                 onHand,
                 img_url,
-                description
+                description,
+                manufacturer,
+                serial_number
             });
 
             // Clear form fields and close the modal
@@ -24,6 +28,8 @@ function InstrumentForm({ onClose }) {
             setOnHand('');
             setImgUrl('');
             setDescription('');
+            setManufacturer('');
+            setSerialNumber('')
             onClose(); // Close the modal using passed function
         } catch (err) {
             console.log(err);
@@ -33,7 +39,6 @@ function InstrumentForm({ onClose }) {
     return (
         <>
             < >
-
                 <div className={onClose ? "fixed inset-0 flex items-center justify-center z-50" : "hidden"}>
 
                     {/* <!-- Main modal --> */}
@@ -67,9 +72,21 @@ function InstrumentForm({ onClose }) {
                                             />
                                         </div>
                                         <div>
-                                            <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Image URL</label>
-                                            <input type="text" name="name" id="name" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Search Integralife" required=""
+                                            <label htmlFor="img_url" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Image URL</label>
+                                            <input type="text" name="img_url" id="img_url" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Search Integralife" required=""
                                                 onChange={(e) => setImgUrl(e.target.value)} value={img_url}
+                                            />
+                                        </div>
+                                        <div>
+                                            <label htmlFor="serial_number" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Serial Number:</label>
+                                            <input type="text" name="img_url" id="img_url" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="" required=""
+                                                onChange={(e) => setSerialNumber(e.target.value)} value={serial_number}
+                                            />
+                                        </div>
+                                        <div>
+                                            <label htmlFor="manufacturer" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Manufacturer</label>
+                                            <input type="text" name="name" id="name" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="" required=""
+                                                onChange={(e) => setManufacturer(e.target.value)} value={manufacturer}
                                             />
                                         </div>
                                         <div className="sm:col-span-2">

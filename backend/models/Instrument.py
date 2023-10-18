@@ -18,6 +18,8 @@ class Instrument(Base):
     description = Column(String(255))
     img_url = Column(String(255))
     onHand = Column(Integer, default=0)
+    manufacturer = Column(String(255), nullable=True)
+    serial_number = Column(String(255), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
