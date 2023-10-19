@@ -70,11 +70,18 @@ function Instruments() {
                 const filteredData = res.data.filter(instrument => {
                     const instrumentName = instrument.name.toLowerCase();
                     const instrumentDescription = instrument.description.toLowerCase();
+                    const instrumentManufacturer = instrument.manufacturer.toLowerCase();
+                    const instrumentSerialNumber = instrument.serial_number
+                        ? instrument.serial_number.toLowerCase()
+                        : ""; // handle potential undefined serial_number
                     const searchTermLower = searchTerm.toLowerCase();
+
 
                     return (
                         instrumentName.includes(searchTermLower) ||
-                        instrumentDescription.includes(searchTermLower)
+                        instrumentDescription.includes(searchTermLower) ||
+                        instrumentManufacturer.includes(searchTermLower) ||
+                        instrumentSerialNumber.includes(searchTermLower)
                     );
                 });
 
@@ -185,6 +192,7 @@ function Instruments() {
                                             <th scope="row" className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">{instrument.name}</th>
                                             <td className="px-4 py-3">{instrument.description}</td>
                                             <td className="px-4 py-3">{instrument.manufacturer}</td>
+                                            <td className="px-4 py-3">{instrument.serial_number}</td>
                                         </tr>
                                     ))}
                                 </tbody>
