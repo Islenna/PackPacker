@@ -23,12 +23,12 @@ function AddPackForm({ onClose, }) {
                 // Filter the data based on partial match of name or description
                 const filteredData = res.data.filter(pack => {
                     const packName = pack.name.toLowerCase();
-                    const packNotes = pack.notes.toLowerCase();
+                    const packDescription = pack.description.toLowerCase();
                     const searchTermLower = searchTerm.toLowerCase();
 
                     return (
                         packName.includes(searchTermLower) ||
-                        packNotes.includes(searchTermLower)
+                        packDescription.includes(searchTermLower)
                     );
                 });
                 setPacks(res.data);

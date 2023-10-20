@@ -18,6 +18,29 @@
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
+.thumbnail-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.thumbnail {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+.input-error {
+  border-color: red;
+  /* Any other styles to indicate an error */
+}
+.error-message {
+  color: red;
+  font-size: smaller;
+  /* Any other styles for error text */
+}
+
+
 @keyframes logo-spin {
   from {
     transform: rotate(0deg);

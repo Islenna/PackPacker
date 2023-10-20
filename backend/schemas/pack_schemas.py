@@ -5,13 +5,14 @@ from schemas.instrument_schemas import InstrumentResponse
 
 class PackBase(BaseModel):
     name: str
+    img_url: Optional[str] = None
 
 class PackCreate(PackBase):
-    notes: Optional[str] = None
+    description: Optional[str] = None
 
 class PackResponse(PackBase):
     id: int
-    notes: Optional[str] = None
+    description: Optional[str] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 
@@ -21,8 +22,7 @@ class PackResponse(PackBase):
         
 class PacksWithInstrumentsResponse(PackBase):
     id: int
-    name: str
-    notes: Optional[str] = None
+    description: Optional[str] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
     instruments: Optional[List[InstrumentResponse]]

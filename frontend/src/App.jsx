@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import './App.css'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
 
 import Navbar from './components/navbar/Navbar'
 import Dash from './components/views/Dash'
@@ -9,6 +11,7 @@ import Packs from './components/packs/Packs'
 import Procedure from './components/procedures/Procedure'
 import Procedures from './components/procedures/Procedures'
 import PacksAndInstruments from './components/views/PacksAndInstruments'
+
 function App() {
   const [count, setCount] = useState(0)
 
@@ -25,6 +28,7 @@ function App() {
           <Route path="/pack/:id/instruments" element={<PacksAndInstruments />} />
         </Routes>
       </Router>
+      <ToastContainer />
     </>
   )
 }

@@ -41,3 +41,6 @@ class PaginatedInstrumentResponse(BaseModel):
 
 class BulkAddInstrumentsRequest(BaseModel):
     instruments: List[int]
+
+class MessageResponse(BaseModel):
+    message: str

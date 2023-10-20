@@ -21,12 +21,12 @@ function Packs() {
                 const res = await axios.get(`http://127.0.0.1:8000/api/packs?page=${currentPage}&items_per_page=${itemsPerPage}&search=${searchTerm}`)
                 const filteredData = res.data.filter((pack) => {
                     const packName = pack.name.toLowerCase();
-                    const packNotes = (pack.notes || '').toLowerCase(); // Handle null by using an empty string
+                    const packDescription = (pack.description || '').toLowerCase(); // Handle null by using an empty string
                     const searchTermLower = searchTerm.toLowerCase();
 
                     return (
                         packName.includes(searchTermLower) ||
-                        packNotes.includes(searchTermLower)
+                        packDescription.includes(searchTermLower)
                     );
                 });
                 setPacks(res.data)
@@ -121,7 +121,7 @@ function Packs() {
                                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                         <tr>
                                             <th scope="col" className="px-4 py-3">Pack Name</th>
-                                            <th scope="col" className="px-4 py-3">Notes</th>
+                                            <th scope="col" className="px-4 py-3">Description</th>
                                             <th scope="col" className="px-4 py-3">
                                             <span className="sr-only">Actions</span>
                                         </th>
@@ -134,7 +134,7 @@ function Packs() {
                                                 onClick={() => handlePackClick(pack)}
                                             >
                                                 <th scope="row" className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">{pack.name}</th>
-                                                <td className="px-4 py-3">{pack.notes || "No notes available"}</td>
+                                                <td className="px-4 py-3">{pack.description || "No notes available"}</td>
                                             </tr>
                                         ))}
                                     </tbody>

@@ -36,4 +36,4 @@
     -[ X ] Pictures to packs
     -[ X ] Manufacturer on instruments
     -[ X ] SN on instruments
-        -[ ] Refactor routes for PackPics, Manufacturer, SNs. 
+        -[ X ] Refactor routes for PackPics, Manufacturer, SNs. 

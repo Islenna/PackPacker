@@ -12,6 +12,8 @@ function Instruments() {
     const [isLoading, setIsLoading] = useState(true);
     const [instrument, setInstrument] = useState(null);
     const [itemsPerPage] = useState(10);
+    const [mode, setMode] = useState(null);
+
 
 
     //Filtering
@@ -58,6 +60,7 @@ function Instruments() {
     //Edit Modal
     const handleInstrumentClick = (instrument) => {
         setInstrument(instrument);
+        setMode('edit');
         setEditModal(true);
     };
 
@@ -105,6 +108,7 @@ function Instruments() {
 
 
     const toggleAddModal = () => {
+        setMode('add');
         setModal(!modal);
     };
 
@@ -151,7 +155,7 @@ function Instruments() {
                                 </button>
 
                                 {modal && (
-                                    <InstrumentForm onClose={toggleAddModal} />
+                                    <InstrumentForm onClose={toggleAddModal} mode={mode} />
                                 )}
 
                                 <div className="flex items-center space-x-3 w-full md:w-auto">
@@ -177,7 +181,6 @@ function Instruments() {
                                     <tr>
                                         <th scope="col" className="px-4 py-3">Instrument Name</th>
                                         <th scope="col" className="px-4 py-3">Description</th>
-                                        <th scope="col" className="px-4 py-3">Manufacturer</th>
                                         <th scope="col" className="px-4 py-3">
                                             <span className="sr-only">Actions</span>
                                         </th>
@@ -191,15 +194,13 @@ function Instruments() {
                                         >
                                             <th scope="row" className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">{instrument.name}</th>
                                             <td className="px-4 py-3">{instrument.description}</td>
-                                            <td className="px-4 py-3">{instrument.manufacturer}</td>
-                                            <td className="px-4 py-3">{instrument.serial_number}</td>
                                         </tr>
                                     ))}
                                 </tbody>
                             </table>
                         </div>
                         {editModal && (
-                            <InstrumentEditModal id={instrument.id} onClose={toggleEditModal} />
+                            <InstrumentEditModal isOpen={editModal} id={instrument.id} mode={mode} onClose={() => setEditModal(false)} />
                         )}
                         <Pagination
                             currentPage={currentPage}

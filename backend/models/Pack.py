@@ -10,8 +10,8 @@ class Pack(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(255), unique=True, index=True)
-    notes = Column(String(255))
-    image= Column(String(255), nullable=True)
+    description = Column(String(255))
+    img_url = Column(String(255), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 

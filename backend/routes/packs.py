@@ -20,7 +20,7 @@ def create_pack(pack: PackCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Pack with this name already exists")
 
     # If the pack name is unique, create the new pack
-    db_pack = PackModel(name=pack.name, notes=pack.notes)
+    db_pack = PackModel(name=pack.name, description=pack.description)
     
     # Use SessionLocal to create a new database session
     db_session = SessionLocal()
@@ -29,6 +29,7 @@ def create_pack(pack: PackCreate, db: Session = Depends(get_db)):
     db_session.refresh(db_pack)
 
     return db_pack
+
 
 # Get a pack and its instruments
 @router.get("/pack/{pack_id}", response_model=PacksWithInstrumentsResponse)
@@ -61,15 +62,18 @@ def get_pack(pack_id: int, db: Session = Depends(get_db)):
             description=instrument.description,
             img_url=instrument.img_url,
             onHand=instrument.onHand,
-            quantity=quantity,  # Include the quantity attribute
+            manufacturer=instrument.manufacturer,
+            serial_number=instrument.serial_number,
+            quantity=quantity, 
         )
         instruments.append(instrument_response)
 
     # Create the response with valid instruments
     pack_response = PacksWithInstrumentsResponse(
         id=db_pack.id,
+        img_url=db_pack.img_url,
         name=db_pack.name,
-        notes=db_pack.notes,
+        description=db_pack.description,
         created_at=db_pack.created_at,
         updated_at=db_pack.updated_at,
         instruments=instruments,
@@ -116,7 +120,7 @@ def update_pack(pack_id: int, pack: PackCreate, db: Session = Depends(get_db)):
     if not db_pack:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Pack not found")
     db_pack.name = pack.name
-    db_pack.notes = pack.notes  # Update the notes field
+    db_pack.description = pack.description  # Update the description field
     db.commit()
     db.refresh(db_pack)
     return db_pack

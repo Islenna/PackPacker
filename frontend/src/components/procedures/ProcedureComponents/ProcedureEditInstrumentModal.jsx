@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import axios from 'axios'
 import { DeleteButton, SubmitButton } from '../../Buttons/Buttons';
+import { toast } from 'react-toastify'
 
 function ProcedureEditInstrumentModal({ parentId, instrument, onClose }) {
 
@@ -8,7 +9,7 @@ function ProcedureEditInstrumentModal({ parentId, instrument, onClose }) {
     const handleDelete = async () => {
         try {
             await axios.delete(`http://127.0.0.1:8000/api/procedure/${parentId}/delete-instrument/${instrument.id}`);
-            alert('Instrument removed from procedure successfully!');
+            toast.success(response.data.message);
             onClose();
         } catch (error) {
             console.error("Failed to delete instrument from pack:", error);
@@ -20,7 +21,7 @@ function ProcedureEditInstrumentModal({ parentId, instrument, onClose }) {
             await axios.put(`http://127.0.0.1:8000/api/procedure/${parentId}/update-instrument/${instrument.id}?quantity=${quantity}`, {
                 quantity: e.target.value
             });
-            alert('Instrument quantity updated successfully!');
+            toast.success(response.data.message);
             onClose();
         } catch (error) {
             console.error("Failed to update instrument quantity:", error);

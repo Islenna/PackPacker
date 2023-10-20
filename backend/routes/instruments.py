@@ -3,7 +3,7 @@ from typing import List
 from sqlalchemy.orm import Session
 from config.database import get_db, SessionLocal
 from models.Instrument import Instrument as InstrumentModel
-from schemas.instrument_schemas import InstrumentCreate, InstrumentResponse
+from schemas.instrument_schemas import InstrumentCreate, InstrumentResponse, MessageResponse
 from repositories.repositories import query_database, calculate_total_records
 
 router = APIRouter()
@@ -90,12 +90,24 @@ def update_instrument(instrument_id: int, instrument: InstrumentCreate, db: Sess
     db.refresh(db_instrument)
     return db_instrument
 
-#Delete an instrument
-@router.delete("/instrument/{instrument_id}", response_model=InstrumentResponse)
-def delete_instrument(instrument_id: int, db: Session = Depends(get_db)):
+
+@router.delete("/instrument/{instrument_id}", response_model=MessageResponse)
+async def delete_instrument(instrument_id: int, db: Session = Depends(get_db)):
+    # Fetch the instrument from the database
     db_instrument = db.query(InstrumentModel).filter(InstrumentModel.id == instrument_id).first()
+    
     if not db_instrument:
-        raise HTTPException(status_code = status.HTTP_404_NOT_FOUND, detail = "Instrument not found")
-    db.delete(db_instrument)
-    db.commit()
-    return {"message": "Instrument deleted"}
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Instrument not found")
+    
+    try:
+        db.delete(db_instrument)
+        db.commit()
+    except Exception as e:
+        # Rollback the session in case of error
+        db.rollback()
+        
+        # Return a 500 internal server error
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal server error")
+    
+    # Return a success message
+    return {"message": "Instrument deleted successfully"}

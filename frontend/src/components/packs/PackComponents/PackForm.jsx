@@ -4,18 +4,18 @@ import { SubmitButton } from '../../Buttons/Buttons';
 
 function PackForm({ onClose }) {
     const [name, setName] = useState('');
-    const [notes, setNotes] = useState('');
+    const [description, setDescription] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             await axios.post('http://127.0.0.1:8000/api/pack/new', {
                 name,
-                notes,
+                description,
             });
             // Clear form fields and close the modal
             setName('');
-            setNotes('');
+            setDescription('');
             onClose(); // Close the modal using passed function
         } catch (err) {
             console.log(err);
@@ -56,7 +56,7 @@ function PackForm({ onClose }) {
                                         <div className="sm:col-span-2">
                                             <label htmlFor="description" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
                                             <textarea id="description" rows="4" className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Write pack description or notes here"
-                                                onChange={(e) => setNotes(e.target.value)} value={notes}
+                                                onChange={(e) => setNotes(e.target.value)} value={description}
                                             ></textarea>
                                         </div>
                                     </div>

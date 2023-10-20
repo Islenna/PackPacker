@@ -73,7 +73,7 @@ def get_PacksAndInstruments_for_procedure(
                 {
                     "id": pack.id,
                     "name": pack.name,
-                    "notes": pack.notes,
+                    "description": pack.description,
                     # Include other pack details as needed
                 }
                 for pack in packs

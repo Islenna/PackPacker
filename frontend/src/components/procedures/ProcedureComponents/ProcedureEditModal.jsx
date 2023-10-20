@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { SubmitButton, EditButton, DeleteButton } from '../../Buttons/Buttons';
+import { toast } from 'react-toastify'
 
 // AddToPackModal component
 function ProcedureEditModal({ id, onClose }) {
@@ -40,7 +41,7 @@ function ProcedureEditModal({ id, onClose }) {
     const handleDelete = async () => {
         try {
             await axios.delete(`http://127.0.0.1:8000/api/procedure/${id}`);
-            alert('Procedure removed successfully!');
+            toast.success(response.data.message);
             onClose();
         } catch (error) {
             console.error("Failed to delete procedure:", error);
