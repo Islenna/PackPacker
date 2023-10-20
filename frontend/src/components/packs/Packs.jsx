@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { Link } from 'react-router-dom'
-import Pagination from '../Pagination'
+import Pagination from '../Shared/Pagination'
 import PackForm from './PackComponents/PackForm'
 import PackEditModal from './PackComponents/PackEditModal'
 

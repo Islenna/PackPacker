@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-import Pagination from '../../Pagination'
+import Pagination from '../../Shared/Pagination'
 import { useParams } from 'react-router-dom'
 import { SubmitButton } from '../../Buttons/Buttons'
 

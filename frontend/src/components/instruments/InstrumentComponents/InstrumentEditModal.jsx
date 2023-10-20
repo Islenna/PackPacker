@@ -83,10 +83,10 @@ function InstrumentEditModal({ id, onClose, isOpen, mode }) {
                 },
             });
             onClose();
-
-        } catch (err) {
-            if (error.response && error.response.status === 422) {
-                const errors = error.response.data.errors;
+            
+        } catch (err) { // Change 'error' to 'err' here
+            if (err.response && err.response.status === 422) { // Corrected 'error' to 'err' here
+                const errors = err.response.data.errors;
                 // 'errors' will contain validation messages from the server, you might need to adapt this line depending on the actual structure of your server response
                 // Now, set these error messages in your component's state to display them
                 setFieldErrors(errors); // assuming your state and server response have matching keys
@@ -95,7 +95,8 @@ function InstrumentEditModal({ id, onClose, isOpen, mode }) {
             }
             setError(err.response?.data?.message || "An error occurred while submitting the data.");
         }
-    };
+    }
+        
 
     const handleChange = (setter) => (e) => {
         // clear errors if exist
@@ -174,7 +175,7 @@ function InstrumentEditModal({ id, onClose, isOpen, mode }) {
                     placeholder="Enter description"
                 />
                 <div className="flex space-x-4">  {/* Container for buttons to provide spacing */}
-                    <SubmitButton />  {/* Assuming these components handle their own styling */}
+                    <SubmitButton handleSubmit={handleSubmit}/> 
                     <DeleteButton handleDelete={handleDelete} />
                 </div>
             </div>

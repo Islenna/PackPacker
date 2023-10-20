@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import ProcedureForm from '../procedures/ProcedureForm';
-import Pagination from '../Pagination';
+import Pagination from '../Shared/Pagination';
 import usePagination from '../../hooks/usePagination';
 import ProcedureEditModal from '../procedures/ProcedureComponents/ProcedureEditModal';
 import useSearch from '../../hooks/useSearch';
