@@ -6,7 +6,6 @@ import useSearch from '../../hooks/useSearch'
 import CommonTable from '../Shared/CommonTable'
 
 function Instruments() {
-    const [instruments, setInstruments] = useState([]);
     const [modal, setModal] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [instrument, setInstrument] = useState(null);
@@ -63,7 +62,6 @@ function Instruments() {
                         : ""; // handle potential undefined serial_number
                     const searchTermLower = searchTerm.toLowerCase();
 
-
                     return (
                         instrumentName.includes(searchTermLower) ||
                         instrumentDescription.includes(searchTermLower) ||
@@ -72,13 +70,11 @@ function Instruments() {
                     );
                 });
 
-                setInstruments(res.data);
                 setFilteredInventory(filteredData);
             } catch (err) {
                 console.log(err);
                 console.log("Axios Error:", err);
                 console.log("Response Data:", err.response?.data);
-
             }
         };
 
@@ -90,17 +86,6 @@ function Instruments() {
     }, [searchTerm]);
 
     //Modals
-    const handleInstrumentClick = (instrument) => {
-        setInstrument(instrument);
-        setMode('edit');
-        openEditModal(instrument);
-    };
-
-    const openAddModal = () => {
-        setMode('add');
-        setModal(true);
-    };
-
     const toggleModal = () => {
         setModal(!modal); // toggle the state
         // if modal is being closed, reset the instrument and mode
@@ -109,32 +94,45 @@ function Instruments() {
             setMode(null);
         }
     };
-
-    const openEditModal = (instrumentData) => {
-        setMode('edit');
+    const handleModal = (newMode, instrumentData = null) => {
+        setMode(newMode);
+        setInstrument(instrumentData);
         setModal(true);
     };
+    
+    // Usage for adding an instrument, where you don't need instrument data
+    const openAddModal = () => {
+        handleModal('add');
+    };
+    
+    // Usage for editing an instrument
+    const handleInstrumentClick = (instrument) => {
+        handleModal('edit', instrument);
+    };
+    
 
     return (
         <>
-        <CommonTable 
-        data = {filteredInventory}
-        columns = {[
-            {key: 'name', header: 'Instrument Name'},
-            {key: 'description', header: 'Description'}
-        ]}
-        onRowClick={handleInstrumentClick}
-        title="Instruments"
-        />
-
-                        {modal && (
-                            <InstrumentEditModal
-                                isOpen={modal}
-                                id={instrument ? instrument.id : null} // Ensure 'instrument' is not null when trying to access 'id'
-                                mode={mode}
-                                onClose={toggleModal} // 'onClose' should handle the visibility
-                            />
-                        )}
+            <CommonTable
+                data={filteredInventory}
+                columns={[
+                    { key: 'name', header: 'Instrument Name' },
+                    { key: 'description', header: 'Description' }
+                ]}
+                onRowClick={handleInstrumentClick}
+                onAdd={openAddModal}
+                title="Instruments"
+                mode={mode}
+                searchFields={['name', 'description', 'serial_number', 'manufacturer']}
+            />
+            {modal && (
+                <InstrumentEditModal
+                    isOpen={modal}
+                    id={instrument ? instrument.id : null} // Ensure 'instrument' is not null when trying to access 'id'
+                    mode={mode}
+                    onClose={toggleModal} // 'onClose' should handle the visibility
+                />
+            )}
         </>
     )
 }

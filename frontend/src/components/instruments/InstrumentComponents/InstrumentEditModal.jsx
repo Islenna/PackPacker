@@ -82,6 +82,7 @@ function InstrumentEditModal({ id, onClose, isOpen, mode }) {
                     serial_number,
                 },
             });
+            toast.success("Instrument saved successfully.");
             onClose();
             
         } catch (err) { // Change 'error' to 'err' here
@@ -172,6 +173,7 @@ function InstrumentEditModal({ id, onClose, isOpen, mode }) {
                     name="description"
                     value={description}
                     onChange={handleChange(setDescription)}
+                    error={fieldErrors.description}
                     placeholder="Enter description"
                 />
                 <div className="flex space-x-4">  {/* Container for buttons to provide spacing */}

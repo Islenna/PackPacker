@@ -1,34 +1,55 @@
-import React from 'react';
+import React, { useState } from 'react';
 import usePagination from '../../hooks/usePagination';
 import Pagination from './Pagination';
+import SearchBar from '../Search/Search';
 
-function CommonTable({ data, columns, title, handlePageChange, toggleModal, onRowClick }) {
+function CommonTable({ data, columns, title, onAdd, searchFields, toggleModal, onRowClick }) {
     const {
-        currentPage,
-        totalPages,
         nextPage,
         prevPage,
         goToPage,
     } = usePagination();
 
+    const [searchTerm, setSearchTerm] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
     // Calculate the starting and ending indices for the current page
-    const itemsPerPage = 10; // Adjust the number of items per page as needed
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
+    function getFilteredData(data, term, searchFields) {
+        return data.filter(item =>
+            searchFields.some(field =>
+                item[field] && item[field].toLowerCase().includes(term.toLowerCase())
+            )
+        );
+    }
+
+    const filteredData = getFilteredData(data, searchTerm, searchFields);
+    const totalPages = Math.ceil(filteredData.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
 
-    // Get the subset of data for the current page
-    const paginatedData = data.slice(startIndex, endIndex);
-    
+    const handleSearch = (term) => {
+        setSearchTerm(term);
+        setCurrentPage(1);
+    };
+
+    const paginatedData = filteredData.slice(startIndex, endIndex);
+
 
     return (
         <section className="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
             <div className="mx-auto max-w-screen-xl px-4 lg:px-12">
                 <div className="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
                     <div className="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
-                        <h1 className="text-2xl font-semibold">{title}</h1>
+                        <div className="w-full md:w-1/2">
+                            <h1 className="text-2xl font-semibold">{title}</h1>
+                        </div>
                         <button
-                            onClick={toggleModal}
-                            className="inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 top-0 right-0 absolute"
+                            onClick={onAdd ? onAdd : toggleModal}
+                            className="inline-flex items-center justify-center p-0.5  mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 mb-4" // Added mb-4 for spacing
                         >
                             <svg
                                 className="h-3.5 w-3.5 mr-2"
@@ -48,44 +69,50 @@ function CommonTable({ data, columns, title, handlePageChange, toggleModal, onRo
                             </span>
                         </button>
                     </div>
-                    <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                            <tr>
-                                {columns.map((column) => (
-                                    <th key={column.key} className="px-4 py-3">
-                                        {column.header}
-                                    </th>
-                                ))}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {paginatedData.map((item) => (
-                                <tr
-                                    key={item.id}
-                                    onClick={() => onRowClick(item)}
-                                    className="border-b hover:bg-gray-100 dark:hover:bg-gray-700 dark:border-gray-700"
-                                >
+                    <SearchBar onSearch={handleSearch} className="mb-4" />
+                    <div className="mb-5"></div>
+                    <div className="table-container" style={{ width: '800px', height: '530px', overflowY: 'auto' }}>
+                        <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                <tr>
                                     {columns.map((column) => (
-                                        <td
-                                            key={column.key}
-                                            className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                                        >
-                                            {item[column.key]}
-                                        </td>
+                                        <th key={column.key} className="px-4 py-3">
+                                            {column.header}
+                                        </th>
                                     ))}
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {paginatedData.map((item) => (
+                                    <tr
+                                        key={item.id}
+                                        onClick={() => onRowClick(item)}
+                                        className="border-b hover:bg-gray-100 dark:hover:bg-gray-700 dark:border-gray-700"
+                                    >
+                                        {columns.map((column) => (
+                                            <td
+                                                key={column.key}
+                                                className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                                            >
+                                                {item[column.key]}
+                                            </td>
+                                        ))}
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
             {/* Pagination controls */}
             <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}
-                onPageChange={handlePageChange}
+                onPageChange={handlePageChange} // Pass the handlePageChange function here
                 totalItems={data.length} // Pass the totalItems here
             />
+
+
         </section>
     );
 }
