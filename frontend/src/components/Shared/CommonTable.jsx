@@ -1,44 +1,19 @@
 import React, { useState } from 'react';
-import usePagination from '../../hooks/usePagination';
-import Pagination from './Pagination';
 import SearchBar from '../Search/Search';
-
-function CommonTable({ data, columns, title, onAdd, searchFields, toggleModal, onRowClick }) {
-    const {
-        nextPage,
-        prevPage,
-        goToPage,
-    } = usePagination();
-
-    const [searchTerm, setSearchTerm] = useState('');
-    const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage, setItemsPerPage] = useState(10);
-    // Calculate the starting and ending indices for the current page
-    const handlePageChange = (pageNumber) => {
-        setCurrentPage(pageNumber);
-    };
-
-    function getFilteredData(data, term, searchFields) {
-        return data.filter(item =>
-            searchFields.some(field =>
-                item[field] && item[field].toLowerCase().includes(term.toLowerCase())
-            )
-        );
-    }
-
-    const filteredData = getFilteredData(data, searchTerm, searchFields);
-    const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-
-    const handleSearch = (term) => {
-        setSearchTerm(term);
-        setCurrentPage(1);
-    };
-
-    const paginatedData = filteredData.slice(startIndex, endIndex);
-
-
+import Pagination from './Pagination';
+function CommonTable({
+    data,
+    columns,
+    title,
+    onAdd,
+    onRowClick,
+    currentPage,
+    totalPages,
+    totalItems,
+    onSearch,
+    onPageChange
+}
+) {
     return (
         <section className="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
             <div className="mx-auto max-w-screen-xl px-4 lg:px-12">
@@ -69,8 +44,7 @@ function CommonTable({ data, columns, title, onAdd, searchFields, toggleModal, o
                             </span>
                         </button>
                     </div>
-                    <SearchBar onSearch={handleSearch} className="mb-4" />
-                    <div className="mb-5"></div>
+                    <SearchBar onSearch={onSearch} className="mb-4" />
                     <div className="table-container" style={{ width: '800px', height: '530px', overflowY: 'auto' }}>
                         <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -83,7 +57,7 @@ function CommonTable({ data, columns, title, onAdd, searchFields, toggleModal, o
                                 </tr>
                             </thead>
                             <tbody>
-                                {paginatedData.map((item) => (
+                                {data.map((item) => (
                                     <tr
                                         key={item.id}
                                         onClick={() => onRowClick(item)}
@@ -108,11 +82,9 @@ function CommonTable({ data, columns, title, onAdd, searchFields, toggleModal, o
             <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}
-                onPageChange={handlePageChange} // Pass the handlePageChange function here
-                totalItems={data.length} // Pass the totalItems here
+                totalItems={totalItems}
+                onPageChange={onPageChange}
             />
-
-
         </section>
     );
 }

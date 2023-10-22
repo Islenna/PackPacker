@@ -15,8 +15,8 @@ function useSearch(data, searchKeys) {
         }
     }, [data, searchTerm, searchKeys]);
 
-    const handleSearch = (event) => {
-        setSearchTerm(event.target.value);
+    const handleSearch = (value) => {
+        setSearchTerm(value);
     };
 
     return { searchTerm, handleSearch, filteredData };
