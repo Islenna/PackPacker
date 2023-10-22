@@ -11,7 +11,8 @@ function CommonTable({
     totalPages,
     totalItems,
     onSearch,
-    onPageChange
+    onPageChange,
+    searchFields
 }
 ) {
     return (

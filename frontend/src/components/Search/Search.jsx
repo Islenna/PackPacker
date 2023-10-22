@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-function SearchBar({ onSearch }) {
+function Search({ onSearch }) {
     const [searchTerm, setSearchTerm] = useState('');
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
 
@@ -16,7 +16,7 @@ function SearchBar({ onSearch }) {
     }, [searchTerm]); // Only re-run the effect if searchTerm changes
 
     useEffect(() => {
-        // trigger the search when the debounced term changes
+        // Call the onSearch function when debounced search term changes
         onSearch(debouncedSearchTerm);
     }, [debouncedSearchTerm, onSearch]); // Only re-run the effect if debouncedSearchTerm or onSearch changes
 
@@ -44,4 +44,4 @@ function SearchBar({ onSearch }) {
     );
 }
 
-export default SearchBar;
+export default Search;

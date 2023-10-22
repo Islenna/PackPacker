@@ -1,10 +1,11 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 
 function useSearch(data, searchKeys) {
     const [searchTerm, setSearchTerm] = useState("");
     const filteredData = useMemo(() => {
+        
         if (!searchTerm || !Array.isArray(data)) {
-            return data; // Display all procedures when search term is empty or data is not an array
+            return data;
         } else {
             const lowerCaseValue = searchTerm.toLowerCase();
             return data.filter((item) =>
@@ -13,6 +14,7 @@ function useSearch(data, searchKeys) {
                 )
             );
         }
+        
     }, [data, searchTerm, searchKeys]);
 
     const handleSearch = (value) => {
