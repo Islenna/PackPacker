@@ -48,3 +48,17 @@ def calculate_total_pack_records_with_search(session: Session, search: str):
     return session.query(PackModel)\
         .filter(PackModel.name.ilike(f"%{search}%"))\
         .count()
+
+def query_procedure_database_with_search(session: Session, offset: int, limit: int, search: str):
+    # Use the SQLAlchemy session to query the database
+    return session.query(ProcedureModel)\
+        .filter(ProcedureModel.name.ilike(f"%{search}%"))\
+        .offset(offset)\
+        .limit(limit)\
+        .all()
+
+def calculate_total_procedure_records_with_search(session: Session, search: str):
+    # Calculate the total number of procedure records in the database based on the search criterion.
+    return session.query(ProcedureModel)\
+        .filter(ProcedureModel.name.ilike(f"%{search}%"))\
+        .count()

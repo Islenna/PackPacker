@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from config.database import get_db, SessionLocal
 from models.Procedure import Procedure as ProcedureModel
 from schemas.procedure_schemas import ProcedureCreate, ProcedureResponse
-from repositories.repositories import query_procedure_database, calculate_total_procedure_records
+from repositories.repositories import query_procedure_database, calculate_total_procedure_records, query_procedure_database_with_search, calculate_total_procedure_records_with_search
 from models.relationships.instruments_and_procedures import InstrumentsAndProcedures
 from models.relationships.packs_and_procedures import PacksAndProcedures
 from models.Instrument import Instrument
@@ -41,24 +41,29 @@ def get_procedure(procedure_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code = status.HTTP_404_NOT_FOUND, detail = "Procedure not found")
     return db_procedure
 
+from sqlalchemy import or_
 
-#Get paginated procedures.
+#Get all procedures with pagination and search
+
 @router.get("/procedures/pages")
 async def get_paginated_procedures(
-    page: int = 1,  # Default page is 1
-    items_per_page: int = 10,  # Default items per page is 10
-    db: Session = Depends(get_db),  # Dependency injection to get the database session
+    page: int = 1,
+    items_per_page: int = 10,
+    search: str = None,  # Optional search string
+    db: Session = Depends(get_db),
 ):
-    # Calculate offset based on page and items per page
+    # Calculate offset based on page number.
     offset = (page - 1) * items_per_page
 
-    # Query the database for a specific range of records
-    procedures = query_procedure_database(db, offset, items_per_page)
+    # Depending on whether a search term was provided, we will use different query functions.
+    if search:
+        procedures = query_procedure_database_with_search(db, offset, items_per_page, search)
+        total_records = calculate_total_procedure_records_with_search(db, search)
+    else:
+        procedures = query_procedure_database(db, offset, items_per_page)
+        total_records = calculate_total_procedure_records(db)
 
-    # Calculate the total number of records (total_records) for the query
-    total_records = calculate_total_procedure_records(db)
-
-    # Calculate the total number of pages (total_pages)
+    # Calculate the total number of pages.
     total_pages = (total_records + items_per_page - 1) // items_per_page
 
     return {
