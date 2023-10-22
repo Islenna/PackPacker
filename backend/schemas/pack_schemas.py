@@ -37,4 +37,4 @@ class PackUpdate(PackBase):
     pass
 
 class PackDelete(PackBase):
-    pass
+    message: str

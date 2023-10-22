@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 import { SubmitButton, EditButton, DeleteButton } from '../../Buttons/Buttons'
-import logo from '../../../assets/PackNestLogo.jpg'
 import CommonModal from '../../Shared/CommonModal';
 import TextInput from '../../Shared/TextInput';
 import { toast } from 'react-toastify'
@@ -14,18 +14,20 @@ function PackEditModal({ id, onClose, isOpen, mode }) {
     const [fieldErrors, setFieldErrors] = useState({});
 
     useEffect(() => {
-        const getPack = async () => {
-            try {
-                const response = await axios.get(`http://127.0.0.1:8000/api/pack/${id}`);
-                const packData = response.data;
-                setName(packData.name);
-                setDescription(packData.description);
-                setImg_url(packData.img_url);
-            } catch (err) {
-                console.log(err);
-            }
-        };
-        getPack();
+        if (mode === "edit") {
+            const getPack = async () => {
+                try {
+                    const response = await axios.get(`http://127.0.0.1:8000/api/pack/${id}`);
+                    const packData = response.data;
+                    setName(packData.name || "");
+                    setDescription(packData.description || "");
+                    setImg_url(packData.img_url || "");
+                } catch (err) {
+                    console.log(err);
+                }
+            };
+            getPack();
+        }
     }, [id]);
 
     const validateForm = () => {
@@ -43,6 +45,7 @@ function PackEditModal({ id, onClose, isOpen, mode }) {
         setError(null);
         setter(e.target.value);
     };
+
     const handleSubmit = async (e) => { // Make the function asynchronous
         e.preventDefault();
         // Validate the form first
@@ -77,9 +80,11 @@ function PackEditModal({ id, onClose, isOpen, mode }) {
             } else {
                 // handle other types of errors (like network errors) here
             }
+            console.log(err);
             setError(err.response?.data?.message || "An error occurred while submitting the data.");
         }
     }
+
     const handleDelete = async () => {
         try {
             const response = await axios.delete(`http://127.0.0.1:8000/api/pack/${id}`);
@@ -122,6 +127,9 @@ function PackEditModal({ id, onClose, isOpen, mode }) {
                 />
                 <div className="flex space-x-4">  {/* Container for buttons to provide spacing */}
                     <SubmitButton handleSubmit={handleSubmit} />
+                    <Link to={`/pack/${id}/instruments`}>
+                        <EditButton />
+                    </Link>
                     <DeleteButton handleDelete={handleDelete} />
                 </div>
             </div>

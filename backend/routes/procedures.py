@@ -3,7 +3,7 @@ from typing import List
 from sqlalchemy.orm import Session
 from config.database import get_db, SessionLocal
 from models.Procedure import Procedure as ProcedureModel
-from schemas.procedure_schemas import ProcedureCreate, ProcedureResponse
+from schemas.procedure_schemas import ProcedureCreate, ProcedureResponse, DeleteResponse
 from repositories.repositories import query_procedure_database, calculate_total_procedure_records, query_procedure_database_with_search, calculate_total_procedure_records_with_search
 from models.relationships.instruments_and_procedures import InstrumentsAndProcedures
 from models.relationships.packs_and_procedures import PacksAndProcedures
@@ -86,7 +86,7 @@ def update_procedure(procedure_id: int, procedure: ProcedureCreate, db: Session 
     return db_procedure
 
 #Delete a procedure
-@router.delete("/procedure/{procedure_id}", response_model=ProcedureResponse)
+@router.delete("/procedure/{procedure_id}", response_model=DeleteResponse)
 def delete_procedure(procedure_id: int, db: Session = Depends(get_db)):
     db_procedure = db.query(ProcedureModel).filter(ProcedureModel.id == procedure_id).first()
     if not db_procedure:
@@ -113,4 +113,4 @@ def delete_procedure(procedure_id: int, db: Session = Depends(get_db)):
         db.rollback()  # Explicitly rolling back in case of error
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
-    return db_procedure
+    return {"message": "Successfully deleted"}

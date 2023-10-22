@@ -3,7 +3,7 @@ from typing import List
 from sqlalchemy.orm import Session, joinedload, aliased
 from config.database import get_db, SessionLocal
 from models.Pack import Pack as PackModel
-from schemas.pack_schemas import PackCreate, PackResponse, PacksWithInstrumentsResponse
+from schemas.pack_schemas import PackCreate, PackResponse, PacksWithInstrumentsResponse, PackDelete
 from schemas.instrument_schemas import InstrumentResponse
 from repositories.repositories import query_pack_database, calculate_total_pack_records, query_pack_database_with_search, calculate_total_pack_records_with_search
 from models.relationships.packs_and_instruments import PacksAndInstruments
@@ -127,7 +127,7 @@ def update_pack(pack_id: int, pack: PackCreate, db: Session = Depends(get_db)):
     db.refresh(db_pack)
     return db_pack
 
-@router.delete("/pack/{pack_id}", response_model=PackResponse)
+@router.delete("/pack/{pack_id}", response_model=PackDelete)
 def delete_pack(pack_id: int, db: Session = Depends(get_db)):
     # Retrieve the pack
     db_pack = db.query(PackModel).filter(PackModel.id == pack_id).first()

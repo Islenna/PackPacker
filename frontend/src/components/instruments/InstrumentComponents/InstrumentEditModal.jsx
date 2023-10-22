@@ -108,12 +108,10 @@ function InstrumentEditModal({ id, onClose, isOpen, mode }) {
     const handleDelete = async () => {
         try {
             const response = await axios.delete(`http://127.0.0.1:8000/api/instrument/${id}`);
-            console.log(response.data); // Log the server response for debugging.
             toast.success(response.data.message);
             onClose();
         } catch (error) {
             console.error('An error occurred:', error);
-
             // Check if the error response is undefined or does not have a 'message' field.
             if (!error.response || !error.response.data || !error.response.data.message) {
                 // The request was made and the server responded with a status code

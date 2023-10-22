@@ -22,3 +22,5 @@ class ProcedureResponse(ProcedureBase):
 class ProcedureUpdate(ProcedureBase):
     pass
 
+class DeleteResponse(BaseModel):
+    message: str

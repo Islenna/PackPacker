@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import ProcedureForm from '../procedures/ProcedureForm';
-
+import ProcedureEditModal from './ProcedureComponents/ProcedureEditModal';
 import CommonTable from '../Shared/CommonTable';
 import usePagination from '../../hooks/usePagination';
 import useSearch from '../../hooks/useSearch';

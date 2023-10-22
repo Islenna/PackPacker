@@ -10,8 +10,7 @@ import Instruments from './components/instruments/Instruments'
 import Packs from './components/packs/Packs'
 import Procedure from './components/procedures/Procedure'
 import Procedures from './components/procedures/Procedures'
-import PacksAndInstruments from './components/views/PacksAndInstruments'
-
+import PacksAndInstruments from './components/packs/PacksAndInstruments';
 function App() {
   const [count, setCount] = useState(0)
 
