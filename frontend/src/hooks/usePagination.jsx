@@ -23,14 +23,20 @@ function usePagination(initialPage = 1, itemsPerPage = 10) {
     }
   };
 
+  const resetToFirstPage = () => {
+    setCurrentPage(1);
+  };
+  
   return {
     currentPage,
     totalPages,
     nextPage,
+    setCurrentPage,
     prevPage,
     onPageChange,
     setTotalItems,
-    totalItems
+    totalItems,
+    resetToFirstPage
   };
 }
 

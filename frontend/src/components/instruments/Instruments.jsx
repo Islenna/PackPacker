@@ -15,19 +15,23 @@ function Instruments() {
     //Edit vs Add mode for modal, and the modal's visibility.
     const [mode, setMode] = useState(null);
     const [modal, setModal] = useState(false);
-    
+
     //Pagination
     const {
         currentPage,
         totalPages,
         onPageChange,
         setTotalItems,
+        resetToFirstPage,
     } = usePagination(1, 10); // Initialize with default values
     const itemsPerPage = 10;
 
     //Search
-    const { handleSearch, searchTerm, filteredData } = useSearch(instruments, ['name', 'description', 'serial_number', 'manufacturer']);
-
+    const { handleSearch, searchTerm, filteredData } = useSearch(
+        instruments,
+        ['name', 'description', 'serial_number', 'manufacturer'],
+        resetToFirstPage
+    );
     const fetchInstruments = async () => {
         setIsLoading(true);
         try {
@@ -68,7 +72,7 @@ function Instruments() {
         handleModal('edit', instrument);
     };
 
-    
+
 
     return (
         <>

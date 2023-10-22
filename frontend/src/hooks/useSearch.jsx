@@ -1,8 +1,8 @@
 // Desc: Custom hook to filter data based on search term
 
-import { useState, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 
-function useSearch(data, searchKeys) {
+function useSearch(data, searchKeys, resetToFirstPage) {
     const [searchTerm, setSearchTerm] = useState('');
     
     const filteredData = useMemo(() => {
@@ -21,8 +21,20 @@ function useSearch(data, searchKeys) {
     }, [data, searchTerm, searchKeys]);
 
     const handleSearch = (value) => {
-        setSearchTerm(value);
+        // Check if the search term actually changes to prevent unnecessary reset.
+        if (value !== searchTerm) {
+            setSearchTerm(value);  // set the new search term.
+            if (resetToFirstPage) {
+                resetToFirstPage();  // Only reset pagination if there's a new search term.
+            }
+        }
     };
+    
+    useEffect(() => {
+        if (searchTerm !== '') { // Only reset to the first page if a search term is entered
+            resetToFirstPage();
+        }
+    }, [searchTerm, resetToFirstPage]); // Dependencies ensure this effect runs only when searchTerm or resetToFirstPage changes
 
     return { searchTerm, handleSearch, filteredData };
 }
