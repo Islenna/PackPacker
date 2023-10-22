@@ -34,3 +34,17 @@ def query_database_with_search(session: Session, offset: int, limit: int, search
 def calculate_total_records_with_search(session: Session, search: str):
     # Calculate the total number of records in the database
     return session.query(InstrumentModel).filter(InstrumentModel.name.like(f"%{search}%")).count()
+
+def query_pack_database_with_search(session: Session, offset: int, limit: int, search: str):
+    # Use the SQLAlchemy session to query the database
+    return session.query(PackModel)\
+        .filter(PackModel.name.ilike(f"%{search}%"))\
+        .offset(offset)\
+        .limit(limit)\
+        .all()
+
+def calculate_total_pack_records_with_search(session: Session, search: str):
+    # Calculate the total number of pack records in the database based on the search criterion.
+    return session.query(PackModel)\
+        .filter(PackModel.name.ilike(f"%{search}%"))\
+        .count()

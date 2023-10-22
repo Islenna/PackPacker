@@ -1,6 +1,10 @@
-import React from 'react'
+import React from 'react';
+import logo from '../../assets/PackNestLogo.jpg'; // make sure the path is correct
 
-function CommonModal({ isOpen, onClose, children, title }) {
+function CommonModal({ isOpen, onClose, children, title, img_url }) {
+    // Use the provided image URL or fall back to the default logo
+    const imageUrl = img_url || logo;
+
     return (
         <>
             <div className={isOpen ? "fixed inset-0 flex items-center justify-center z-50" : "hidden"}>
@@ -14,10 +18,20 @@ function CommonModal({ isOpen, onClose, children, title }) {
                             <span className="sr-only">Close modal</span>
                         </button>
                     </div>
+                    <div className="flex justify-center">
+                        {img_url ? (
+                            <a href={img_url} target="_blank" rel="noopener noreferrer" className="items-center mb-4 block">
+                                <img src={img_url} alt="Modal content" className="w-24 h-24 object-cover rounded-md shadow-md" />
+                            </a>
+                        ) : (
+                            <img src={logo} alt="Default logo" className="mb-4 w-24 h-24 object-cover rounded-md shadow-md" />
+                        )}
+                    </div>
                     {children} {/* Modal specific content will be rendered here */}
                 </div>
             </div>
         </>
     );
 }
-export default CommonModal
+
+export default CommonModal;
