@@ -5,6 +5,8 @@ from config.database import get_db, SessionLocal
 from models.Instrument import Instrument as InstrumentModel
 from schemas.instrument_schemas import InstrumentCreate, InstrumentResponse, MessageResponse
 from repositories.repositories import query_database, calculate_total_records
+from typing import Optional
+from repositories.repositories import query_database_with_search, calculate_total_records_with_search
 
 router = APIRouter()
 
@@ -43,20 +45,21 @@ def get_instruments(db: Session = Depends(get_db)):
 #Get paginated instruments. This is a GET request that returns a JSON object with a list of instruments, the current page, the total number of pages, and the total number of records.
 @router.get("/instruments/pages")
 async def get_paginated_instruments(
-    page: int = 1,  # Default page is 1
-    items_per_page: int = 10,  # Default items per page is 10
-    db: Session = Depends(get_db),  # Dependency injection to get the database session
+    page: int = 1,
+    items_per_page: int = 10,
+    search: Optional[str] = None,  # Add a search parameter
+    db: Session = Depends(get_db),
 ):
-    # Calculate offset based on page and items per page
     offset = (page - 1) * items_per_page
 
-    # Query the database for a specific range of records
-    instruments = query_database(db, offset, items_per_page)
+    # Modify your query to include the search logic if a search term is provided
+    if search:
+        instruments = query_database_with_search(db, offset, items_per_page, search)
+        total_records = calculate_total_records_with_search(db, search)
+    else:
+        instruments = query_database(db, offset, items_per_page)
+        total_records = calculate_total_records(db)
 
-    # Calculate the total number of records (total_records) for the query
-    total_records = calculate_total_records(db)
-
-    # Calculate the total number of pages (total_pages)
     total_pages = (total_records + items_per_page - 1) // items_per_page
 
     return {
@@ -65,6 +68,7 @@ async def get_paginated_instruments(
         "total_pages": total_pages,
         "total_records": total_records,
     }
+
 
 #Get a single instrument
 @router.get("/instrument/{instrument_id}", response_model=InstrumentResponse)

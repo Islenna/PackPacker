@@ -19,9 +19,10 @@ function CommonTable({
         <section className="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
             <div className="mx-auto max-w-screen-xl px-4 lg:px-12">
                 <div className="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
+                    <h1 className="text-2xl font-semibold">{title}</h1>
                     <div className="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
                         <div className="w-full md:w-1/2">
-                            <h1 className="text-2xl font-semibold">{title}</h1>
+                            <SearchBar onSearch={onSearch} className="mb-4" />
                         </div>
                         <button
                             onClick={onAdd ? onAdd : toggleModal}
@@ -45,7 +46,6 @@ function CommonTable({
                             </span>
                         </button>
                     </div>
-                    <SearchBar onSearch={onSearch} className="mb-4" />
                     <div className="table-container" style={{ width: '800px', height: '530px', overflowY: 'auto' }}>
                         <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">

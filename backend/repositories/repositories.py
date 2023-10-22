@@ -26,3 +26,11 @@ def query_procedure_database(session: Session, offset: int, limit: int):
 def calculate_total_procedure_records(session: Session):
     # Calculate the total number of records in the database
     return session.query(ProcedureModel).count()
+
+def query_database_with_search(session: Session, offset: int, limit: int, search: str):
+    # Use the SQLAlchemy session to query the database
+    return session.query(InstrumentModel).filter(InstrumentModel.name.like(f"%{search}%")).offset(offset).limit(limit).all()
+
+def calculate_total_records_with_search(session: Session, search: str):
+    # Calculate the total number of records in the database
+    return session.query(InstrumentModel).filter(InstrumentModel.name.like(f"%{search}%")).count()

@@ -26,12 +26,12 @@ function Instruments() {
     const itemsPerPage = 10;
 
     //Search
-    const { handleSearch, searchTerm } = useSearch();
-    
+    const { handleSearch, searchTerm, filteredData } = useSearch(instruments, ['name', 'description', 'serial_number', 'manufacturer']);
+
     const fetchInstruments = async () => {
         setIsLoading(true);
         try {
-            const res = await axios.get(`http://127.0.0.1:8000/api/instruments/pages?page=${currentPage}&items_per_page=${itemsPerPage}`);
+            const res = await axios.get(`http://127.0.0.1:8000/api/instruments/pages?page=${currentPage}&items_per_page=${itemsPerPage}&search=${searchTerm}`);
             setInstruments(res.data.instruments);
             setTotalItems(res.data.total_records);
             setTotals(res.data.total_records);
@@ -73,7 +73,7 @@ function Instruments() {
     return (
         <>
             <CommonTable
-                data={instruments}
+                data={filteredData}
                 columns={[
                     { key: 'name', header: 'Instrument Name' },
                     { key: 'description', header: 'Description' }
