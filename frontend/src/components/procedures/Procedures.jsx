@@ -4,8 +4,10 @@ import ProcedureEditModal from './ProcedureComponents/ProcedureEditModal';
 import CommonTable from '../Shared/CommonTable';
 import usePagination from '../../hooks/usePagination';
 import useSearch from '../../hooks/useSearch';
+import { useNavigate } from 'react-router-dom';
 
 function Procedures() {
+    const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(true);
 
     const [procedure, setProcedure] = useState(null);
@@ -50,9 +52,28 @@ function Procedures() {
     };
 
     const fetchProcedures = async () => {
+        const token = localStorage.getItem("usertoken");
+        if (!token) {
+            navigate("/");
+            return;
+        }
+        
         setIsLoading(true);
         try {
-            const res = await axios.get(`http://127.0.0.1:8000/api/procedures/pages?page=${currentPage}&items_per_page=${itemsPerPage}&search=${searchTerm}`);
+            const query = `page=${currentPage}&items_per_page=${itemsPerPage}`;
+            const url = searchTerm?.trim()
+                ? `http://127.0.0.1:8000/api/procedures/pages?${query}&search=${encodeURIComponent(searchTerm)}`
+                : `http://127.0.0.1:8000/api/procedures/pages?${query}`;
+
+            const res = await axios.get(url, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            if (res.status !== 200) {
+                throw new Error("Failed to fetch procedures");
+            }
+
             setProcedures(res.data.procedures);
             setTotalItems(res.data.total_records);
             setTotals(res.data.total_records);
@@ -61,6 +82,10 @@ function Procedures() {
             console.error("Error fetching procedures:", err);
             setError(err); // Set error for displaying error message
             setIsLoading(false);
+            if (err.response?.status === 401) {
+                localStorage.removeItem("usertoken");
+                navigate("/");
+            }
         }
     };
 

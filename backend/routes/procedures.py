@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends, status
+from fastapi import APIRouter, HTTPException, Depends, status, Query
 from typing import List
 from sqlalchemy.orm import Session
 from config.database import get_db, SessionLocal
@@ -10,7 +10,7 @@ from models.relationships.packs_and_procedures import PacksAndProcedures
 from models.Instrument import Instrument
 from models.Pack import Pack
 from utils.dependencies import get_current_user
-
+from typing import Optional
 
 router = APIRouter(
     prefix="/procedures",
@@ -38,20 +38,12 @@ def create_procedure(procedure: ProcedureCreate, db: Session = Depends(get_db)):
 def get_procedures(db: Session = Depends(get_db)):
     return db.query(ProcedureModel).all()
 
-#Get one procedure
-@router.get("/{procedure_id}", response_model=ProcedureResponse)
-def get_procedure(procedure_id: int, db: Session = Depends(get_db)):
-    db_procedure = db.query(ProcedureModel).filter(ProcedureModel.id == procedure_id).first()
-    if not db_procedure:
-        raise HTTPException(status_code = status.HTTP_404_NOT_FOUND, detail = "Procedure not found")
-    return db_procedure
-
 #Get all procedures with pagination and search
 @router.get("/pages")
 async def get_paginated_procedures(
     page: int = 1,
     items_per_page: int = 10,
-    search: str = None,  # Optional search string
+    search: Optional[str] = Query(default=""),  # Optional search string
     db: Session = Depends(get_db),
 ):
     # Calculate offset based on page number.
@@ -74,6 +66,14 @@ async def get_paginated_procedures(
         "total_pages": total_pages,
         "total_records": total_records,
     }
+
+#Get one procedure
+@router.get("/{procedure_id}", response_model=ProcedureResponse)
+def get_procedure(procedure_id: int, db: Session = Depends(get_db)):
+    db_procedure = db.query(ProcedureModel).filter(ProcedureModel.id == procedure_id).first()
+    if not db_procedure:
+        raise HTTPException(status_code = status.HTTP_404_NOT_FOUND, detail = "Procedure not found")
+    return db_procedure
 
 #Update a procedure
 @router.patch("/{procedure_id}", response_model=ProcedureResponse)

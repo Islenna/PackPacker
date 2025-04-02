@@ -24,12 +24,13 @@ function Log({ toggleForm }) {
 
         axios.post('http://localhost:8000/api/user/login', payload, { withCredentials: true })
             .then((res) => {
-                if (res.data && res.data.token) {
-                    document.cookie = `usertoken=${res.data.token};path=/;`;
-                    login(res.data.user.email); // Set user's email
+                if (res.data && res.data.access_token) {
+                    localStorage.setItem("usertoken", res.data.access_token);
+                    
                     navigate('/procedures');
                 }
             })
+
             .catch((err) => {
                 console.log(err);
                 setErrorMessage('Incorrect username or password');

@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 from config.database import Base, engine
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 
 #models
@@ -25,7 +24,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-security = HTTPBearer()
 
 
 
