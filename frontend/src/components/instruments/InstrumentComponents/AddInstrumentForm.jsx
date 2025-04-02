@@ -3,6 +3,7 @@ import axios from 'axios'
 import Pagination from '../../Shared/Pagination'
 import { useParams } from 'react-router-dom'
 import { SubmitButton } from '../../Buttons/Buttons'
+import { toast } from 'react-toastify'
 
 function AddInstrumentForm({ onClose, type }) {
     const { id } = useParams();
@@ -82,11 +83,13 @@ function AddInstrumentForm({ onClose, type }) {
                 });
                 console.log('Selected instrument IDs for Packs:', selectedInstruments);
                 console.log('Response:', res);
+                toast.success(res.data.message);
             } else if (type === 'procedure') {
                 // Handle bulk commit for Procedures
                 const res = await axios.post(`http://127.0.0.1:8000/api/procedure/${id}/add-instruments`, {
                     instruments: selectedInstruments,
                 });
+                toast.success(res.data.message);
                 console.log('Selected instrument IDs for Procedures:', selectedInstruments);
                 console.log('Response:', res);
             }

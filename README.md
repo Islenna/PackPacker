@@ -40,6 +40,7 @@ Pack Packer is a web application that allows users to create and manage three ta
     > cd frontend
     > npm install
 
+poetry run uvicorn main:app --reload
 
 ### Configuration
 
