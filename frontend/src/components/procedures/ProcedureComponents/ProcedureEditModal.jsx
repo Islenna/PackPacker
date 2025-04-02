@@ -71,14 +71,11 @@ function ProcedureEditModal({ id, onClose, isOpen, mode }) {
             toast.success("Procedure saved successfully.");
             onClose();
 
-        } catch (err) { // Change 'error' to 'err' here
-            if (err.response && err.response.status === 422) { // Corrected 'error' to 'err' here
+        } catch (err) {
+            if (err.response && err.response.status === 422) {
                 const errors = err.response.data.errors;
-                // 'errors' will contain validation messages from the server, you might need to adapt this line depending on the actual structure of your server response
-                // Now, set these error messages in your component's state to display them
-                setFieldErrors(errors); // assuming your state and server response have matching keys
+                setFieldErrors(errors); 
             } else {
-                // handle other types of errors (like network errors) here
             }
             setError(err.response?.data?.message || "An error occurred while submitting the data.");
         }
@@ -91,10 +88,7 @@ function ProcedureEditModal({ id, onClose, isOpen, mode }) {
             onClose();
         } catch (error) {
             console.error('An error occurred:', error);
-            // Check if the error response is undefined or does not have a 'message' field.
             if (!error.response || !error.response.data || !error.response.data.message) {
-                // The request was made and the server responded with a status code
-                // that falls out of the range of 2xx, or no response was received, or there's no 'message' field.
                 toast.error('An unexpected error occurred. Please check your network connection or contact support.');
             } else {
                 toast.error(error.response.data.message);
@@ -105,7 +99,7 @@ function ProcedureEditModal({ id, onClose, isOpen, mode }) {
         <form onSubmit={handleSubmit}>
             <div className="grid gap-4 sm:grid-cols-2">
                 <TextInput
-                    label="Procedure Name" // Change fields accordingly
+                    label="Procedure Name"
                     name="Name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
@@ -114,7 +108,7 @@ function ProcedureEditModal({ id, onClose, isOpen, mode }) {
                 />
                 <TextInput
                     asTextarea
-                    label="Description"  // Since it's a textarea, adding a label makes sense here too
+                    label="Description"  
                     name="description"
                     value={description}
                     onChange={handleChange(setDescription)}
@@ -137,7 +131,7 @@ function ProcedureEditModal({ id, onClose, isOpen, mode }) {
             <CommonModal
                 isOpen={isOpen}
                 onClose={onClose}
-                title="Edit Pack" // You can customize this per modal instance
+                title="Edit Pack"
             >
                 {error && <div className="alert alert-danger">{error}</div>}
                 {modalContent}
