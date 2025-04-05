@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+import axiosInstance from '../../../utils/axiosInstance';
 import { SubmitButton, DeleteButton } from '../../Buttons/Buttons'
 import { toast } from 'react-toastify'
 
@@ -10,7 +10,7 @@ function PackEditInstrumentModal({ parentId, instrument, onClose }) {
     const changeQuantity = async (e) => {
         e.preventDefault();
         try {
-            await axios.put(`http://127.0.0.1:8000/api/pack/${parentId}/update-instrument/${instrument.id}?quantity=${quantity}`);
+            await axios.put(`http://localhost:8000/api/pack/${parentId}/update-instrument/${instrument.id}?quantity=${quantity}`);
             onClose();
 
         } catch (error) {
@@ -19,7 +19,7 @@ function PackEditInstrumentModal({ parentId, instrument, onClose }) {
     }
     const handleDelete = async () => {
         try {
-            await axios.delete(`http://127.0.0.1:8000/api/pack/${parentId}/delete-instrument/${instrument.id}`);
+            await axios.delete(`http://localhost:8000/api/pack/${parentId}/delete-instrument/${instrument.id}`);
             toast.success(response.data.message);
             onClose();
         } catch (error) {

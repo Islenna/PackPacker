@@ -8,11 +8,16 @@ from schemas.instrument_schemas import InstrumentResponse
 from repositories.repositories import query_pack_database, calculate_total_pack_records, query_pack_database_with_search, calculate_total_pack_records_with_search
 from models.relationships.packs_and_instruments import PacksAndInstruments
 from models.Instrument import Instrument
+from utils.dependencies import get_current_user
 
-router = APIRouter()
+router = APIRouter(
+    prefix="/packs",
+    tags=["Packs"],
+    dependencies=[Depends(get_current_user)],  # Ensure user is authenticated for all endpoints in this router
+)
 
 #Create a new pack
-@router.post("/pack/new", response_model=PackResponse, status_code=status.HTTP_201_CREATED)
+@router.post("/new", response_model=PackResponse, status_code=status.HTTP_201_CREATED)
 def create_pack(pack: PackCreate, db: Session = Depends(get_db)):
     # Check if the pack name already exists
     existing_pack = db.query(PackModel).filter_by(name=pack.name).first()
@@ -32,7 +37,7 @@ def create_pack(pack: PackCreate, db: Session = Depends(get_db)):
 
 
 # Get a pack and its instruments
-@router.get("/pack/{pack_id}", response_model=PacksWithInstrumentsResponse)
+@router.get("/{pack_id}", response_model=PacksWithInstrumentsResponse)
 def get_pack(pack_id: int, db: Session = Depends(get_db)):
 
     db_pack = (
@@ -82,11 +87,11 @@ def get_pack(pack_id: int, db: Session = Depends(get_db)):
     return pack_response
 
 #Get all packs
-@router.get("/packs", response_model=List[PackResponse])
+@router.get("/", response_model=List[PackResponse])
 def get_packs(db: Session = Depends(get_db)):
     return db.query(PackModel).all()
 
-@router.get("/packs/pages")
+@router.get("/pages")
 async def get_paginated_packs(
     page: int = 1,
     items_per_page: int = 10,
@@ -116,7 +121,7 @@ async def get_paginated_packs(
 
 
 #Update a pack
-@router.patch("/pack/{pack_id}", response_model=PackResponse)
+@router.patch("/{pack_id}", response_model=PackResponse)
 def update_pack(pack_id: int, pack: PackCreate, db: Session = Depends(get_db)):
     db_pack = db.query(PackModel).filter(PackModel.id == pack_id).first()
     if not db_pack:
@@ -127,7 +132,7 @@ def update_pack(pack_id: int, pack: PackCreate, db: Session = Depends(get_db)):
     db.refresh(db_pack)
     return db_pack
 
-@router.delete("/pack/{pack_id}", response_model=PackDelete)
+@router.delete("/{pack_id}", response_model=PackDelete)
 def delete_pack(pack_id: int, db: Session = Depends(get_db)):
     # Retrieve the pack
     db_pack = db.query(PackModel).filter(PackModel.id == pack_id).first()

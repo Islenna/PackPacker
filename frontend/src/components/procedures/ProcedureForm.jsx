@@ -1,28 +1,52 @@
 // ProcedureForm.jsx
 import React, { useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../../utils/axiosInstance';
 import { SubmitButton } from '../Buttons/Buttons';
 
 function ProcedureForm({ onClose }) {
+
+    console.log("🔍 axiosInstance in ProcedureForm is:", axiosInstance);
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
+    const token = localStorage.getItem("usertoken");
+    const [ready, setReady] = useState(false);
+    console.log("🔍 Ready state in ProcedureForm is:", ready);
+    console.log("🔍 Token in ProcedureForm is:", token)
+        ;
+
+    useEffect(() => {
+        const token = localStorage.getItem("usertoken");
+        if (token) {
+            console.log("✅ Token ready in useEffect:", token);
+            setReady(true);
+        } else {
+            console.warn("⏳ Waiting for token...");
+        }
+    }, []);
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        console.log("📤 handleSubmit triggered");
+
+        const token = localStorage.getItem("usertoken");
+        if (!token) {
+            console.error("⛔ Cannot submit without token.");
+            return;
+        }
+
         try {
-            await axios.post('http://127.0.0.1:8000/api/procedure/new', {
+            await axiosInstance.post('/procedures/new', {
                 name,
                 description,
             });
-
-            // Clear form fields and close the modal
-            setName('');
-            setDescription('');
-            onClose(); // Close the modal using passed function
+            console.log("✅ Procedure created");
+            onClose();
         } catch (err) {
-            console.log(err);
+            console.error("❌ Submission error:", err);
         }
     };
+
 
     return (
         <>
@@ -46,7 +70,7 @@ function ProcedureForm({ onClose }) {
                                     </button>
                                 </div>
                                 {/* <!-- Modal body --> */}
-                                <form action="#">
+                                <form onSubmit={handleSubmit}>
                                     <div className="grid gap-4 mb-4 sm:grid-cols-2">
                                         <div>
                                             <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name</label>
@@ -62,7 +86,8 @@ function ProcedureForm({ onClose }) {
                                             ></textarea>
                                         </div>
                                     </div>
-                                    <SubmitButton handleSubmit={handleSubmit} />
+                                    <button type="submit">Temp Submit</button>
+                                    <SubmitButton />
                                 </form>
                             </div>
                         </div>

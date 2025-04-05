@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from '../../../utils/axiosInstance';
 import { Link } from 'react-router-dom';
 import { SubmitButton, EditButton, DeleteButton } from '../../Buttons/Buttons';
 import { toast } from 'react-toastify'
@@ -18,7 +18,7 @@ function ProcedureEditModal({ id, onClose, isOpen, mode }) {
 
             const getProcedure = async () => {
                 try {
-                    const response = await axios.get(`http://127.0.0.1:8000/api/procedure/${id}`);
+                    const response = await axios.get(`http://localhost:8000/api/procedures/${id}`);
                     const procedureData = response.data;
                     setName(procedureData.name);
                     setDescription(procedureData.description);
@@ -54,13 +54,13 @@ function ProcedureEditModal({ id, onClose, isOpen, mode }) {
         }
         // Depending on the mode, choose the appropriate URL and HTTP method
         const url = mode === "edit" ?
-            `http://127.0.0.1:8000/api/procedure/${id}` :
-            'http://127.0.0.1:8000/api/procedure/new';
+            `http://localhost:8000/api/procedures/${id}` :
+            'http://localhost:8000/api/procedures/new';
 
         const method = mode === "edit" ? 'patch' : 'post';
 
         try {
-            const response = await axios({
+            const response = await axiosInstance({
                 method: method,
                 url: url,
                 data: {
@@ -83,7 +83,7 @@ function ProcedureEditModal({ id, onClose, isOpen, mode }) {
 
     const handleDelete = async () => {
         try {
-            const response = await axios.delete(`http://127.0.0.1:8000/api/procedure/${id}`);
+            const response = await axios.delete(`http://localhost:8000/api/procedures/${id}`);
             toast.success(response.data.message);
             onClose();
         } catch (error) {
@@ -117,7 +117,7 @@ function ProcedureEditModal({ id, onClose, isOpen, mode }) {
                 />
                 <div className="flex space-x-4">  {/* Container for buttons to provide spacing */}
                     <SubmitButton handleSubmit={handleSubmit} />
-                    <Link to={`/procedure/${id}`}>
+                    <Link to={`/procedures/${id}`}>
                         <EditButton />
                     </Link>
                     <DeleteButton handleDelete={handleDelete} />

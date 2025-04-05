@@ -1,5 +1,5 @@
 import React from 'react'
-import axios from 'axios'
+import axiosInstance from '../../../utils/axiosInstance';
 import { DeleteButton } from '../../Buttons/Buttons';
 import { toast } from 'react-toastify'
 
@@ -7,7 +7,7 @@ function ProcedureEditPackModal({parentId, pack, onClose}) {
 
     const handleDelete = async () => {
         try {
-            await axios.delete(`http://127.0.0.1:8000/api/procedure/${parentId}/delete-pack/${pack.id}`);
+            await axios.delete(`http://localhost:8000/api/procedures/${parentId}/delete-pack/${pack.id}`);
             toast.success(response.data.message);
             onClose();
         }

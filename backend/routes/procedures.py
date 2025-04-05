@@ -11,27 +11,38 @@ from models.Instrument import Instrument
 from models.Pack import Pack
 from utils.dependencies import get_current_user
 from typing import Optional
+from models.User import User as UserModel
+
 
 router = APIRouter(
     prefix="/procedures",
     tags=["Procedures"],
-    dependencies=[Depends(get_current_user)],  # Ensure user is authenticated for all endpoints in this router
 )
-
-#Create a new procedure
-@router.post("/new", response_model=ProcedureResponse, status_code = status.HTTP_201_CREATED)
-def create_procedure(procedure: ProcedureCreate, db: Session = Depends(get_db)):
-    #Check if the procedure name already exists
-    existing_procedure = db.query(ProcedureModel).filter_by(name = procedure.name).first()
+@router.post("/new", response_model=ProcedureResponse, status_code=status.HTTP_201_CREATED)
+def create_procedure(
+    procedure: ProcedureCreate,
+    db: Session = Depends(get_db),
+    user: UserModel = Depends(get_current_user),
+):
+    print("✅ Route was hit!")
+    print("🧪 Authenticated user:", user.email)
+    existing_procedure = db.query(ProcedureModel).filter_by(name=procedure.name).first()
     if existing_procedure:
-        raise HTTPException(status_code = status.HTTP_400_BAD_REQUEST, detail = "Procedure with this name already exists")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Procedure with this name already exists"
+        )
     
-    db_procedure = ProcedureModel(name = procedure.name, description = procedure.description)
+    db_procedure = ProcedureModel(name=procedure.name, description=procedure.description)
     db.add(db_procedure)
     db.commit()
     db.refresh(db_procedure)
 
     return db_procedure
+
+@router.get("/me")
+def read_users_me(user: UserModel = Depends(get_current_user)):
+    return {"email": user.email}
 
 #Get all procedures
 @router.get("/", response_model=List[ProcedureResponse])

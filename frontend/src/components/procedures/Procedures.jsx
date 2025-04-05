@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from '../../utils/axiosInstance';
 import ProcedureEditModal from './ProcedureComponents/ProcedureEditModal';
 import CommonTable from '../Shared/CommonTable';
 import usePagination from '../../hooks/usePagination';
@@ -62,10 +62,10 @@ function Procedures() {
         try {
             const query = `page=${currentPage}&items_per_page=${itemsPerPage}`;
             const url = searchTerm?.trim()
-                ? `http://127.0.0.1:8000/api/procedures/pages?${query}&search=${encodeURIComponent(searchTerm)}`
-                : `http://127.0.0.1:8000/api/procedures/pages?${query}`;
+                ? `http://localhost:8000/api/procedures/pages?${query}&search=${encodeURIComponent(searchTerm)}`
+                : `http://localhost:8000/api/procedures/pages?${query}`;
 
-            const res = await axios.get(url, {
+            const res = await axiosInstance.get(url, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }

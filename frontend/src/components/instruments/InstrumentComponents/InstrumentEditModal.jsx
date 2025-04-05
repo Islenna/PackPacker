@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+import axiosInstance from '../../../utils/axiosInstance';
 import TextInput from '../../Shared/TextInput'
 import CommonModal from '../../Shared/CommonModal'
 import { SubmitButton, DeleteButton } from '../../Buttons/Buttons'
@@ -17,7 +17,7 @@ function InstrumentEditModal({ id, onClose, isOpen, mode }) {
 
     useEffect(() => {
         if (mode === "edit") {
-            axios.get(`http://127.0.0.1:8000/api/instrument/${id}`)
+            axiosinstanceget(`http://localhost:8000/api/instrument/${id}`)
                 .then((res) => {
                     setName(res.data.name || "")
                     setOnHand(res.data.onHand || "")
@@ -64,8 +64,8 @@ function InstrumentEditModal({ id, onClose, isOpen, mode }) {
         }
         // Depending on the mode, choose the appropriate URL and HTTP method
         const url = mode === "edit" ?
-            `http://127.0.0.1:8000/api/instrument/${id}` :
-            'http://127.0.0.1:8000/api/instrument/new';
+            `http://localhost:8000/api/instrument/${id}` :
+            'http://localhost:8000/api/instrument/new';
 
         const method = mode === "edit" ? 'patch' : 'post';
 
@@ -107,7 +107,7 @@ function InstrumentEditModal({ id, onClose, isOpen, mode }) {
 
     const handleDelete = async () => {
         try {
-            const response = await axios.delete(`http://127.0.0.1:8000/api/instrument/${id}`);
+            const response = await axiosinstance.delete(`http://localhost:8000/api/instrument/${id}`);
             toast.success(response.data.message);
             onClose();
         } catch (error) {

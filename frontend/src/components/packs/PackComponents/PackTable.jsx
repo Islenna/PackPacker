@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import axios from 'axios'
+import axiosInstance from '../../../utils/axiosInstance';
 import { useParams } from 'react-router-dom'
 import AddPackForm from './AddPackForm'
 import ProcedureEditPackModal from '../../procedures/ProcedureComponents/ProcedureEditPackModal'

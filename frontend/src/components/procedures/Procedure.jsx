@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from '../../utils/axiosInstance';
 import { useParams, Link } from 'react-router-dom';
 import InstrumentTable from '../instruments/InstrumentComponents/InstrumentTable';
 import PackTable from '../packs/PackComponents/PackTable';
@@ -14,7 +14,7 @@ function Procedure() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await axios.get(`http://127.0.0.1:8000/api/procedure/${id}/get-equipment`);
+                const res = await axiosInstance.get(`http://localhost:8000/api/procedures/${id}/get-equipment`);
                 setProcedure(res.data.procedure);
                 setEquipment(res.data);
             } catch (err) {

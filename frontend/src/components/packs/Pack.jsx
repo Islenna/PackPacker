@@ -1,5 +1,5 @@
 import React, { useState, useEffect }from 'react'
-import axios from 'axios'
+import axiosInstance from '../../utils/axiosInstance';
 import { useParams, Link } from 'react-router-dom'
 
 function Pack() {
@@ -8,7 +8,7 @@ function Pack() {
     useEffect (() => {
         const fetchData = async () => {
             try {
-                const res = await axios.get(`http://127.0.0.1:8000/api/pack/${id}`);
+                const res = await axios.get(`http://localhost:8000/api/pack/${id}`);
                 setPack(res.data.pack);
             } catch (err) {
                 console.log(err);

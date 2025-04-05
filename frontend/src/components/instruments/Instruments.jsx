@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from '../../utils/axiosInstance';
 import InstrumentEditModal from '../instruments/InstrumentComponents/InstrumentEditModal';
 import CommonTable from '../Shared/CommonTable';
 import usePagination from '../../hooks/usePagination';
@@ -35,7 +35,7 @@ function Instruments() {
     const fetchInstruments = async () => {
         setIsLoading(true);
         try {
-            const res = await axios.get(`http://127.0.0.1:8000/api/instruments/pages?page=${currentPage}&items_per_page=${itemsPerPage}&search=${searchTerm}`);
+            const res = await axios.get(`http://localhost:8000/api/instruments/pages?page=${currentPage}&items_per_page=${itemsPerPage}&search=${searchTerm}`);
             setInstruments(res.data.instruments);
             setTotalItems(res.data.total_records);
             setTotals(res.data.total_records);

@@ -17,7 +17,7 @@ from typing import List
 router = APIRouter()
 
 # Route to add an instrument to a procedure
-@router.post("/procedure/{procedure_id}/add-instrument/{instrument_id}")
+@router.post("/procedures/{procedure_id}/add-instrument/{instrument_id}")
 def add_instrument_to_procedure(
     procedure_id: int, instrument_id: int, db: Session = Depends(get_db)
 ):
@@ -33,7 +33,7 @@ def add_instrument_to_procedure(
     return {"message": "Procedure or instrument not found"}
 
 # Route to add a pack to a procedure (similar to add-instrument)
-@router.post("/procedure/{procedure_id}/add-pack/{pack_id}")
+@router.post("/procedures/{procedure_id}/add-pack/{pack_id}")
 def add_pack_to_procedure(
     procedure_id: int, pack_id: int, db: Session = Depends(get_db)
 ):
@@ -49,7 +49,7 @@ def add_pack_to_procedure(
     return {"message": "Procedure or pack not found"}
 
 # Route to get all packs and instruments for a procedure
-@router.get("/procedure/{procedure_id}/get-equipment")
+@router.get("/procedures/{procedure_id}/get-equipment")
 def get_PacksAndInstruments_for_procedure(
     procedure_id: int, db: Session = Depends(get_db)
 ):
@@ -103,7 +103,7 @@ def get_PacksAndInstruments_for_procedure(
     return {"message": "Procedure not found"}
 
 #Delete an instrument from a procedure:
-@router.delete("/procedure/{procedure_id}/delete-instrument/{instrument_id}")
+@router.delete("/procedures/{procedure_id}/delete-instrument/{instrument_id}")
 def delete_instrument_from_procedure(
     procedure_id: int, instrument_id: int, db: Session = Depends(get_db)
 ):
@@ -180,7 +180,7 @@ def bulk_add_instruments_to_pack(
 
 
 #Bulk Add Instruments to Procedure
-@router.post("/procedure/{procedure_id}/add-instruments", response_model=ProcedureResponse)
+@router.post("/procedures/{procedure_id}/add-instruments", response_model=ProcedureResponse)
 def bulk_add_instruments_to_procedure(
     procedure_id: int,
     request_data: BulkAddInstrumentsRequest,  # Use the Pydantic model
@@ -217,7 +217,7 @@ def bulk_add_instruments_to_procedure(
         
 }
 # Bulk Add Packs to Procedure
-@router.post("/procedure/{procedure_id}/add-packs", response_model=ProcedureResponse)
+@router.post("/procedures/{procedure_id}/add-packs", response_model=ProcedureResponse)
 def bulk_add_packs_to_procedure(
     procedure_id: int,
     request_data: BulkAddPackRequest,  # Use the Pydantic model for the request
@@ -272,7 +272,7 @@ def delete_instrument_from_pack(
     return {"message": "Pack or instrument not found"}
 
 #Remove a pack from a procedure
-@router.delete("/procedure/{procedure_id}/delete-pack/{pack_id}")
+@router.delete("/procedures/{procedure_id}/delete-pack/{pack_id}")
 def delete_pack_from_procedure(
     procedure_id: int, pack_id: int, db: Session = Depends(get_db)
 ):
@@ -317,7 +317,7 @@ def update_quantity_of_instrument_in_pack(
             raise HTTPException(status_code=404, detail="Pack or instrument not found")
 
 #Update the quantity of an instrument in a procedure
-@router.put("/procedure/{procedure_id}/update-instrument/{instrument_id}")
+@router.put("/procedures/{procedure_id}/update-instrument/{instrument_id}")
 def update_quantity_of_instrument_in_procedure(
     procedure_id: int,
     instrument_id: int,

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from '../../utils/axiosInstance';
 import PackEditModal from '../packs/PackComponents/PackEditModal';
 import CommonTable from '../Shared/CommonTable';
 import usePagination from '../../hooks/usePagination';
@@ -33,7 +33,7 @@ function Packs() {
     const fetchPacks = async () => {
         setIsLoading(true);
         try {
-            const res = await axios.get(`http://127.0.0.1:8000/api/packs/pages?page=${currentPage}&items_per_page=${itemsPerPage}&search=${searchTerm}`);
+            const res = await axios.get(`http://localhost:8000/api/packs/pages?page=${currentPage}&items_per_page=${itemsPerPage}&search=${searchTerm}`);
             setPacks(res.data.packs);
             setTotalItems(res.data.total_records);
             setTotals(res.data.total_records);

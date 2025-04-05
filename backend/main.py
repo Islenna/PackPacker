@@ -1,6 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from config.database import Base, engine
 from fastapi.middleware.cors import CORSMiddleware
+
 
 
 #models
@@ -13,19 +14,33 @@ from models.Procedure import Procedure
 #Create tables
 Base.metadata.create_all(bind=engine)
 
-
+# Initialize app
 app = FastAPI()
 
+# Logging Middleware — fully inside the function
+@app.middleware("http")
+async def log_headers(request: Request, call_next):
+    print("📥 Incoming request headers:")
+    for k, v in request.headers.items():
+        print(f"{k}: {v}")
+
+    print("🔍 Raw headers list:", request.headers.raw)
+    
+    if "authorization" not in request.headers:
+        print("❗ Authorization header missing from request.headers")
+    
+    response = await call_next(request)
+    return response
+
+
+# CORS config
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Change this to your frontend's URL in production
-    allow_credentials=True,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=False,
     allow_methods=["*"],
-    allow_headers=["*"],
+    allow_headers=["Authorization"]
 )
-
-
-
 
 # *** ROUTE IMPORTS*** #
 

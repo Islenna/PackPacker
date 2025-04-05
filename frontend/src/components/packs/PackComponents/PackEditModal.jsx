@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosinstance from '../../../utils/axiosInstance';
 import { Link } from 'react-router-dom';
 import { SubmitButton, EditButton, DeleteButton } from '../../Buttons/Buttons'
 import CommonModal from '../../Shared/CommonModal';
@@ -17,7 +17,7 @@ function PackEditModal({ id, onClose, isOpen, mode }) {
         if (mode === "edit") {
             const getPack = async () => {
                 try {
-                    const response = await axios.get(`http://127.0.0.1:8000/api/pack/${id}`);
+                    const response = await axios.get(`http://localhost:8000/api/pack/${id}`);
                     const packData = response.data;
                     setName(packData.name || "");
                     setDescription(packData.description || "");
@@ -54,8 +54,8 @@ function PackEditModal({ id, onClose, isOpen, mode }) {
         }
         // Depending on the mode, choose the appropriate URL and HTTP method
         const url = mode === "edit" ?
-            `http://127.0.0.1:8000/api/pack/${id}` :
-            'http://127.0.0.1:8000/api/pack/new';
+            `http://localhost:8000/api/pack/${id}` :
+            'http://localhost:8000/api/pack/new';
 
         const method = mode === "edit" ? 'patch' : 'post';
 
@@ -87,7 +87,7 @@ function PackEditModal({ id, onClose, isOpen, mode }) {
 
     const handleDelete = async () => {
         try {
-            const response = await axios.delete(`http://127.0.0.1:8000/api/pack/${id}`);
+            const response = await axios.delete(`http://localhost:8000/api/pack/${id}`);
             console.log(response.data); // Log the server response for debugging.
             toast.success(response.data.message);
             onClose();

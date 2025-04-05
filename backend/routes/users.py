@@ -25,7 +25,7 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
     access_token = create_access_token(
         data={"sub": new_user.email},
         expires_delta=timedelta(minutes=60)
-    )
+)
 
     return {
         "access_token": access_token,
@@ -44,11 +44,11 @@ def login_user(user: UserCreate, db: Session = Depends(get_db)):
 
     if not db_user or not verify_password(user.password, db_user.password):
         raise HTTPException(status_code=401, detail="Invalid credentials")
-
+    
     access_token = create_access_token(
         data={"sub": db_user.email},
         expires_delta=timedelta(minutes=60)
-    )
+)
 
     return {
         "access_token": access_token,

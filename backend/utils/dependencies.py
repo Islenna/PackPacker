@@ -1,36 +1,37 @@
 from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 from config.database import get_db
-from models.User import User
+from models.User import User as UserModel
 from utils.auth import SECRET_KEY, ALGORITHM
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/user/login")
+bearer_scheme = HTTPBearer(auto_error=False) 
+def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme), db: Session = Depends(get_db)):
+    print("🔑 Credentials:", credentials)
+    if not credentials:
+        print("❌ No credentials")
+        raise HTTPException(status_code=403)
 
-
-# This function will be used to get the current user from the token
-# and verify if the token is valid
-# The token will be passed in the header of the request
-# and will be used to get the user from the database
-# The user will be returned if the token is valid
-def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
-
+    if credentials.scheme.lower() != "bearer":
+        print("❌ Wrong auth scheme:", credentials.scheme)
+        raise HTTPException(status_code=403)
+#Ste
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        email: str = payload.get("sub")
-        if email is None:
-            raise credentials_exception
-    except JWTError:
-        raise credentials_exception
+        payload = jwt.decode(credentials.credentials, SECRET_KEY, algorithms=[ALGORITHM])
+        print("🧠 Token payload:", payload)
+        email = payload.get("sub")
+        if not email:
+            print("❌ No sub in payload")
+            raise HTTPException(status_code=403)
+    except JWTError as e:
+        print("❌ JWT error:", e)
+        raise HTTPException(status_code=403)
 
-    user = db.query(User).filter(User.email == email).first()
+    user = db.query(UserModel).filter(UserModel.email == email).first()
+    print("🧍 Found user:", user)
     if user is None:
-        raise credentials_exception
+        print("❌ No user in DB")
+        raise HTTPException(status_code=403)
 
     return user

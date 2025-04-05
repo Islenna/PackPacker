@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+import axiosInstance from '../../utils/axiosInstance';
 import { useParams } from 'react-router-dom'
 import InstrumentTable from '../instruments/InstrumentComponents/InstrumentTable'
 
@@ -13,7 +13,7 @@ function PacksAndInstruments() {
     useEffect(() => {
         const getPack = async () => {
             try {
-                const response = await axios.get(`http://127.0.0.1:8000/api/pack/${id}`)
+                const response = await axios.get(`http://localhost:8000/api/pack/${id}`)
                 const packData = response.data
                 setPack(packData)
                 setInstruments(packData.instruments)
