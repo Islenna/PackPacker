@@ -4,6 +4,7 @@ import PackEditModal from '../packs/PackComponents/PackEditModal';
 import CommonTable from '../Shared/CommonTable';
 import usePagination from '../../hooks/usePagination';
 import useSearch from '../../hooks/useSearch';
+import { buildPaginatedUrl } from '../../utils/urlHelpers';
 
 function Packs() {
     const [isLoading, setIsLoading] = useState(true);
@@ -33,14 +34,16 @@ function Packs() {
     const fetchPacks = async () => {
         setIsLoading(true);
         try {
-            const res = await axios.get(`http://localhost:8000/api/packs/pages?page=${currentPage}&items_per_page=${itemsPerPage}&search=${searchTerm}`);
+            const url = buildPaginatedUrl('/packs/pages', currentPage, itemsPerPage, searchTerm);
+            const res = await axiosInstance.get(url);
+    
             setPacks(res.data.packs);
             setTotalItems(res.data.total_records);
             setTotals(res.data.total_records);
             setIsLoading(false);
         } catch (err) {
             console.error("Error fetching packs:", err);
-            setError(err); // Set error for displaying error message
+            setError(err);
             setIsLoading(false);
         }
     };

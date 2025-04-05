@@ -18,7 +18,7 @@ function ProcedureEditModal({ id, onClose, isOpen, mode }) {
 
             const getProcedure = async () => {
                 try {
-                    const response = await axios.get(`http://localhost:8000/api/procedures/${id}`);
+                    const response = await axiosInstance.get(`http://localhost:8000/api/procedures/${id}`);
                     const procedureData = response.data;
                     setName(procedureData.name);
                     setDescription(procedureData.description);
@@ -83,7 +83,7 @@ function ProcedureEditModal({ id, onClose, isOpen, mode }) {
 
     const handleDelete = async () => {
         try {
-            const response = await axios.delete(`http://localhost:8000/api/procedures/${id}`);
+            const response = await axiosInstance.delete(`/procedures/${id}`);
             toast.success(response.data.message);
             onClose();
         } catch (error) {

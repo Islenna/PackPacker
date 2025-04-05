@@ -1,5 +1,5 @@
-from fastapi import APIRouter, HTTPException, Depends, status
-from typing import List
+from fastapi import APIRouter, HTTPException, Depends, status, Query
+from typing import List, Optional
 from sqlalchemy.orm import Session, joinedload, aliased
 from config.database import get_db, SessionLocal
 from models.Pack import Pack as PackModel
@@ -35,6 +35,35 @@ def create_pack(pack: PackCreate, db: Session = Depends(get_db)):
 
     return db_pack
 
+
+@router.get("/pages")
+async def get_paginated_packs(
+    page: int = Query(1, ge=1),
+    items_per_page: int = Query(10, ge=1),
+    search: Optional[str] = Query(""),
+    db: Session = Depends(get_db),
+):
+
+    # Calculate offset based on page number.
+    offset = (page - 1) * items_per_page
+
+    # Depending on whether a search term was provided, we will use different query functions.
+    if search:
+        packs = query_pack_database_with_search(db, offset, items_per_page, search)
+        total_records = calculate_total_pack_records_with_search(db, search)
+    else:
+        packs = query_pack_database(db, offset, items_per_page)
+        total_records = calculate_total_pack_records(db)
+
+    # Calculate the total number of pages.
+    total_pages = (total_records + items_per_page - 1) // items_per_page
+
+    return {
+        "packs": packs,
+        "page": page,
+        "total_pages": total_pages,
+        "total_records": total_records,
+    }
 
 # Get a pack and its instruments
 @router.get("/{pack_id}", response_model=PacksWithInstrumentsResponse)
@@ -90,34 +119,6 @@ def get_pack(pack_id: int, db: Session = Depends(get_db)):
 @router.get("/", response_model=List[PackResponse])
 def get_packs(db: Session = Depends(get_db)):
     return db.query(PackModel).all()
-
-@router.get("/pages")
-async def get_paginated_packs(
-    page: int = 1,
-    items_per_page: int = 10,
-    search: str = None,  # Optional search string
-    db: Session = Depends(get_db),
-):
-    # Calculate offset based on page number.
-    offset = (page - 1) * items_per_page
-
-    # Depending on whether a search term was provided, we will use different query functions.
-    if search:
-        packs = query_pack_database_with_search(db, offset, items_per_page, search)
-        total_records = calculate_total_pack_records_with_search(db, search)
-    else:
-        packs = query_pack_database(db, offset, items_per_page)
-        total_records = calculate_total_pack_records(db)
-
-    # Calculate the total number of pages.
-    total_pages = (total_records + items_per_page - 1) // items_per_page
-
-    return {
-        "packs": packs,
-        "page": page,
-        "total_pages": total_pages,
-        "total_records": total_records,
-    }
 
 
 #Update a pack

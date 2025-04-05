@@ -17,7 +17,7 @@ function PackEditModal({ id, onClose, isOpen, mode }) {
         if (mode === "edit") {
             const getPack = async () => {
                 try {
-                    const response = await axios.get(`http://localhost:8000/api/pack/${id}`);
+                    const response = await axiosInstance.get(`http://localhost:8000/api/pack/${id}`);
                     const packData = response.data;
                     setName(packData.name || "");
                     setDescription(packData.description || "");
@@ -60,7 +60,7 @@ function PackEditModal({ id, onClose, isOpen, mode }) {
         const method = mode === "edit" ? 'patch' : 'post';
 
         try {
-            const response = await axios({
+            const response = await axiosInstance({
                 method: method,
                 url: url,
                 data: {
@@ -87,7 +87,7 @@ function PackEditModal({ id, onClose, isOpen, mode }) {
 
     const handleDelete = async () => {
         try {
-            const response = await axios.delete(`http://localhost:8000/api/pack/${id}`);
+            const response = await axiosInstance.delete(`http://localhost:8000/api/pack/${id}`);
             console.log(response.data); // Log the server response for debugging.
             toast.success(response.data.message);
             onClose();

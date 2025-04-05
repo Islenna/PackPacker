@@ -8,7 +8,7 @@ function ProcedureEditInstrumentModal({ parentId, instrument, onClose }) {
     const [quantity, setQuantity] = useState("")
     const handleDelete = async () => {
         try {
-            await axios.delete(`http://localhost:8000/api/procedures/${parentId}/delete-instrument/${instrument.id}`);
+            await axiosInstance.delete(`http://localhost:8000/api/procedures/${parentId}/delete-instrument/${instrument.id}`);
             toast.success(response.data.message);
             onClose();
         } catch (error) {
@@ -18,7 +18,7 @@ function ProcedureEditInstrumentModal({ parentId, instrument, onClose }) {
 
     const changeQuantity = async (e) => {
         try {
-            await axios.put(`http://localhost:8000/api/procedures/${parentId}/update-instrument/${instrument.id}?quantity=${quantity}`, {
+            await axiosInstance.put(`http://localhost:8000/api/procedures/${parentId}/update-instrument/${instrument.id}?quantity=${quantity}`, {
                 quantity: e.target.value
             });
             toast.success(response.data.message);

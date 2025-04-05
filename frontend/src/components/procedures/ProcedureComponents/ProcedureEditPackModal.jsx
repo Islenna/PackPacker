@@ -7,7 +7,7 @@ function ProcedureEditPackModal({parentId, pack, onClose}) {
 
     const handleDelete = async () => {
         try {
-            await axios.delete(`http://localhost:8000/api/procedures/${parentId}/delete-pack/${pack.id}`);
+            await axiosInstance.delete(`http://localhost:8000/api/procedures/${parentId}/delete-pack/${pack.id}`);
             toast.success(response.data.message);
             onClose();
         }

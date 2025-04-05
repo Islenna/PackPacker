@@ -54,9 +54,11 @@ def get_procedures(db: Session = Depends(get_db)):
 async def get_paginated_procedures(
     page: int = 1,
     items_per_page: int = 10,
-    search: Optional[str] = Query(default=""),  # Optional search string
+    search: Optional[str] = Query(default=""),
     db: Session = Depends(get_db),
 ):
+    print("Incoming query params:", page, items_per_page, search)
+
     # Calculate offset based on page number.
     offset = (page - 1) * items_per_page
 

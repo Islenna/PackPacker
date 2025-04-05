@@ -20,7 +20,7 @@ function AddInstrumentForm({ onClose, type }) {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await axios.get(`http://localhost:8000/api/instruments?page=${currentPage}&items_per_page=${itemsPerPage}&search=${searchTerm}`);
+                const res = await axiosInstance.get(`http://localhost:8000/api/instruments?page=${currentPage}&items_per_page=${itemsPerPage}&search=${searchTerm}`);
 
                 // Filter the data based on partial match of name or description
                 const filteredData = res.data.filter(instrument => {
@@ -78,7 +78,7 @@ function AddInstrumentForm({ onClose, type }) {
         try {
             if (type === 'pack') {
                 // Handle bulk commit for Packs
-                const res = await axios.post(`http://localhost:8000/api/pack/${id}/add-instruments`, {
+                const res = await axiosInstance.post(`http://localhost:8000/api/pack/${id}/add-instruments`, {
                     instruments: selectedInstruments,
                 });
                 console.log('Selected instrument IDs for Packs:', selectedInstruments);
@@ -86,7 +86,7 @@ function AddInstrumentForm({ onClose, type }) {
                 toast.success(res.data.message);
             } else if (type === 'procedure') {
                 // Handle bulk commit for Procedures
-                const res = await axios.post(`http://localhost:8000/api/procedures/${id}/add-instruments`, {
+                const res = await axiosInstance.post(`http://localhost:8000/api/procedures/${id}/add-instruments`, {
                     instruments: selectedInstruments,
                 });
                 toast.success(res.data.message);

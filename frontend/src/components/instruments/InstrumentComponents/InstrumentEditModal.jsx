@@ -70,7 +70,7 @@ function InstrumentEditModal({ id, onClose, isOpen, mode }) {
         const method = mode === "edit" ? 'patch' : 'post';
 
         try {
-            const response = await axios({
+            const response = await axiosInstance({
                 method: method,
                 url: url,
                 data: {

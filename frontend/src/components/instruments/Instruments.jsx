@@ -4,6 +4,7 @@ import InstrumentEditModal from '../instruments/InstrumentComponents/InstrumentE
 import CommonTable from '../Shared/CommonTable';
 import usePagination from '../../hooks/usePagination';
 import useSearch from '../../hooks/useSearch';
+import { buildPaginatedUrl } from '../../utils/urlHelpers';
 
 function Instruments() {
     const [isLoading, setIsLoading] = useState(true);
@@ -35,7 +36,8 @@ function Instruments() {
     const fetchInstruments = async () => {
         setIsLoading(true);
         try {
-            const res = await axios.get(`http://localhost:8000/api/instruments/pages?page=${currentPage}&items_per_page=${itemsPerPage}&search=${searchTerm}`);
+            const url = buildPaginatedUrl('/instruments/pages', currentPage, itemsPerPage, searchTerm);
+            const res = await axiosInstance.get(url);
             setInstruments(res.data.instruments);
             setTotalItems(res.data.total_records);
             setTotals(res.data.total_records);

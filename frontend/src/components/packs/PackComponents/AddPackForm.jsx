@@ -18,7 +18,7 @@ function AddPackForm({ onClose, }) {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await axios.get(`http://localhost:8000/api/packs?page=${currentPage}&items_per_page=${itemsPerPage}&search=${searchTerm}`);
+                const res = await axiosInstance.get(`http://localhost:8000/api/packs?page=${currentPage}&items_per_page=${itemsPerPage}&search=${searchTerm}`);
 
                 // Filter the data based on partial match of name or description
                 const filteredData = res.data.filter(pack => {
@@ -62,7 +62,7 @@ function AddPackForm({ onClose, }) {
 
     const handleBulkCommit = async () => {
         try {
-            const res = await axios.post(`http://localhost:8000/api/procedures/${id}/add-packs`, {
+            const res = await axiosInstance.post(`http://localhost:8000/api/procedures/${id}/add-packs`, {
                 packs: selectedPacks,
             });
         } catch (err) {

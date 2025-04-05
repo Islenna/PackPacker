@@ -7,11 +7,16 @@ from schemas.instrument_schemas import InstrumentCreate, InstrumentResponse, Mes
 from repositories.repositories import query_database, calculate_total_records
 from typing import Optional
 from repositories.repositories import query_database_with_search, calculate_total_records_with_search
+from utils.dependencies import get_current_user
 
-router = APIRouter()
+router = APIRouter(
+    prefix="/instruments",
+    tags=["Instruments"],
+    dependencies=[Depends(get_current_user)],  # Ensure user is authenticated for all endpoints in this router
+)
 
 # Create a new instrument
-@router.post("/instrument/new", response_model=InstrumentResponse, status_code=status.HTTP_201_CREATED)
+@router.post("/new", response_model=InstrumentResponse, status_code=status.HTTP_201_CREATED)
 def create_instrument(instrument: InstrumentCreate, db: Session = Depends(get_db)):
     # Check if the instrument name already exists
     existing_instrument = db.query(InstrumentModel).filter_by(name=instrument.name).first()
@@ -38,12 +43,12 @@ def create_instrument(instrument: InstrumentCreate, db: Session = Depends(get_db
 
 
 #Get all instruments
-@router.get("/instruments", response_model=List[InstrumentResponse])
+@router.get("/", response_model=List[InstrumentResponse])
 def get_instruments(db: Session = Depends(get_db)):
     return db.query(InstrumentModel).all()
 
 #Get paginated instruments. This is a GET request that returns a JSON object with a list of instruments, the current page, the total number of pages, and the total number of records.
-@router.get("/instruments/pages")
+@router.get("/pages")
 async def get_paginated_instruments(
     page: int = 1,
     items_per_page: int = 10,
@@ -71,7 +76,7 @@ async def get_paginated_instruments(
 
 
 #Get a single instrument
-@router.get("/instrument/{instrument_id}", response_model=InstrumentResponse)
+@router.get("/{instrument_id}", response_model=InstrumentResponse)
 def get_instrument(instrument_id: int, db: Session = Depends(get_db)):
     db_instrument = db.query(InstrumentModel).filter(InstrumentModel.id == instrument_id).first()
     if not db_instrument:
@@ -79,7 +84,7 @@ def get_instrument(instrument_id: int, db: Session = Depends(get_db)):
     return db_instrument
 
 #Update an instrument
-@router.patch("/instrument/{instrument_id}", response_model=InstrumentResponse)
+@router.patch("/{instrument_id}", response_model=InstrumentResponse)
 def update_instrument(instrument_id: int, instrument: InstrumentCreate, db: Session = Depends(get_db)):
     db_instrument = db.query(InstrumentModel).filter(InstrumentModel.id == instrument_id).first()
     if not db_instrument:
@@ -95,7 +100,7 @@ def update_instrument(instrument_id: int, instrument: InstrumentCreate, db: Sess
     return db_instrument
 
 
-@router.delete("/instrument/{instrument_id}", response_model=MessageResponse)
+@router.delete("/{instrument_id}", response_model=MessageResponse)
 async def delete_instrument(instrument_id: int, db: Session = Depends(get_db)):
     # Fetch the instrument from the database
     db_instrument = db.query(InstrumentModel).filter(InstrumentModel.id == instrument_id).first()
