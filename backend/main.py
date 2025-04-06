@@ -43,16 +43,6 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
-# Logging middleware
-@app.middleware("http")
-async def log_headers(request: Request, call_next):
-    print("📥 Incoming request headers:")
-    for k, v in request.headers.items():
-        print(f"{k}: {v}")
-    if "authorization" not in request.headers:
-        print("❗ Authorization header missing from request.headers")
-    return await call_next(request)
-
 # Import routes
 from routes.users import router as UserRouter
 from routes.clinics import router as ClinicRouter

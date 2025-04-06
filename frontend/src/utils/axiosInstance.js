@@ -5,29 +5,30 @@ const axiosInstance = axios.create({
     baseURL: "http://localhost:8000/api",
 });
 
+// Attach token to every request
 axiosInstance.interceptors.request.use(
     (config) => {
-        const usertoken = localStorage.getItem("usertoken");
-        console.log("Token from localStorage:", usertoken); // Debugging line
-        if (usertoken) {
-            config.headers.Authorization = `Bearer ${usertoken}`;
+        const token = localStorage.getItem("token"); // ✅ standardize on 'token'
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
         }
         return config;
-        console.log("Request config:", config); // Debugging line
     },
     (error) => Promise.reject(error)
 );
 
-// 🔥 Handle expired or invalid tokens
+// Graceful session expiration handling
 axiosInstance.interceptors.response.use(
     (response) => response,
     (error) => {
-        if (error.response && error.response.status === 401) {
-            toast.error("Session expired. Please log in again.");
-            localStorage.removeItem("usertoken");
-            // Optional: store current path if you want to redirect back
-            window.location.href = "/login";
+        const status = error?.response?.status;
+
+        if (status === 401 || status === 403) {
+            toast.error("Your session has expired. Please log in again.");
+            localStorage.removeItem("token");
+            window.location.href = "/";
         }
+
         return Promise.reject(error);
     }
 );

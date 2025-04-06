@@ -25,7 +25,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
 
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
+ACCESS_TOKEN_EXPIRE_MINUTES = 60    # 1 hour
 
 def create_access_token(data: dict, expires_delta: timedelta = None):
     if "sub" not in data:

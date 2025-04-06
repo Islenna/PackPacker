@@ -31,9 +31,6 @@ function Log({ toggleForm }) {
                     localStorage.setItem("usertoken", res.data.access_token);
                     login(res.data.access_token, res.data.user);
                     toast.success("Login successful!");
-
-                    console.log("✅ Token written to localStorage");
-
                     navigate('/procedures');
                 }
             })

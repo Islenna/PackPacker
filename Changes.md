@@ -62,4 +62,4 @@
 - [x] Hospital scoping (users tied to a single clinic's data)
 - [ ] Onboarding/training view mode
 - [ ] Demo mode with dummy login
-- [ ] Authenticated image upload (packs)
+- [x] Authenticated image upload (packs and instruments)

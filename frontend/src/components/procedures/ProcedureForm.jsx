@@ -5,7 +5,6 @@ import { SubmitButton } from '../Buttons/Buttons';
 
 function ProcedureForm({ onClose }) {
 
-    console.log("🔍 axiosInstance in ProcedureForm is:", axiosInstance);
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const usertoken = localStorage.getItem("usertoken");
@@ -15,7 +14,6 @@ function ProcedureForm({ onClose }) {
     useEffect(() => {
         const usertoken = localStorage.getItem("usertoken");
         if (usertoken) {
-            console.log("✅ Token ready in useEffect:", usertoken);
             setReady(true);
         } else {
             console.warn("⏳ Waiting for usertoken...");
@@ -25,7 +23,6 @@ function ProcedureForm({ onClose }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("📤 handleSubmit triggered");
 
         const usertoken = localStorage.getItem("usertoken");
         if (!usertoken) {
@@ -38,7 +35,6 @@ function ProcedureForm({ onClose }) {
                 name,
                 description,
             });
-            console.log("✅ Procedure created");
             onClose();
         } catch (err) {
             console.error("❌ Submission error:", err);
