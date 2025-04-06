@@ -25,6 +25,11 @@
 - [x] Handle and store JWT token (localStorage or cookie)
 - [x] Add login/logout logic (conditional UI)
 - [ ] De-clutter Tailwind
+- [ ] Create Clinics
+- [ ] Tie clinics to packs/procedures
+- [ ] Tie users to clinics
+- [ ] Protect clinics, IE: Concord shouldn't access Dublin, RWC shouldn't access Campbell - unless superuser.
+- [ ] Create user roles.
 ---
 
 ## 🛠️ Backend
@@ -40,20 +45,21 @@
   - Added `notes` to Packs
   - Added `manufacturer` and `serial_number` to instruments
   - Added picture support to packs
-- [ ] 🔐 Create `User` model
-- [ ] 🔐 Create `Hospital` model (for future multi-clinic support)
-- [ ] 🔐 Register route (`/register`)
-- [ ] 🔐 Login route (`/login`)
-- [ ] 🔐 Password hashing (using `passlib`)
-- [ ] 🔐 JWT-based auth
-- [ ] Protect routes that should require auth
+- [x] 🔐 Create `User` model
+- [x] 🔐 Create `Hospital` model (for future multi-clinic support)
+- [x] 🔐 Register route (`/register`)
+- [x] 🔐 Login route (`/login`)
+- [x] 🔐 Password hashing (using `passlib`)
+- [x] 🔐 JWT-based auth
+- [x] Protect routes that should require auth
+- [ ] Seed a superuser.
 
 ---
 
 ## 🧪 Future Polish
 
-- [ ] Role-based access (admin/tech)
-- [ ] Hospital scoping (users tied to a single clinic's data)
+- [x] Role-based access (admin/tech)
+- [x] Hospital scoping (users tied to a single clinic's data)
 - [ ] Onboarding/training view mode
 - [ ] Demo mode with dummy login
 - [ ] Authenticated image upload (packs)

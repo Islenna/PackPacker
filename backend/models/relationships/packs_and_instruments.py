@@ -1,4 +1,4 @@
-from sqlalchemy import Integer, ForeignKey, Column
+from sqlalchemy import Column, Integer, ForeignKey
 from config.database import Base
 
 class PacksAndInstruments(Base):

@@ -1,6 +1,5 @@
-from sqlalchemy import Table, Column, Integer, ForeignKey
+from sqlalchemy import Column, Integer, ForeignKey
 from config.database import Base
-
 
 class InstrumentsAndProcedures(Base):
     __tablename__ = "instruments_and_procedures"
