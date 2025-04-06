@@ -190,6 +190,31 @@ function InstrumentEditModal({ id, onClose, isOpen, mode }) {
                 isOpen={isOpen}
                 onClose={onClose}
                 title="Edit Instrument" // You can customize this per modal instance
+                img_url={img_url}
+                onImageChange={async (newUrl) => {
+                    setImgUrl(newUrl);
+                    try {
+                        await axiosInstance.patch(`/instruments/${id}`, {
+                            name,
+                            onHand,
+                            img_url: newUrl,
+                            description,
+                            manufacturer,
+                            serial_number,
+                        });
+                        toast.success("Instrument image updated.");
+                    } catch (err) {
+                        const status = err?.response?.status || err?.request?.status;
+
+                        if (status === 413) {
+                            toast.error("Image too large. Please upload a smaller image (max 5MB).");
+                        } else {
+                            console.error("Image upload failed:", err);
+                            toast.error("Upload failed. Try again.");
+                        }
+                    }
+
+                }}
             >
                 {error && <div className="alert alert-danger">{error}</div>}
                 {modalContent}

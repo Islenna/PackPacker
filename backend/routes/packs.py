@@ -140,6 +140,7 @@ def update_pack(pack_id: int, pack: PackCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Pack not found")
     db_pack.name = pack.name
     db_pack.description = pack.description  # Update the description field
+    db_pack.img_url = pack.img_url # Update the img_url field
     db.commit()
     db.refresh(db_pack)
     return db_pack

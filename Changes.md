@@ -25,11 +25,11 @@
 - [x] Handle and store JWT usertoken (localStorage or cookie)
 - [x] Add login/logout logic (conditional UI)
 - [ ] De-clutter Tailwind
-- [ ] Create Clinics
-- [ ] Tie clinics to packs/procedures
-- [ ] Tie users to clinics
-- [ ] Protect clinics, IE: Concord shouldn't access Dublin, RWC shouldn't access Campbell - unless superuser.
-- [ ] Create user roles.
+- [x] Create Clinics
+- [x] Tie clinics to packs/procedures
+- [x] Tie users to clinics
+- [x] Protect clinics, IE: Concord shouldn't access Dublin, RWC shouldn't access Campbell - unless superuser.
+- [x] Create user roles.
 ---
 
 ## 🛠️ Backend

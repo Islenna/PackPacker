@@ -2,43 +2,39 @@ from fastapi import FastAPI, Request
 from config.database import Base, engine
 from fastapi.middleware.cors import CORSMiddleware
 from utils.seed_superuser import seed_superuser
+from fastapi.staticfiles import StaticFiles
+from pathlib import Path
 
-
-
-#models
+# Models
 from models.User import User
 from models.Clinic import Clinic
 from models.Pack import Pack
 from models.Instrument import Instrument
 from models.Procedure import Procedure
 
-#Create tables
-Base.metadata.create_all(bind=engine)
+# Static path setup
+BASE_DIR = Path(__file__).resolve().parent
+STATIC_DIR = BASE_DIR / "static"
+IMAGES_DIR = STATIC_DIR / "images"
+
+# Ensure static and images directories exist
+IMAGES_DIR.mkdir(parents=True, exist_ok=True)
+
 # Initialize app
 app = FastAPI()
 
-# Load environment variables
+# Mount static directory
+app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+
+# Create tables
+Base.metadata.create_all(bind=engine)
+
+# Seed superuser
 @app.on_event("startup")
 def startup_event():
     seed_superuser()
 
-# Logging Middleware — fully inside the function
-@app.middleware("http")
-async def log_headers(request: Request, call_next):
-    print("📥 Incoming request headers:")
-    for k, v in request.headers.items():
-        print(f"{k}: {v}")
-
-    print("🔍 Raw headers list:", request.headers.raw)
-    
-    if "authorization" not in request.headers:
-        print("❗ Authorization header missing from request.headers")
-    
-    response = await call_next(request)
-    return response
-
-
-# CORS config
+# CORS middleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000"],
@@ -47,19 +43,30 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
-# *** ROUTE IMPORTS*** #
+# Logging middleware
+@app.middleware("http")
+async def log_headers(request: Request, call_next):
+    print("📥 Incoming request headers:")
+    for k, v in request.headers.items():
+        print(f"{k}: {v}")
+    if "authorization" not in request.headers:
+        print("❗ Authorization header missing from request.headers")
+    return await call_next(request)
 
+# Import routes
 from routes.users import router as UserRouter
 from routes.clinics import router as ClinicRouter
 from routes.packs import router as PackRouter
 from routes.instruments import router as InstrumentRouter
 from routes.procedures import router as ProcedureRouter
 from routes.relationships import router as RelationshipRouter
+from routes.uploads import router as UploadRouter
 
-# *** ROUTES *** #
-app.include_router(UserRouter,prefix="/api", tags=["Users"])
+# Register routes
+app.include_router(UserRouter, prefix="/api", tags=["Users"])
 app.include_router(ClinicRouter, prefix="/api", tags=["Clinics"])
 app.include_router(PackRouter, prefix="/api", tags=["Packs"])
 app.include_router(InstrumentRouter, prefix="/api", tags=["Instruments"])
 app.include_router(ProcedureRouter, prefix="/api", tags=["Procedures"])
 app.include_router(RelationshipRouter, prefix="/api", tags=["Relationships"])
+app.include_router(UploadRouter, prefix="/api", tags=["Uploads"])

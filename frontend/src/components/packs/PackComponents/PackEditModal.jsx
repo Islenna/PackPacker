@@ -67,6 +67,7 @@ function PackEditModal({ id, onClose, isOpen, mode }) {
                 data: {
                     name,
                     description,
+                    img_url,
                 },
             });
             toast.success("Pack saved successfully.");
@@ -145,6 +146,23 @@ function PackEditModal({ id, onClose, isOpen, mode }) {
                 onClose={onClose}
                 title={mode === "edit" ? "Edit Pack" : "Add New Pack"}
                 img_url={img_url}
+                onImageChange={async (newUrl) => {
+                    setImg_url(newUrl);
+                    try {
+                        await axiosInstance.patch(`/packs/${id}`, { img_url: newUrl });
+                        toast.success("Pack image updated.");
+                    } catch (err) {
+                        const status = err?.response?.status || err?.request?.status;
+
+                        if (status === 413) {
+                            toast.error("Image too large. Please upload a smaller image (max 5MB).");
+                        } else {
+                            console.error("Image upload failed:", err);
+                            toast.error("Upload failed. Try again.");
+                        }
+                    }
+
+                }}
             >
                 {error && <div className="alert alert-danger">{error}</div>}
                 {modalContent}
