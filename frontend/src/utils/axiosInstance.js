@@ -1,27 +1,35 @@
-import axios from 'axios';
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const axiosInstance = axios.create({
-    baseURL: 'http://localhost:8000/api',
+    baseURL: "http://localhost:8000/api",
 });
 
-// Attach token globally (in case interceptor fails to persist during CORS preflight)
-const token = localStorage.getItem("usertoken");
-if (token) {
-    axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-} else {
-    console.warn("⚠️ No token in localStorage, cannot set default Authorization");
-}
+axiosInstance.interceptors.request.use(
+    (config) => {
+        const usertoken = localStorage.getItem("usertoken");
+        console.log("Token from localStorage:", usertoken); // Debugging line
+        if (usertoken) {
+            config.headers.Authorization = `Bearer ${usertoken}`;
+        }
+        return config;
+        console.log("Request config:", config); // Debugging line
+    },
+    (error) => Promise.reject(error)
+);
 
-// Also still use interceptor just in case
-axiosInstance.interceptors.request.use((config) => {
-    const token = localStorage.getItem("usertoken");
-    if (token) {
-        config.headers = {
-            ...config.headers,
-            Authorization: `Bearer ${token}`,
-        };
+// 🔥 Handle expired or invalid tokens
+axiosInstance.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.response && error.response.status === 401) {
+            toast.error("Session expired. Please log in again.");
+            localStorage.removeItem("usertoken");
+            // Optional: store current path if you want to redirect back
+            window.location.href = "/login";
+        }
+        return Promise.reject(error);
     }
-    return config;
-});
+);
 
 export default axiosInstance;

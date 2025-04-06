@@ -8,7 +8,8 @@ class ProcedureBase(BaseModel):
     description: str
     
 class ProcedureCreate(ProcedureBase):
-    pass
+    name: str
+    description: str
 
 class ProcedureResponse(ProcedureBase):
 

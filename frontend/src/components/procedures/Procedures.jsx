@@ -52,8 +52,8 @@ function Procedures() {
     };
 
     const fetchProcedures = async () => {
-        const token = localStorage.getItem("usertoken");
-        if (!token) {
+        const usertoken = localStorage.getItem("usertoken");
+        if (!usertoken) {
             navigate("/");
             return;
         }
@@ -67,7 +67,7 @@ function Procedures() {
 
             const res = await axiosInstance.get(url, {
                 headers: {
-                    Authorization: `Bearer ${token}`
+                    Authorization: `Bearer ${usertoken}`
                 }
             });
             if (res.status !== 200) {

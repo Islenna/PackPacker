@@ -9,6 +9,8 @@ from repositories.repositories import query_pack_database, calculate_total_pack_
 from models.relationships.packs_and_instruments import PacksAndInstruments
 from models.Instrument import Instrument
 from utils.dependencies import get_current_user
+from models.User import User as UserModel
+
 
 router = APIRouter(
     prefix="/packs",
@@ -18,20 +20,24 @@ router = APIRouter(
 
 #Create a new pack
 @router.post("/new", response_model=PackResponse, status_code=status.HTTP_201_CREATED)
-def create_pack(pack: PackCreate, db: Session = Depends(get_db)):
-    # Check if the pack name already exists
+def create_pack(
+    pack: PackCreate, 
+    db: Session = Depends(get_db),
+    user: UserModel = Depends(get_current_user)
+):
     existing_pack = db.query(PackModel).filter_by(name=pack.name).first()
     if existing_pack:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Pack with this name already exists")
 
-    # If the pack name is unique, create the new pack
-    db_pack = PackModel(name=pack.name, description=pack.description)
-    
-    # Use SessionLocal to create a new database session
-    db_session = SessionLocal()
-    db_session.add(db_pack)
-    db_session.commit()
-    db_session.refresh(db_pack)
+    db_pack = PackModel(
+        name=pack.name,
+        description=pack.description,
+        clinic_id=user.clinics[0].id
+    )
+
+    db.add(db_pack)
+    db.commit()
+    db.refresh(db_pack)
 
     return db_pack
 
@@ -42,18 +48,22 @@ async def get_paginated_packs(
     items_per_page: int = Query(10, ge=1),
     search: Optional[str] = Query(""),
     db: Session = Depends(get_db),
+    user: UserModel = Depends(get_current_user),
 ):
 
     # Calculate offset based on page number.
     offset = (page - 1) * items_per_page
-
+    clinic_ids = [clinic.id for clinic in user.clinics]
+    query = db.query(PackModel).filter(PackModel.clinic_id.in_(clinic_ids))
     # Depending on whether a search term was provided, we will use different query functions.
     if search:
-        packs = query_pack_database_with_search(db, offset, items_per_page, search)
-        total_records = calculate_total_pack_records_with_search(db, search)
+        packs = query_pack_database_with_search(db, offset, items_per_page, search)  # Pass the session object (db)
+        total_records = calculate_total_pack_records_with_search(db, search)  # Pass the session object (db)
     else:
-        packs = query_pack_database(db, offset, items_per_page)
-        total_records = calculate_total_pack_records(db)
+        packs = query_pack_database(db, offset, items_per_page)  # Pass the session object (db)
+        total_records = calculate_total_pack_records(db)  # Pass the session object (db)
+
+
 
     # Calculate the total number of pages.
     total_pages = (total_records + items_per_page - 1) // items_per_page
@@ -74,6 +84,7 @@ def get_pack(pack_id: int, db: Session = Depends(get_db)):
         .filter(PackModel.id == pack_id)
         .options(joinedload(PackModel.instruments))
         .first()
+        
     )
 
     if not db_pack:

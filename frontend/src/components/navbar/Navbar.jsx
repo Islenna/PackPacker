@@ -76,6 +76,10 @@ function Navbar() {
                         <NavItem to="/procedures">Procedures</NavItem>
                         <NavItem to="/packs">Packs</NavItem>
                         <NavItem to="/instruments">Instruments</NavItem>
+                        {user?.role === "admin" && (
+                            <NavItem to="/users">Users</NavItem>
+                        )}
+
                         {user && (
                             <li>
                                 <button

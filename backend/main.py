@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Request
 from config.database import Base, engine
 from fastapi.middleware.cors import CORSMiddleware
+from utils.seed_superuser import seed_superuser
 
 
 
@@ -13,9 +14,13 @@ from models.Procedure import Procedure
 
 #Create tables
 Base.metadata.create_all(bind=engine)
-
 # Initialize app
 app = FastAPI()
+
+# Load environment variables
+@app.on_event("startup")
+def startup_event():
+    seed_superuser()
 
 # Logging Middleware — fully inside the function
 @app.middleware("http")

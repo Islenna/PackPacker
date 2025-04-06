@@ -24,8 +24,6 @@ def create_procedure(
     db: Session = Depends(get_db),
     user: UserModel = Depends(get_current_user),
 ):
-    print("✅ Route was hit!")
-    print("🧪 Authenticated user:", user.email)
     existing_procedure = db.query(ProcedureModel).filter_by(name=procedure.name).first()
     if existing_procedure:
         raise HTTPException(
@@ -33,7 +31,11 @@ def create_procedure(
             detail="Procedure with this name already exists"
         )
     
-    db_procedure = ProcedureModel(name=procedure.name, description=procedure.description)
+    db_procedure = ProcedureModel(
+        name=procedure.name, 
+        description=procedure.description,
+        clinic_id=user.clinics[0].id  # Assign to user's clinic
+        )
     db.add(db_procedure)
     db.commit()
     db.refresh(db_procedure)
@@ -56,21 +58,20 @@ async def get_paginated_procedures(
     items_per_page: int = 10,
     search: Optional[str] = Query(default=""),
     db: Session = Depends(get_db),
+    user: UserModel = Depends(get_current_user),
 ):
     print("Incoming query params:", page, items_per_page, search)
 
-    # Calculate offset based on page number.
     offset = (page - 1) * items_per_page
+    clinic_ids = [clinic.id for clinic in user.clinics]
 
-    # Depending on whether a search term was provided, we will use different query functions.
+    query = db.query(ProcedureModel).filter(ProcedureModel.clinic_id.in_(clinic_ids))
+
     if search:
-        procedures = query_procedure_database_with_search(db, offset, items_per_page, search)
-        total_records = calculate_total_procedure_records_with_search(db, search)
-    else:
-        procedures = query_procedure_database(db, offset, items_per_page)
-        total_records = calculate_total_procedure_records(db)
+        query = query.filter(ProcedureModel.name.ilike(f"%{search}%"))
 
-    # Calculate the total number of pages.
+    total_records = query.count()
+    procedures = query.offset(offset).limit(items_per_page).all()
     total_pages = (total_records + items_per_page - 1) // items_per_page
 
     return {

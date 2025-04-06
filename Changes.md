@@ -22,7 +22,7 @@
 - [ ] Double-check naming conventions (this is madness)
 - [x] 🔐 Create Login page (frontend)
 - [x] 🔐 Create Register page (frontend)
-- [x] Handle and store JWT token (localStorage or cookie)
+- [x] Handle and store JWT usertoken (localStorage or cookie)
 - [x] Add login/logout logic (conditional UI)
 - [ ] De-clutter Tailwind
 - [ ] Create Clinics
@@ -52,7 +52,7 @@
 - [x] 🔐 Password hashing (using `passlib`)
 - [x] 🔐 JWT-based auth
 - [x] Protect routes that should require auth
-- [ ] Seed a superuser.
+- [x] Seed a superuser.
 
 ---
 

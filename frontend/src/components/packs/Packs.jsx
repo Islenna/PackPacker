@@ -36,7 +36,6 @@ function Packs() {
         try {
             const url = buildPaginatedUrl('/packs/pages', currentPage, itemsPerPage, searchTerm);
             const res = await axiosInstance.get(url);
-    
             setPacks(res.data.packs);
             setTotalItems(res.data.total_records);
             setTotals(res.data.total_records);

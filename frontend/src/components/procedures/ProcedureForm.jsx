@@ -8,19 +8,17 @@ function ProcedureForm({ onClose }) {
     console.log("🔍 axiosInstance in ProcedureForm is:", axiosInstance);
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
-    const token = localStorage.getItem("usertoken");
+    const usertoken = localStorage.getItem("usertoken");
     const [ready, setReady] = useState(false);
-    console.log("🔍 Ready state in ProcedureForm is:", ready);
-    console.log("🔍 Token in ProcedureForm is:", token)
-        ;
+
 
     useEffect(() => {
-        const token = localStorage.getItem("usertoken");
-        if (token) {
-            console.log("✅ Token ready in useEffect:", token);
+        const usertoken = localStorage.getItem("usertoken");
+        if (usertoken) {
+            console.log("✅ Token ready in useEffect:", usertoken);
             setReady(true);
         } else {
-            console.warn("⏳ Waiting for token...");
+            console.warn("⏳ Waiting for usertoken...");
         }
     }, []);
 
@@ -29,9 +27,9 @@ function ProcedureForm({ onClose }) {
         e.preventDefault();
         console.log("📤 handleSubmit triggered");
 
-        const token = localStorage.getItem("usertoken");
-        if (!token) {
-            console.error("⛔ Cannot submit without token.");
+        const usertoken = localStorage.getItem("usertoken");
+        if (!usertoken) {
+            console.error("⛔ Cannot submit without usertoken.");
             return;
         }
 

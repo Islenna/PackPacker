@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends, status
+from fastapi import APIRouter, HTTPException, Depends, status, Query
 from typing import List
 from sqlalchemy.orm import Session
 from config.database import get_db, SessionLocal
@@ -8,6 +8,8 @@ from repositories.repositories import query_database, calculate_total_records
 from typing import Optional
 from repositories.repositories import query_database_with_search, calculate_total_records_with_search
 from utils.dependencies import get_current_user
+from models.User import User as UserModel
+
 
 router = APIRouter(
     prefix="/instruments",
@@ -17,28 +19,31 @@ router = APIRouter(
 
 # Create a new instrument
 @router.post("/new", response_model=InstrumentResponse, status_code=status.HTTP_201_CREATED)
-def create_instrument(instrument: InstrumentCreate, db: Session = Depends(get_db)):
-    # Check if the instrument name already exists
+def create_instrument(
+    instrument: InstrumentCreate, 
+    db: Session = Depends(get_db),
+    user: UserModel = Depends(get_current_user),
+):
     existing_instrument = db.query(InstrumentModel).filter_by(name=instrument.name).first()
     if existing_instrument:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Instrument with this name already exists")
 
-    # If the instrument name is unique, create the new instrument
     db_instrument = InstrumentModel(
-        name=instrument.name, 
-        description=instrument.description, 
-        onHand = instrument.onHand, 
-        img_url=instrument.img_url, 
-        manufacturer=instrument.manufacturer, 
-        serial_number=instrument.serial_number)
-    
-    # Use SessionLocal to create a new database session
-    db_session = SessionLocal()
-    db_session.add(db_instrument)
-    db_session.commit()
-    db_session.refresh(db_instrument)
+        name=instrument.name,
+        description=instrument.description,
+        onHand=instrument.onHand,
+        img_url=instrument.img_url,
+        manufacturer=instrument.manufacturer,
+        serial_number=instrument.serial_number,
+        clinic_id=user.clinics[0].id  # ✅ Assign to user’s clinic
+    )
+
+    db.add(db_instrument)
+    db.commit()
+    db.refresh(db_instrument)
 
     return db_instrument
+
 
 
 
@@ -54,16 +59,20 @@ async def get_paginated_instruments(
     items_per_page: int = 10,
     search: Optional[str] = None,  # Add a search parameter
     db: Session = Depends(get_db),
+    user: UserModel = Depends(get_current_user),
 ):
     offset = (page - 1) * items_per_page
-
+    clinic_ids = [clinic.id for clinic in user.clinics]
+    query = db.query(InstrumentModel).filter(InstrumentModel.clinic_id.in_(clinic_ids))
     # Modify your query to include the search logic if a search term is provided
+    
     if search:
-        instruments = query_database_with_search(db, offset, items_per_page, search)
-        total_records = calculate_total_records_with_search(db, search)
+        instruments = query_database_with_search(db, offset, items_per_page, search)  # Pass the session object (db)
+        total_records = calculate_total_records_with_search(db, search)  # Pass the session object (db)
     else:
-        instruments = query_database(db, offset, items_per_page)
-        total_records = calculate_total_records(db)
+        instruments = query_database(db, offset, items_per_page)  # Pass the session object (db)
+        total_records = calculate_total_records(db)  # Pass the session object (db)
+
 
     total_pages = (total_records + items_per_page - 1) // items_per_page
 
