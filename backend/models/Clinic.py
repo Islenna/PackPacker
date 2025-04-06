@@ -18,6 +18,5 @@ class Clinic(Base):
     users = relationship("User", secondary=users_and_clinics, back_populates="clinics")
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
-    instruments = relationship("Instrument", back_populates="clinic")
     packs = relationship("Pack", back_populates="clinic")
     procedures = relationship("Procedure", back_populates="clinic")

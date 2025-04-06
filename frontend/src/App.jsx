@@ -15,7 +15,7 @@ import Packs from './components/packs/Packs'
 import Procedure from './components/procedures/Procedure'
 import Procedures from './components/procedures/Procedures'
 import PacksAndInstruments from './components/packs/PacksAndInstruments'
-import Users from './components/users/users'
+import AdminDashboard from './components/admin/AdminDashboard'
 
 function ProtectedRoute({ children }) {
   const { token } = useAuth();
@@ -54,7 +54,9 @@ function AppRoutes() {
         <Route path="/procedures" element={<ProtectedRoute><Procedures /></ProtectedRoute>} />
         <Route path="/procedures/:id" element={<ProtectedRoute><Procedure /></ProtectedRoute>} />
         <Route path="/packs/:id/instruments" element={<ProtectedRoute><PacksAndInstruments /></ProtectedRoute>} />
-        <Route path="/users" element={<ProtectedRoute><Users /></ProtectedRoute>} />
+        <Route path="/admin" element={
+          <ProtectedRoute><AdminDashboard /></ProtectedRoute>
+        } />
       </Routes>
       <ToastContainer />
     </>

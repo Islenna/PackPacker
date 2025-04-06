@@ -18,7 +18,7 @@
 - [ ] Modularize components further
 - [ ] UI/UX improvements
 - [ ] Validation (form inputs, etc.)
-- [ ] Smoother error handling
+  - [ ] Smoother error handling
 - [ ] Double-check naming conventions (this is madness)
 - [x] 🔐 Create Login page (frontend)
 - [x] 🔐 Create Register page (frontend)

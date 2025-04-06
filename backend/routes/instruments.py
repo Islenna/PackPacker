@@ -63,7 +63,6 @@ async def get_paginated_instruments(
 ):
     offset = (page - 1) * items_per_page
     clinic_ids = [clinic.id for clinic in user.clinics]
-    query = db.query(InstrumentModel).filter(InstrumentModel.clinic_id.in_(clinic_ids))
     # Modify your query to include the search logic if a search term is provided
     
     if search:

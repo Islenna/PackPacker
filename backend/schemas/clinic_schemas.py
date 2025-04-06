@@ -4,7 +4,7 @@ from typing import Optional
 
 class ClinicBase(BaseModel):
     name: str
-    clinicLoc: str
+    location: Optional[str] = None
     phone: str
     email: EmailStr
 
@@ -14,7 +14,7 @@ class ClinicCreate(ClinicBase):
 class ClinicResponse(ClinicBase):
     id: int
     name: str
-    clinicLoc: str
+    location: Optional[str] = None
     phone: str
     email: EmailStr
     created_at: Optional[datetime] = None
@@ -25,7 +25,7 @@ class ClinicResponse(ClinicBase):
 
 class ClinicUpdate(BaseModel):
     name: Optional[str] = None
-    clinicLoc: Optional[str] = None
+    location: Optional[str] = None
     phone: Optional[str] = None
     email: Optional[EmailStr] = None
 

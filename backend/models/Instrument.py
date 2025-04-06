@@ -22,7 +22,5 @@ class Instrument(Base):
     serial_number = Column(String(255), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
-    clinic_id = Column(Integer, ForeignKey("clinics.id"))
-    clinic = relationship("Clinic", back_populates="instruments")
     procedures = relationship("Procedure", secondary=InstrumentsAndProcedures.__table__, back_populates="instruments")
     packs = relationship("Pack", secondary=PacksAndInstruments.__table__, back_populates="instruments")
