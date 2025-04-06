@@ -152,7 +152,12 @@ def delete_pack(pack_id: int, db: Session = Depends(get_db)):
         # Commit the transaction
         db.commit()
         
-        return {"message": "Pack successfully deleted"}
+        return {
+            "name": db_pack.name,
+            "img_url": db_pack.img_url,
+            "message": "Pack successfully deleted"
+}
+
 
     except Exception as e:
         db.rollback()  # Explicitly rolling back in case of error

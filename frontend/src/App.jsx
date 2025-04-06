@@ -27,7 +27,7 @@ function App() {
           <Route path="/packs" element={<Packs />} />
           <Route path="/procedures" element={<Procedures />} />
           <Route path="/procedures/:id" element={<Procedure />} />
-          <Route path="/pack/:id/instruments" element={<PacksAndInstruments />} />
+          <Route path="/packs/:id/instruments" element={<PacksAndInstruments />} />
         </Routes>
       </Router>
       <ToastContainer />

@@ -39,7 +39,7 @@ app.add_middleware(
     allow_origins=["http://localhost:3000"],
     allow_credentials=False,
     allow_methods=["*"],
-    allow_headers=["Authorization"]
+    allow_headers=["*"]
 )
 
 # *** ROUTE IMPORTS*** #

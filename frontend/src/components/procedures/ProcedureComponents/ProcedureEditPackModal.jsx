@@ -7,14 +7,15 @@ function ProcedureEditPackModal({parentId, pack, onClose}) {
 
     const handleDelete = async () => {
         try {
-            await axiosInstance.delete(`http://localhost:8000/api/procedures/${parentId}/delete-pack/${pack.id}`);
-            toast.success(response.data.message);
+            const res = await axiosInstance.delete(`procedures/${parentId}/delete-pack/${pack.id}`);
+            toast.success(res.data.message); // ✅ now it works
             onClose();
-        }
-        catch (error) {
+        } catch (error) {
             console.error("Failed to delete instrument from pack:", error);
+            toast.error("Failed to delete pack."); // optional UX polish
         }
-    }
+    };
+    
 
 
     return (

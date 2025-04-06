@@ -75,10 +75,12 @@ function AddInstrumentForm({ onClose, type }) {
 
     // Commit selected instruments to the pack
     const handleBulkCommit = async () => {
+        console.log("Selected Instruments:", selectedInstruments);
+
         try {
             if (type === 'pack') {
                 // Handle bulk commit for Packs
-                const res = await axiosInstance.post(`http://localhost:8000/api/pack/${id}/add-instruments`, {
+                const res = await axiosInstance.post(`/packs/${id}/add-instruments`, {
                     instruments: selectedInstruments,
                 });
                 console.log('Selected instrument IDs for Packs:', selectedInstruments);
@@ -86,7 +88,7 @@ function AddInstrumentForm({ onClose, type }) {
                 toast.success(res.data.message);
             } else if (type === 'procedure') {
                 // Handle bulk commit for Procedures
-                const res = await axiosInstance.post(`http://localhost:8000/api/procedures/${id}/add-instruments`, {
+                const res = await axiosInstance.post(`/procedures/${id}/add-instruments`, {
                     instruments: selectedInstruments,
                 });
                 toast.success(res.data.message);

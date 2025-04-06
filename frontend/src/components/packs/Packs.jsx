@@ -54,11 +54,10 @@ function Packs() {
 
     const toggleModal = () => {
         setModal(!modal);
-        if (modal) {
-            setPack(null);
-            setMode(null);
-        }
+        setPack(null);
+        setMode(null);
     };
+    
 
     const handleModal = (newMode, packData = null) => {
         setMode(newMode);

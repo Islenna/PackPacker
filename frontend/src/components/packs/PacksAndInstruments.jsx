@@ -13,7 +13,7 @@ function PacksAndInstruments() {
     useEffect(() => {
         const getPack = async () => {
             try {
-                const response = await axiosInstance.get(`http://localhost:8000/api/pack/${id}`)
+                const response = await axiosInstance.get(`http://localhost:8000/api/packs/${id}`)
                 const packData = response.data
                 setPack(packData)
                 setInstruments(packData.instruments)

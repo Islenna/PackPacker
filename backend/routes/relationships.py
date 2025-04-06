@@ -119,7 +119,7 @@ def delete_instrument_from_procedure(
     return {"message": "Procedure or instrument not found"}
 
 # Add an instrument to a pack
-@router.post("/pack/{pack_id}/add-instrument/{instrument_id}")
+@router.post("/packs/{pack_id}/add-instrument/{instrument_id}")
 def add_instrument_to_pack(
     pack_id: int,
     instrument_id: int,
@@ -145,7 +145,7 @@ def add_instrument_to_pack(
     return {"message": f"{quantity} instruments added to pack successfully"}
 
 #Bulk add instruments to a pack
-@router.post("/pack/{pack_id}/add-instruments")
+@router.post("/packs/{pack_id}/add-instruments")
 def bulk_add_instruments_to_pack(
     pack_id: int,
     request_data: BulkAddInstrumentsRequest,  # Use the Pydantic model
@@ -256,7 +256,7 @@ def bulk_add_packs_to_procedure(
 
 
 # Remove an instrument from a pack
-@router.delete("/pack/{pack_id}/delete-instrument/{instrument_id}")
+@router.delete("/packs/{pack_id}/delete-instrument/{instrument_id}")
 def delete_instrument_from_pack(
     pack_id: int, instrument_id: int, db: Session = Depends(get_db)
 ):
@@ -288,7 +288,7 @@ def delete_pack_from_procedure(
     return {"message": "Procedure or pack not found"}
 
 #Update the quantity of an instrument in a pack
-@router.put("/pack/{pack_id}/update-instrument/{instrument_id}")
+@router.put("/packs/{pack_id}/update-instrument/{instrument_id}")
 def update_quantity_of_instrument_in_pack(
     pack_id: int,
     instrument_id: int,

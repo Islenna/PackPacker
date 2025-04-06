@@ -8,25 +8,33 @@ function ProcedureEditInstrumentModal({ parentId, instrument, onClose }) {
     const [quantity, setQuantity] = useState("")
     const handleDelete = async () => {
         try {
-            await axiosInstance.delete(`http://localhost:8000/api/procedures/${parentId}/delete-instrument/${instrument.id}`);
-            toast.success(response.data.message);
+            const res = await axiosInstance.delete(`/procedures/${parentId}/delete-instrument/${instrument.id}`);
+            toast.success(res.data.message); // now res is defined
             onClose();
         } catch (error) {
             console.error("Failed to delete instrument from pack:", error);
+            toast.error("Failed to delete instrument.");
         }
-    }
-
+    };
+    
     const changeQuantity = async (e) => {
+        e.preventDefault();
+
+        if (quantity === "" || isNaN(quantity) || Number(quantity) < 0) {
+            toast.error("Please enter a valid quantity.");
+            return;
+        }
+
         try {
-            await axiosInstance.put(`http://localhost:8000/api/procedures/${parentId}/update-instrument/${instrument.id}?quantity=${quantity}`, {
-                quantity: e.target.value
-            });
-            toast.success(response.data.message);
+            const res = await axiosInstance.put(`/procedures/${parentId}/update-instrument/${instrument.id}?quantity=${quantity}`);
+            toast.success(res.data.message);
             onClose();
         } catch (error) {
             console.error("Failed to update instrument quantity:", error);
+            toast.error("Failed to update quantity.");
         }
-    }
+    };
+
 
 
 
@@ -58,9 +66,9 @@ function ProcedureEditInstrumentModal({ parentId, instrument, onClose }) {
                             </div>
                             <div>
 
-                            <SubmitButton handleSubmit={changeQuantity} />
-                            {/* <!-- Modal body --> */}
-                            <DeleteButton handleDelete={handleDelete} />
+                                <SubmitButton handleSubmit={changeQuantity} />
+                                {/* <!-- Modal body --> */}
+                                <DeleteButton handleDelete={handleDelete} />
                             </div>
 
                         </div>

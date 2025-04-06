@@ -22,9 +22,9 @@
 - [ ] Double-check naming conventions (this is madness)
 - [x] 🔐 Create Login page (frontend)
 - [x] 🔐 Create Register page (frontend)
-- [ ] Handle and store JWT token (localStorage or cookie)
-- [ ] Add login/logout logic (conditional UI)
-
+- [x] Handle and store JWT token (localStorage or cookie)
+- [x] Add login/logout logic (conditional UI)
+- [ ] De-clutter Tailwind
 ---
 
 ## 🛠️ Backend

@@ -8,7 +8,7 @@ function Pack() {
     useEffect (() => {
         const fetchData = async () => {
             try {
-                const res = await axiosInstance.get(`http://localhost:8000/api/pack/${id}`);
+                const res = await axiosInstance.get(`/packs/${id}`);
                 setPack(res.data.pack);
             } catch (err) {
                 console.log(err);

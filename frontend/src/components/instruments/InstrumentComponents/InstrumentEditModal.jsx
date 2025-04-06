@@ -17,7 +17,7 @@ function InstrumentEditModal({ id, onClose, isOpen, mode }) {
 
     useEffect(() => {
         if (mode === "edit") {
-            axiosinstanceget(`http://localhost:8000/api/instrument/${id}`)
+            axiosInstance.get(`instruments/${id}`)
                 .then((res) => {
                     setName(res.data.name || "")
                     setOnHand(res.data.onHand || "")
@@ -63,9 +63,11 @@ function InstrumentEditModal({ id, onClose, isOpen, mode }) {
             return; // Stop here if form is invalid
         }
         // Depending on the mode, choose the appropriate URL and HTTP method
-        const url = mode === "edit" ?
-            `http://localhost:8000/api/instrument/${id}` :
-            'http://localhost:8000/api/instrument/new';
+        const url = mode === "edit"
+            ? `/instruments/${id}`
+            : '/instruments/new';
+
+
 
         const method = mode === "edit" ? 'patch' : 'post';
 
@@ -84,7 +86,7 @@ function InstrumentEditModal({ id, onClose, isOpen, mode }) {
             });
             toast.success("Instrument saved successfully.");
             onClose();
-            
+
         } catch (err) { // Change 'error' to 'err' here
             if (err.response && err.response.status === 422) { // Corrected 'error' to 'err' here
                 const errors = err.response.data.errors;
@@ -97,7 +99,7 @@ function InstrumentEditModal({ id, onClose, isOpen, mode }) {
             setError(err.response?.data?.message || "An error occurred while submitting the data.");
         }
     }
-        
+
 
     const handleChange = (setter) => (e) => {
         // clear errors if exist
@@ -107,7 +109,7 @@ function InstrumentEditModal({ id, onClose, isOpen, mode }) {
 
     const handleDelete = async () => {
         try {
-            const response = await axiosinstance.delete(`http://localhost:8000/api/instrument/${id}`);
+            const response = await axiosInstance.delete(`/instruments/${id}`);
             toast.success(response.data.message);
             onClose();
         } catch (error) {
@@ -175,7 +177,7 @@ function InstrumentEditModal({ id, onClose, isOpen, mode }) {
                     placeholder="Enter description"
                 />
                 <div className="flex space-x-4">  {/* Container for buttons to provide spacing */}
-                    <SubmitButton handleSubmit={handleSubmit}/> 
+                    <SubmitButton handleSubmit={handleSubmit} />
                     <DeleteButton handleDelete={handleDelete} />
                 </div>
             </div>

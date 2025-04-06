@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axiosinstance from '../../../utils/axiosInstance';
+import axiosInstance from '../../../utils/axiosInstance';
 import { Link } from 'react-router-dom';
 import { SubmitButton, EditButton, DeleteButton } from '../../Buttons/Buttons'
 import CommonModal from '../../Shared/CommonModal';
@@ -17,7 +17,7 @@ function PackEditModal({ id, onClose, isOpen, mode }) {
         if (mode === "edit") {
             const getPack = async () => {
                 try {
-                    const response = await axiosInstance.get(`http://localhost:8000/api/pack/${id}`);
+                    const response = await axiosInstance.get(`/packs/${id}`);
                     const packData = response.data;
                     setName(packData.name || "");
                     setDescription(packData.description || "");
@@ -54,8 +54,9 @@ function PackEditModal({ id, onClose, isOpen, mode }) {
         }
         // Depending on the mode, choose the appropriate URL and HTTP method
         const url = mode === "edit" ?
-            `http://localhost:8000/api/pack/${id}` :
-            'http://localhost:8000/api/pack/new';
+            `/packs/${id}` :
+            '/packs/new';
+
 
         const method = mode === "edit" ? 'patch' : 'post';
 
@@ -87,7 +88,8 @@ function PackEditModal({ id, onClose, isOpen, mode }) {
 
     const handleDelete = async () => {
         try {
-            const response = await axiosInstance.delete(`http://localhost:8000/api/pack/${id}`);
+            const response = await axiosInstance.delete(`/packs/${id}`);
+
             console.log(response.data); // Log the server response for debugging.
             toast.success(response.data.message);
             onClose();
@@ -127,7 +129,7 @@ function PackEditModal({ id, onClose, isOpen, mode }) {
                 />
                 <div className="flex space-x-4">  {/* Container for buttons to provide spacing */}
                     <SubmitButton handleSubmit={handleSubmit} />
-                    <Link to={`/pack/${id}/instruments`}>
+                    <Link to={`/packs/${id}/instruments`}>
                         <EditButton />
                     </Link>
                     <DeleteButton handleDelete={handleDelete} />
@@ -141,7 +143,7 @@ function PackEditModal({ id, onClose, isOpen, mode }) {
             <CommonModal
                 isOpen={isOpen}
                 onClose={onClose}
-                title="Edit Pack" // You can customize this per modal instance
+                title={mode === "edit" ? "Edit Pack" : "Add New Pack"}
                 img_url={img_url}
             >
                 {error && <div className="alert alert-danger">{error}</div>}
