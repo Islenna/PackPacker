@@ -1,26 +1,22 @@
-# Use a full Python base image (not slim) for fewer build issues
 FROM python:3.11
 
-# Set the working directory
 WORKDIR /app
 
-# Install system dependencies needed to build some Python packages (like greenlet)
+# Install build dependencies
 RUN apt-get update && apt-get install -y \
     build-essential \
     gcc \
     libffi-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy and install dependencies
+# Copy only requirements first (layer caching)
 COPY requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy app code
+# Copy app code last
 COPY . .
 
-# Expose the port your FastAPI app will run on
 EXPOSE 8000
 
-# Start the app
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
