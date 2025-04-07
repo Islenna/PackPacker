@@ -24,6 +24,7 @@ IMAGES_DIR.mkdir(parents=True, exist_ok=True)
 origins = os.getenv("ALLOWED_ORIGINS", "").split(",")
 
 # Initialize app
+print("🚀 App is starting!") 
 app = FastAPI()
 
 # Hello world route
