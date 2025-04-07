@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends, status, Query
+from fastapi import APIRouter, HTTPException, Depends, status, Query, UploadFile, File
 from typing import List, Optional
 from sqlalchemy.orm import Session, joinedload, aliased
 from config.database import get_db, SessionLocal
@@ -145,6 +145,32 @@ def update_pack(pack_id: int, pack: PackCreate, db: Session = Depends(get_db)):
     db.refresh(db_pack)
     return db_pack
 
+#Add an image to a pack
+@router.patch("/upload-image/{pack_id}", response_model=PackResponse)
+async def upload_pack_image(
+    pack_id: int,
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    user: UserModel = Depends(get_current_user),
+):
+    db_pack = db.query(PackModel).filter(PackModel.id == pack_id).first()
+    if not db_pack:
+        raise HTTPException(status_code=404, detail="Pack not found")
+
+    # Save the file locally for now (can be replaced with cloud upload)
+    filename = f"{pack_id}_{file.filename}"
+    filepath = f"static/uploads/{filename}"
+    with open(filepath, "wb") as buffer:
+        buffer.write(await file.read())
+
+    # Save image path to DB
+    db_pack.img_url = f"/static/uploads/{filename}"
+    db.commit()
+    db.refresh(db_pack)
+
+    return db_pack
+
+#Delete a pack
 @router.delete("/{pack_id}", response_model=PackDelete)
 def delete_pack(pack_id: int, db: Session = Depends(get_db)):
     # Retrieve the pack

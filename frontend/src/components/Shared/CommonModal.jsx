@@ -15,7 +15,7 @@ function CommonModal({ isOpen, onClose, children, title, img_url, onImageChange 
         formData.append("file", file);
 
         try {
-            const res = await axiosInstance.post("/uploads/upload-image/", formData);
+            const res = await axiosInstance.patch("/uploads/upload-image/", formData);
             const uploadedUrl = res.data.img_url;
             onImageChange && onImageChange(uploadedUrl);
             toast.success("Image uploaded successfully!");
@@ -34,7 +34,8 @@ function CommonModal({ isOpen, onClose, children, title, img_url, onImageChange 
 
     return (
         <div className={isOpen ? "fixed inset-0 flex items-center justify-center z-50" : "hidden"}>
-            <div className="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
+            <div className="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5 w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl">
+
                 <div className="flex justify-between items-center pb-4 mb-4 border-b">
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{title}</h3>
                     <button type="button" onClick={onClose} className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white">

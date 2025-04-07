@@ -46,36 +46,39 @@ function CommonTable({
                             </span>
                         </button>
                     </div>
-                    <div className="overflow-x-auto max-h-[530px] max-w-full lg:max-w-5xl mx-auto">
-                    <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                                <tr>
-                                    {columns.map((column) => (
-                                        <th key={column.key} className="px-4 py-3">
-                                            {column.header}
-                                        </th>
-                                    ))}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {data.map((item) => (
-                                    <tr
-                                        key={item.id}
-                                        onClick={() => onRowClick(item)}
-                                        className="border-b hover:bg-gray-100 dark:hover:bg-gray-700 dark:border-gray-700"
-                                    >
+                    <div className="w-full overflow-x-auto">
+                        <div className="min-w-[640px] max-w-full">
+                            <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+
+                                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                    <tr>
                                         {columns.map((column) => (
-                                            <td
-                                                key={column.key}
-                                                className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                                            >
-                                                {item[column.key]}
-                                            </td>
+                                            <th key={column.key} className="px-4 py-3">
+                                                {column.header}
+                                            </th>
                                         ))}
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    {data.map((item) => (
+                                        <tr
+                                            key={item.id}
+                                            onClick={() => onRowClick(item)}
+                                            className="border-b hover:bg-gray-100 dark:hover:bg-gray-700 dark:border-gray-700"
+                                        >
+                                            {columns.map((column) => (
+                                                <td
+                                                    key={column.key}
+                                                    className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                                                >
+                                                    {item[column.key]}
+                                                </td>
+                                            ))}
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>

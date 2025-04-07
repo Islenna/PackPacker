@@ -30,7 +30,7 @@ function ProtectedRoute({ children }) {
 
 function AppRoutes() {
   const navigate = useNavigate()
-  const isIdle = useIdleLogout({ timeout: 20 * 1000 }); // 20 seconds for testing
+  const isIdle = useIdleLogout({ timeout: 1000 * 60 * 5 }); // 5 minutes
   const [hasLoggedOut, setHasLoggedOut] = useState(false);
   const { logout } = useAuth();
 
