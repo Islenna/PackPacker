@@ -26,6 +26,11 @@ origins = os.getenv("ALLOWED_ORIGINS", "").split(",")
 # Initialize app
 app = FastAPI()
 
+# Hello world route
+@app.get("/")
+def root():
+    return {"message": "Hello from PackPacker!"}
+
 # Mount static directory
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
