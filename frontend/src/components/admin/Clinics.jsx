@@ -29,7 +29,7 @@ const Clinics = () => {
 
 
     useEffect(() => {
-        axiosInstance.get('/clinics')
+        axiosInstance.get('/')
             .then(response => {
                 setClinics(response.data);
                 setLoading(false);
