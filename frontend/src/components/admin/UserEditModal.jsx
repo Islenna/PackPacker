@@ -14,7 +14,7 @@ const UserEditModal = ({ user, onClose, onSave }) => {
 
 
     useEffect(() => {
-        axiosInstance.get('/clinics')
+        axiosInstance.get('/clinics/')
             .then(res => setAvailableClinics(res.data))
             .catch(err => console.error("Error loading clinics:", err));
     }, []);
