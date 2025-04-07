@@ -1,22 +1,32 @@
 FROM python:3.11
 
+# Set working directory
 WORKDIR /app
 
-# Install build dependencies
+# Install system dependencies for building
 RUN apt-get update && apt-get install -y \
     build-essential \
     gcc \
     libffi-dev \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy only requirements first (layer caching)
-COPY requirements.txt .
+# Install Poetry
+RUN curl -sSL https://install.python-poetry.org | python3 -
+ENV PATH="/root/.local/bin:$PATH"
 
-RUN pip install --no-cache-dir -r requirements.txt
+# Copy project files
+COPY pyproject.toml poetry.lock* ./
 
-# Copy app code last
+# Install dependencies
+RUN poetry config virtualenvs.create false \
+    && poetry install --no-interaction --no-ansi
+
+# Copy the rest of the code
 COPY . .
 
+# Expose the correct port
 EXPOSE 8000
 
+# Run the FastAPI app
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
