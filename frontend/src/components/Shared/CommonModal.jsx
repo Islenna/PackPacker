@@ -10,7 +10,6 @@ function CommonModal({ isOpen, onClose, children, title, img_url, onImageChange 
     const handleFileChange = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
-        const res = await axiosInstance.patch(uploadEndpoint, formData);
         const uploadedUrl = res.data.img_url;
         onImageChange && onImageChange(uploadedUrl);
         const formData = new FormData();
