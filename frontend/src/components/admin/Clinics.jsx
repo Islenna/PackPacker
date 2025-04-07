@@ -15,7 +15,7 @@ const Clinics = () => {
         setAddModal(!addModal);
         if (addModal) { // it means modal is about to close
             // Refresh the clinic list after adding a new clinic
-            axiosInstance.get('/clinics')
+            axiosInstance.get('/clinics/')
                 .then(response => {
                     setClinics(response.data);
                     setLoading(false);
@@ -29,7 +29,7 @@ const Clinics = () => {
 
 
     useEffect(() => {
-        axiosInstance.get('/')
+        axiosInstance.get('/clinics/')
             .then(response => {
                 setClinics(response.data);
                 setLoading(false);
