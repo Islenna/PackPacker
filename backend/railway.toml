@@ -1,2 +1,10 @@
 [build]
-dockerfile = "Dockerfile"
+builder = "nixpacks"
+buildCommand = "pip install -r requirements.txt"
+nixpacksVersion = "1.34.1"
+
+[build.nixpacksPlan]
+phases.setup = { nixPkgs = ["python311", "gcc"] }
+
+[deploy]
+startCommand = "uvicorn main:app --host 0.0.0.0 --port 8000"
