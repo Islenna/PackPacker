@@ -86,6 +86,7 @@ const Clinics = () => {
                                         <th scope="col" className="px-6 py-3">Name</th>
                                         <th scope="col" className="px-6 py-3">Location</th>
                                         <th scope="col" className="px-6 py-3">Phone</th>
+                                        <th scope="col" className="px-6 py-3">Email</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -99,6 +100,7 @@ const Clinics = () => {
                                             <td className="px-6 py-4">{clinic.name}</td>
                                             <td className="px-6 py-4">{clinic.location}</td>
                                             <td className="px-6 py-4">{clinic.phone}</td>
+                                            <td className="px-6 py-4">{clinic.email}</td>
                                         </tr>
                                     ))}
                                 </tbody>

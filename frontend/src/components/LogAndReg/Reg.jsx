@@ -3,6 +3,8 @@ import axiosInstance from '../../utils/axiosInstance';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { toast } from 'react-toastify';
+
 
 function Reg({ toggleForm }) {
     const navigate = useNavigate();
@@ -31,10 +33,11 @@ function Reg({ toggleForm }) {
             return;
         }
 
-        if (!/^([\w-\.]+@sagecenterstest\.com)?$/i.test(regEmail)) {
+        if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(regEmail)) {
             setRegError('Invalid email. Please enter a valid email.');
             return;
         }
+
 
         const payload = {
             email: regEmail.toLowerCase(),
@@ -42,15 +45,24 @@ function Reg({ toggleForm }) {
             confirmPassword: confirmPassword,
         };
 
-        axios
-            .post('http://localhost:8000/api/user/register', payload, { withCredentials: true })
+        axiosInstance.post('/user/register', payload, { withCredentials: true })
             .then((res) => {
-                login();
-                navigate('/bloodfinder');
+                if (res.data && res.data.access_token) {
+                    localStorage.setItem("usertoken", res.data.access_token);
+                    login(res.data.access_token, res.data.user);
+                    toast.success("Login successful!");
+                    navigate('/procedures');
+                }
             })
             .catch((err) => {
-                setRegError('An error occurred while submitting the form');
-                console.log(err);
+                console.error("Login failed:", err.response || err.message);
+                if (err.response?.status === 401) {
+                    toast.error("Incorrect email or password.");
+                } else if (err.response?.status === 422) {
+                    toast.error("Please enter a valid email and password.");
+                } else {
+                    toast.error("Something went wrong. Please try again.");
+                }
             });
     };
 

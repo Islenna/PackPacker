@@ -4,6 +4,8 @@ import os
 from sqlalchemy import create_engine, text, exc
 from sqlalchemy.ext.declarative import DeclarativeMeta, declarative_base
 from sqlalchemy.orm import sessionmaker
+from dotenv import load_dotenv
+load_dotenv()
 Base = declarative_base()
 
 
@@ -25,7 +27,7 @@ def create_database_if_not_exists(engine, db_name) -> None:
 DB_USER: str = os.getenv("DB_USER", "root")
 DB_PASSWORD: str = os.getenv("DB_PASSWORD", "root")
 DB_HOST: str = os.getenv("DB_HOST", "localhost")
-DB_NAME: str = "PackPacker"
+DB_NAME: str = os.getenv("DB_NAME", "PackPacker")
 
 # Connect to MySQL server without specifying a database
 root_engine = create_engine(f"mysql+mysqlconnector://{DB_USER}:{DB_PASSWORD}@{DB_HOST}")

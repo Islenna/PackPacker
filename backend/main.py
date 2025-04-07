@@ -16,9 +16,12 @@ from models.Procedure import Procedure
 BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
 IMAGES_DIR = STATIC_DIR / "images"
+import os
+
 
 # Ensure static and images directories exist
 IMAGES_DIR.mkdir(parents=True, exist_ok=True)
+origins = os.getenv("ALLOWED_ORIGINS", "").split(",")
 
 # Initialize app
 app = FastAPI()
@@ -37,7 +40,7 @@ def startup_event():
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"]

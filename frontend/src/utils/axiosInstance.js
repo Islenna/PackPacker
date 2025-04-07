@@ -1,8 +1,11 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 
+
+
 const axiosInstance = axios.create({
-    baseURL: "http://localhost:8000/api",
+    baseURL: import.meta.env.VITE_API_BASE_URL, // Base URL for the API
+    timeout: 10000, // Request timeout in milliseconds
     withCredentials: true, // 🔑 Include cookies like refresh_token
 });
 
