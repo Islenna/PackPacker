@@ -18,7 +18,7 @@ function ProcedureEditModal({ id, onClose, isOpen, mode }) {
 
             const getProcedure = async () => {
                 try {
-                    const response = await axiosInstance.get(`http://localhost:8000/api/procedures/${id}`);
+                    const response = await axiosInstance.get(`/procedures/${id}`);
                     const procedureData = response.data;
                     setName(procedureData.name);
                     setDescription(procedureData.description);
@@ -54,8 +54,8 @@ function ProcedureEditModal({ id, onClose, isOpen, mode }) {
         }
         // Depending on the mode, choose the appropriate URL and HTTP method
         const url = mode === "edit" ?
-            `http://localhost:8000/api/procedures/${id}` :
-            'http://localhost:8000/api/procedures/new';
+            `/procedures/${id}` :
+            '/procedures/new';
 
         const method = mode === "edit" ? 'patch' : 'post';
 

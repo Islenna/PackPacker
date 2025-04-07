@@ -48,7 +48,7 @@ function CommonModal({ isOpen, onClose, children, title, img_url, onImageChange 
                 <div className="relative flex justify-center mb-4">
                     <div className="relative w-24 h-24">
                         <img
-                            src={img_url ? `http://localhost:8000${img_url}` : logo}
+                            src={img_url ? `${img_url}` : logo}
                             alt="Modal content"
                             className="w-full h-full object-cover rounded-md shadow-md"
                         />
@@ -57,7 +57,7 @@ function CommonModal({ isOpen, onClose, children, title, img_url, onImageChange 
                         {/* Zoom/View Icon - Top Left */}
                         <button
                             className="absolute top-1 left-1 bg-white bg-opacity-80 rounded-full p-1 shadow hover:bg-opacity-100 transition"
-                            onClick={() => window.open(`http://localhost:8000${img_url}`, "_blank")}
+                            onClick={() => window.open(`${img_url}`, "_blank")}
                             title="View full image"
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">

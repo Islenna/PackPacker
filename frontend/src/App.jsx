@@ -33,7 +33,6 @@ function AppRoutes() {
   const isIdle = useIdleLogout({ timeout: 20 * 1000 }); // 20 seconds for testing
   const [hasLoggedOut, setHasLoggedOut] = useState(false);
   const { logout } = useAuth();
-  console.log("API BASE URL:", import.meta.env.VITE_API_BASE_URL);
 
 
   useEffect(() => {

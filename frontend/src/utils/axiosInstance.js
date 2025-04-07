@@ -8,7 +8,6 @@ const axiosInstance = axios.create({
     timeout: 10000, // Request timeout in milliseconds
     withCredentials: true, // 🔑 Include cookies like refresh_token
 });
-console.log("API BASE URL:", import.meta.env.VITE_API_BASE_URL);
 
 // Attach token to every request
 axiosInstance.interceptors.request.use(

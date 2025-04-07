@@ -14,7 +14,7 @@ function Procedure() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await axiosInstance.get(`http://localhost:8000/api/procedures/${id}/get-equipment`);
+                const res = await axiosInstance.get(`/procedures/${id}/get-equipment`);
                 setProcedure(res.data.procedure);
                 setEquipment(res.data);
             } catch (err) {

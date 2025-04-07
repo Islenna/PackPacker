@@ -20,7 +20,7 @@ function AddInstrumentForm({ onClose, type }) {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await axiosInstance.get(`http://localhost:8000/api/instruments?page=${currentPage}&items_per_page=${itemsPerPage}&search=${searchTerm}`);
+                const res = await axiosInstance.get(`instruments?page=${currentPage}&items_per_page=${itemsPerPage}&search=${searchTerm}`);
 
                 // Filter the data based on partial match of name or description
                 const filteredData = res.data.filter(instrument => {

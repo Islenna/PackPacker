@@ -25,7 +25,7 @@ function Log({ toggleForm }) {
             password: loginPassword,
         };
 
-        axiosInstance.post('http://localhost:8000/api/user/login', payload)
+        axiosInstance.post('/user/login', payload)
             .then((res) => {
                 if (res.data && res.data.access_token) {
                     localStorage.setItem("usertoken", res.data.access_token);

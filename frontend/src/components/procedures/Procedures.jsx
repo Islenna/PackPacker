@@ -62,8 +62,8 @@ function Procedures() {
         try {
             const query = `page=${currentPage}&items_per_page=${itemsPerPage}`;
             const url = searchTerm?.trim()
-                ? `http://localhost:8000/api/procedures/pages?${query}&search=${encodeURIComponent(searchTerm)}`
-                : `http://localhost:8000/api/procedures/pages?${query}`;
+                ? `/procedures/pages?${query}&search=${encodeURIComponent(searchTerm)}`
+                : `/procedures/pages?${query}`;
 
             const res = await axiosInstance.get(url, {
                 headers: {
