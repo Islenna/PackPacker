@@ -10,28 +10,9 @@ function CommonModal({ isOpen, onClose, children, title, img_url, onImageChange 
     const handleFileChange = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
-        const uploadedUrl = res.data.img_url;
-        onImageChange && onImageChange(uploadedUrl);
-        const formData = new FormData();
-        formData.append("file", file);
-
-        try {
-            const res = await axiosInstance.patch("/uploads/upload-image/", formData);
-            const uploadedUrl = res.data.img_url;
-            onImageChange && onImageChange(uploadedUrl);
-            toast.success("Image uploaded successfully!");
-        } catch (err) {
-            const status = err?.response?.status || err?.request?.status;
-
-            if (status === 413) {
-                toast.error("Image too large. Please upload a smaller image (max 5MB).");
-            } else {
-                console.error("Image upload failed:", err);
-                toast.error("Upload failed. Try again.");
-            }
-        }
-
+        onImageChange && onImageChange(file); 
     };
+    
 
     return (
         <div className={isOpen ? "fixed inset-0 flex items-center justify-center z-50" : "hidden"}>
