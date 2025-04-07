@@ -1,12 +1,13 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
 
-
-// https://vitejs.dev/config/
 export default defineConfig({
   server: {
-    host: 'localhost', // Change this to your desired hostname or IP address
-    port: 3000, // Change this to your desired port number
+    host: 'localhost',
+    port: 3000,
+  },
+  define: {
+    'import.meta.env.VITE_API_BASE_URL': JSON.stringify(process.env.VITE_API_BASE_URL),
   },
   plugins: [react()],
 })
