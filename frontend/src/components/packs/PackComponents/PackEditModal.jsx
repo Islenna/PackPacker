@@ -150,6 +150,13 @@ function PackEditModal({ id, onClose, isOpen, mode }) {
                     try {
                         const formData = new FormData();
                         formData.append('file', file); // This is the File object from the <input>
+
+                        const response = await axiosInstance.patch(`/packs/upload-image/${id}`, formData, {
+                            headers: {
+                                'Content-Type': 'multipart/form-data',
+                            },
+                        });
+
                         toast.success("Pack image updated.");
                         setImg_url(response.data.img_url); // Update preview in modal
                     } catch (err) {
@@ -161,7 +168,8 @@ function PackEditModal({ id, onClose, isOpen, mode }) {
                             toast.error("Upload failed. Try again.");
                         }
                     }
-                }}                
+                }}
+
             >
                 {error && <div className="alert alert-danger">{error}</div>}
                 {modalContent}
