@@ -46,8 +46,8 @@ function CommonTable({
                             </span>
                         </button>
                     </div>
-                    <div className="table-container" style={{ width: '800px', height: '530px', overflowY: 'auto' }}>
-                        <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                    <div className="overflow-x-auto max-h-[530px] max-w-full lg:max-w-5xl mx-auto">
+                    <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                 <tr>
                                     {columns.map((column) => (
