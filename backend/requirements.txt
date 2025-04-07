@@ -7,7 +7,7 @@ colorama==0.4.6 ; python_version >= "3.11" and python_version < "4.0" and platfo
 databases==0.8.0 ; python_version >= "3.11" and python_version < "4.0"
 ecdsa==0.19.1 ; python_version >= "3.11" and python_version < "4.0"
 fastapi==0.103.1 ; python_version >= "3.11" and python_version < "4.0"
-greenlet = ">=2.0.2,<3.0.0"
+greenlet>=2.0.2,<3.0.0
 h11==0.14.0 ; python_version >= "3.11" and python_version < "4.0"
 idna==3.4 ; python_version >= "3.11" and python_version < "4.0"
 mysql-connector-python==8.1.0 ; python_version >= "3.11" and python_version < "4.0"
