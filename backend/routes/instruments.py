@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends, status, Query
+from fastapi import APIRouter, HTTPException, Depends, status, Query, File, UploadFile
 from typing import List
 from sqlalchemy.orm import Session
 from config.database import get_db, SessionLocal
@@ -107,6 +107,27 @@ def update_instrument(instrument_id: int, instrument: InstrumentCreate, db: Sess
     db.refresh(db_instrument)
     return db_instrument
 
+@router.patch("/upload-image/{instrument_id}", response_model=InstrumentResponse)
+async def upload_instrument_image(
+    instrument_id: int,
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    user: UserModel = Depends(get_current_user),
+):
+    db_instrument = db.query(InstrumentModel).filter(InstrumentModel.id == instrument_id).first()
+    if not db_instrument:
+        raise HTTPException(status_code=404, detail="Instrument not found")
+
+    filename = f"{instrument_id}_{file.filename}"
+    filepath = f"static/uploads/{filename}"
+    with open(filepath, "wb") as buffer:
+        buffer.write(await file.read())
+
+    db_instrument.img_url = f"/static/uploads/{filename}"
+    db.commit()
+    db.refresh(db_instrument)
+
+    return db_instrument
 
 @router.delete("/{instrument_id}", response_model=MessageResponse)
 async def delete_instrument(instrument_id: int, db: Session = Depends(get_db)):

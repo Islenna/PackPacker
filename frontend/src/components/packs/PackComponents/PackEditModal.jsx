@@ -149,16 +149,9 @@ function PackEditModal({ id, onClose, isOpen, mode }) {
                 onImageChange={async (file) => {
                     try {
                         const formData = new FormData();
-                        formData.append('file', file); // This should be a real File object
-
-                        const response = await axiosInstance.patch(`/packs/upload-image/${id}`, formData, {
-                            headers: {
-                                'Content-Type': 'multipart/form-data',
-                            },
-                        });
-
+                        formData.append('file', file); // This is the File object from the <input>
                         toast.success("Pack image updated.");
-                        setImg_url(response.data.img_url); // optional, if you want immediate UI update
+                        setImg_url(response.data.img_url); // Update preview in modal
                     } catch (err) {
                         const status = err?.response?.status || err?.request?.status;
                         if (status === 413) {
@@ -168,17 +161,7 @@ function PackEditModal({ id, onClose, isOpen, mode }) {
                             toast.error("Upload failed. Try again.");
                         }
                     }
-                }}
-                onImageDelete={async () => {
-                    try {
-                        const response = await axiosInstance.delete(`/packs/delete-image/${id}`);
-                        setImg_url(''); // Clear the image URL in the state
-                        toast.success("Pack image deleted.");
-                    } catch (err) {
-                        console.error("Image deletion failed:", err);
-                        toast.error("Deletion failed. Try again.");
-                    }
-                }}
+                }}                
             >
                 {error && <div className="alert alert-danger">{error}</div>}
                 {modalContent}
