@@ -7,7 +7,7 @@ colorama==0.4.6 ; python_version >= "3.11" and python_version < "4.0" and platfo
 databases==0.8.0 ; python_version >= "3.11" and python_version < "4.0"
 ecdsa==0.19.1 ; python_version >= "3.11" and python_version < "4.0"
 fastapi==0.103.1 ; python_version >= "3.11" and python_version < "4.0"
-greenlet>=2.0.2,<3.0.0
+greenlet==2.0.2
 h11==0.14.0 ; python_version >= "3.11" and python_version < "4.0"
 idna==3.4 ; python_version >= "3.11" and python_version < "4.0"
 mysql-connector-python==8.1.0 ; python_version >= "3.11" and python_version < "4.0"
@@ -15,6 +15,7 @@ passlib[bcrypt]==1.7.4 ; python_version >= "3.11" and python_version < "4.0"
 protobuf==4.21.12 ; python_version >= "3.11" and python_version < "4.0"
 pyasn1==0.4.8 ; python_version >= "3.11" and python_version < "4.0"
 pydantic-core==2.6.3 ; python_version >= "3.11" and python_version < "4.0"
+pydantic[email]
 pydantic==2.3.0 ; python_version >= "3.11" and python_version < "4.0"
 python-dotenv==1.1.0 ; python_version >= "3.11" and python_version < "4.0"
 python-jose==3.4.0 ; python_version >= "3.11" and python_version < "4.0"
