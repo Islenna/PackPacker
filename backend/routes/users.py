@@ -77,7 +77,7 @@ def login_user(user: UserCreate, response: Response, db: Session = Depends(get_d
         value=refresh_token,
         httponly=True,
         secure=True,
-        samesite="strict",
+        samesite="none",
         max_age=60 * 60 * 24 * 7
     )
 
