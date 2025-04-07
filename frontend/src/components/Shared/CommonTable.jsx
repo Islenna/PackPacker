@@ -1,6 +1,15 @@
-import React, { useState } from 'react';
+import React from 'react';
 import SearchBar from '../Search/Search';
 import Pagination from './Pagination';
+import {
+    tableContainer,
+    tableBase,
+    tableHeader,
+    tableHeaderCell,
+    tableRow,
+    tableCell
+} from '../../utils/classNames'; // Adjust this import based on your file structure
+
 function CommonTable({
     data,
     columns,
@@ -13,20 +22,21 @@ function CommonTable({
     onSearch,
     onPageChange,
     searchFields
-}
-) {
+}) {
     return (
         <section className="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
-            <div className="mx-auto max-w-screen-xl px-4 lg:px-12">
+            <div className="mx-auto w-full max-w-full px-4 sm:px-6 md:px-8 lg:px-12">
                 <div className="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
                     <h1 className="text-2xl font-semibold">{title}</h1>
+
                     <div className="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
                         <div className="w-full md:w-1/2">
                             <SearchBar onSearch={onSearch} className="mb-4" />
                         </div>
+
                         <button
-                            onClick={onAdd ? onAdd : toggleModal}
-                            className="inline-flex items-center justify-center p-0.5  mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 mb-4" // Added mb-4 for spacing
+                            onClick={onAdd}
+                            className="inline-flex items-center justify-center p-0.5 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 mb-4"
                         >
                             <svg
                                 className="h-3.5 w-3.5 mr-2"
@@ -46,43 +56,38 @@ function CommonTable({
                             </span>
                         </button>
                     </div>
-                    <div className="w-full overflow-x-auto">
-                        <div className="min-w-[640px] max-w-full">
-                            <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
 
-                                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                                    <tr>
+                    <div className={tableContainer}>
+                        <table className={tableBase}>
+                            <thead className={tableHeader}>
+                                <tr>
+                                    {columns.map((column) => (
+                                        <th key={column.key} className={tableHeaderCell}>
+                                            {column.header}
+                                        </th>
+                                    ))}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {data.map((item) => (
+                                    <tr
+                                        key={item.id}
+                                        onClick={() => onRowClick(item)}
+                                        className={tableRow}
+                                    >
                                         {columns.map((column) => (
-                                            <th key={column.key} className="px-4 py-3">
-                                                {column.header}
-                                            </th>
+                                            <td key={column.key} className={tableCell}>
+                                                {item[column.key]}
+                                            </td>
                                         ))}
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    {data.map((item) => (
-                                        <tr
-                                            key={item.id}
-                                            onClick={() => onRowClick(item)}
-                                            className="border-b hover:bg-gray-100 dark:hover:bg-gray-700 dark:border-gray-700"
-                                        >
-                                            {columns.map((column) => (
-                                                <td
-                                                    key={column.key}
-                                                    className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                                                >
-                                                    {item[column.key]}
-                                                </td>
-                                            ))}
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
-            {/* Pagination controls */}
+
             <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}
