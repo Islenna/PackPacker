@@ -9,13 +9,16 @@ from typing import Optional
 from repositories.repositories import query_database_with_search, calculate_total_records_with_search
 from utils.dependencies import get_current_user
 from models.User import User as UserModel
-
+import os
 
 router = APIRouter(
     prefix="/instruments",
     tags=["Instruments"],
     dependencies=[Depends(get_current_user)],  # Ensure user is authenticated for all endpoints in this router
 )
+
+ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png"}
+MAX_FILE_SIZE_MB = 5  # Maximum file size in MB
 
 # Create a new instrument
 @router.post("/new", response_model=InstrumentResponse, status_code=status.HTTP_201_CREATED)
@@ -107,6 +110,7 @@ def update_instrument(instrument_id: int, instrument: InstrumentCreate, db: Sess
     db.refresh(db_instrument)
     return db_instrument
 
+# Upload an image for an instrument
 @router.patch("/upload-image/{instrument_id}", response_model=InstrumentResponse)
 async def upload_instrument_image(
     instrument_id: int,
@@ -118,6 +122,10 @@ async def upload_instrument_image(
     if not db_instrument:
         raise HTTPException(status_code=404, detail="Instrument not found")
 
+    contents = await file.read()
+    file_size_mb = len(contents) / (1024 * 1024)
+    if file_size_mb > MAX_FILE_SIZE_MB:
+        raise HTTPException(status_code=413, detail="Image too large. Maximum size is 5MB.")
     filename = f"{instrument_id}_{file.filename}"
     filepath = f"static/uploads/{filename}"
     with open(filepath, "wb") as buffer:

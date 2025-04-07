@@ -10,6 +10,7 @@ from models.relationships.packs_and_instruments import PacksAndInstruments
 from models.Instrument import Instrument
 from utils.dependencies import get_current_user
 from models.User import User as UserModel
+import os
 
 
 router = APIRouter(
@@ -17,6 +18,8 @@ router = APIRouter(
     tags=["Packs"],
     dependencies=[Depends(get_current_user)],  # Ensure user is authenticated for all endpoints in this router
 )
+ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png"}
+MAX_FILE_SIZE_MB = 5  # Maximum file size in MB
 
 #Create a new pack
 @router.post("/new", response_model=PackResponse, status_code=status.HTTP_201_CREATED)
@@ -146,24 +149,33 @@ def update_pack(pack_id: int, pack: PackCreate, db: Session = Depends(get_db)):
     return db_pack
 
 #Add an image to a pack
-@router.patch("/upload-image/{pack_id}", response_model=PackResponse)
+@router.patch("/upload-image/{pack_id}")
 async def upload_pack_image(
     pack_id: int,
     file: UploadFile = File(...),
     db: Session = Depends(get_db),
-    user: UserModel = Depends(get_current_user),
+    user: UserModel = Depends(get_current_user)
 ):
+    ext = os.path.splitext(file.filename)[1].lower()
+    if ext not in ALLOWED_EXTENSIONS:
+        raise HTTPException(status_code=400, detail="Only .jpg, .jpeg, and .png files are allowed.")
+
+    contents = await file.read()
+    file_size_mb = len(contents) / (1024 * 1024)
+    if file_size_mb > MAX_FILE_SIZE_MB:
+        raise HTTPException(status_code=413, detail="Image too large. Maximum size is 5MB.")
+
+    filename = f"{pack_id}_{file.filename.replace(' ', '_')}"
+    filepath = f"static/uploads/{filename}"
+    
+    # Rewind file pointer since we already read it
+    with open(filepath, "wb") as buffer:
+        buffer.write(contents)
+
     db_pack = db.query(PackModel).filter(PackModel.id == pack_id).first()
     if not db_pack:
         raise HTTPException(status_code=404, detail="Pack not found")
 
-    # Save the file locally for now (can be replaced with cloud upload)
-    filename = f"{pack_id}_{file.filename}"
-    filepath = f"static/uploads/{filename}"
-    with open(filepath, "wb") as buffer:
-        buffer.write(await file.read())
-
-    # Save image path to DB
     db_pack.img_url = f"/static/uploads/{filename}"
     db.commit()
     db.refresh(db_pack)

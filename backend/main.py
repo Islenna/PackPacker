@@ -16,6 +16,7 @@ from models.Procedure import Procedure
 BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
 IMAGES_DIR = STATIC_DIR / "images"
+(STATIC_DIR / "uploads").mkdir(parents=True, exist_ok=True)
 import os
 
 

@@ -10,9 +10,23 @@ function CommonModal({ isOpen, onClose, children, title, img_url, onImageChange 
     const handleFileChange = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
-        onImageChange && onImageChange(file); 
+    
+        const allowedTypes = ['image/jpeg', 'image/png'];
+        if (!allowedTypes.includes(file.type)) {
+            toast.error("Only JPG and PNG images are allowed.");
+            return;
+        }
+    
+        const maxSizeMB = 5;
+        if (file.size > maxSizeMB * 1024 * 1024) {
+            toast.error("Image too large. Maximum size is 5MB.");
+            return;
+        }
+    
+        onImageChange && onImageChange(file);
     };
     
+
 
     return (
         <div className={isOpen ? "fixed inset-0 flex items-center justify-center z-50" : "hidden"}>
@@ -31,9 +45,9 @@ function CommonModal({ isOpen, onClose, children, title, img_url, onImageChange 
                 <div className="relative flex justify-center mb-4">
                     <div className="relative w-24 h-24">
                         <img
-                            src={img_url ? `${img_url}` : logo}
-                            alt="Modal content"
-                            className="w-full h-full object-cover rounded-md shadow-md"
+                            src={img_url ? `${import.meta.env.VITE_API_BASE_URL.replace('/api', '')}${img_url}` : logo}
+                        alt="Modal content"
+                        className="w-full h-full object-cover rounded-md shadow-md"
                         />
 
 

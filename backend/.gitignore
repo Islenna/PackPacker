@@ -4,3 +4,6 @@ __pycache__/
 
 # Environment variables
 .env
+
+# Uploaded media (e.g., user-uploaded pack/instrument images)
+static/uploads/
