@@ -44,7 +44,7 @@ def create_pack(
 
     return db_pack
 
-
+#Get paginated packs.
 @router.get("/pages")
 async def get_paginated_packs(
     page: int = Query(1, ge=1),
@@ -53,22 +53,24 @@ async def get_paginated_packs(
     db: Session = Depends(get_db),
     user: UserModel = Depends(get_current_user),
 ):
-
     # Calculate offset based on page number.
     offset = (page - 1) * items_per_page
     clinic_ids = [clinic.id for clinic in user.clinics]
+
+    # Start base query scoped to user clinics
     query = db.query(PackModel).filter(PackModel.clinic_id.in_(clinic_ids))
-    # Depending on whether a search term was provided, we will use different query functions.
+
+    # Apply search if present
     if search:
-        packs = query_pack_database_with_search(db, offset, items_per_page, search)  # Pass the session object (db)
-        total_records = calculate_total_pack_records_with_search(db, search)  # Pass the session object (db)
-    else:
-        packs = query_pack_database(db, offset, items_per_page)  # Pass the session object (db)
-        total_records = calculate_total_pack_records(db)  # Pass the session object (db)
+        query = query.filter(
+            PackModel.name.ilike(f"%{search}%") |
+            PackModel.description.ilike(f"%{search}%")
+        )
 
+    total_records = query.count()
+    packs = query.offset(offset).limit(items_per_page).all()
 
-
-    # Calculate the total number of pages.
+    # Calculate the total number of pages
     total_pages = (total_records + items_per_page - 1) // items_per_page
 
     return {
@@ -77,6 +79,7 @@ async def get_paginated_packs(
         "total_pages": total_pages,
         "total_records": total_records,
     }
+
 
 # Get a pack and its instruments
 @router.get("/{pack_id}", response_model=PacksWithInstrumentsResponse)
