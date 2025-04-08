@@ -12,7 +12,7 @@ router = APIRouter(
     prefix="/logs",
     tags=["Activity Logs"],
 )
-@router.get("/", response_model=List[ActivityLogResponse])
+@router.get("", response_model=List[ActivityLogResponse])
 def get_logs(
     db: Session = Depends(get_db),
     user: UserModel = Depends(get_current_user),

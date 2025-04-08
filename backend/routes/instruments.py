@@ -39,13 +39,10 @@ def create_instrument(
         img_url=instrument.img_url,
         manufacturer=instrument.manufacturer,
         serial_number=instrument.serial_number,
-        clinic_id=user.clinics[0].id  # ✅ Assign to user’s clinic
     )
 
     db.add(db_instrument)
     db.commit()
-    db.refresh(db_instrument)
-
     log_activity(
         db=db,
         user_id=user.id,
@@ -54,6 +51,8 @@ def create_instrument(
         target_id=db_instrument.id,
         message=f"Created instrument: {db_instrument.name}"
     )
+    db.refresh(db_instrument)
+
 
     return db_instrument
 
@@ -75,7 +74,6 @@ async def get_paginated_instruments(
     user: UserModel = Depends(get_current_user),
 ):
     offset = (page - 1) * items_per_page
-    clinic_ids = [clinic.id for clinic in user.clinics]
     # Modify your query to include the search logic if a search term is provided
     
     if search:
@@ -188,7 +186,7 @@ async def delete_instrument(
             target_id=instrument_id,
             message=f"Deleted instrument: {db_instrument.name}"
         )
-        
+
     except Exception as e:
         # Rollback the session in case of error
         db.rollback()
