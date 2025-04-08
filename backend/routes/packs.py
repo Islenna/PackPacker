@@ -11,6 +11,7 @@ from models.Instrument import Instrument
 from utils.dependencies import get_current_user
 from models.User import User as UserModel
 import os
+from utils.activity_logger import log_activity
 
 
 router = APIRouter(
@@ -40,6 +41,14 @@ def create_pack(
 
     db.add(db_pack)
     db.commit()
+    log_activity(
+    db=db,
+    user_id=user.id,
+    action="create",  # or "update"/"delete"
+    target_type="pack",
+    target_id=db_pack.id,
+    message=f"Created pack: {db_pack.name}"
+)
     db.refresh(db_pack)
 
     return db_pack
@@ -140,7 +149,12 @@ def get_packs(db: Session = Depends(get_db)):
 
 #Update a pack
 @router.patch("/{pack_id}", response_model=PackResponse)
-def update_pack(pack_id: int, pack: PackCreate, db: Session = Depends(get_db)):
+def update_pack(
+    pack_id: int, 
+    pack: PackCreate, 
+    db: Session = Depends(get_db),
+    user: UserModel = Depends(get_current_user)
+):
     db_pack = db.query(PackModel).filter(PackModel.id == pack_id).first()
     if not db_pack:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Pack not found")
@@ -149,6 +163,15 @@ def update_pack(pack_id: int, pack: PackCreate, db: Session = Depends(get_db)):
     db_pack.img_url = pack.img_url # Update the img_url field
     db.commit()
     db.refresh(db_pack)
+
+    log_activity(
+        db=db,
+        user_id=user.id,
+        action="update",
+        target_type="pack",
+        target_id=pack_id,
+        message=f"Updated pack: {db_pack.name}"
+    )
     return db_pack
 
 #Add an image to a pack
@@ -183,11 +206,19 @@ async def upload_pack_image(
     db.commit()
     db.refresh(db_pack)
 
+    log_activity(
+        db=db,
+        user_id=user.id,
+        action="update",
+        target_type="pack",
+        target_id=pack_id,
+        message=f"Updated pack image: {db_pack.name}"
+    )
     return db_pack
 
 #Delete a pack
 @router.delete("/{pack_id}", response_model=PackDelete)
-def delete_pack(pack_id: int, db: Session = Depends(get_db)):
+def delete_pack(pack_id: int, db: Session = Depends(get_db),user: UserModel = Depends(get_current_user)):
     # Retrieve the pack
     db_pack = db.query(PackModel).filter(PackModel.id == pack_id).first()
     if not db_pack:
@@ -201,17 +232,25 @@ def delete_pack(pack_id: int, db: Session = Depends(get_db)):
 
         # Delete the main pack
         db.delete(db_pack)
-
+        
         # Commit the transaction
         db.commit()
-        
+
+        log_activity(
+            db=db,
+            user_id=user.id,
+            action="delete",
+            target_type="pack",
+            target_id=pack_id,
+            message=f"Deleted pack: {db_pack.name}"
+        )
+
         return {
             "name": db_pack.name,
             "img_url": db_pack.img_url,
             "message": "Pack successfully deleted"
-}
-
+        }
 
     except Exception as e:
-        db.rollback()  # Explicitly rolling back in case of error
+        db.rollback()
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))

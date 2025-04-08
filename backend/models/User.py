@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String, DateTime, func
 from sqlalchemy.orm import relationship
 from config.database import Base
 from models.relationships.users_and_clinics import users_and_clinics
+
 class User(Base):
     __tablename__ = "users"
 
@@ -12,3 +13,4 @@ class User(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
     clinics = relationship("Clinic", secondary=users_and_clinics, back_populates="users")
+    logs = relationship("ActivityLog", back_populates="user")

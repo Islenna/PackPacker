@@ -3,7 +3,7 @@ import AddInstrumentForm from './AddInstrumentForm'
 import PackEditInstrumentModal from '../../packs/PackComponents/PackEditInstrumentModal';
 import ProcedureEditInstrumentModal from '../../procedures/ProcedureComponents/ProcedureEditInstrumentModal';
 
-function InstrumentTable({ instruments = [], parentId, type, onRefresh }) {
+function InstrumentTable({ instruments = [], parentId, type, onRefresh, toggleTable }) {
     const [modal, setModal] = useState(false);
     const [editModal, setEditModal] = useState(false);
     const [packModal, setPackModal] = useState(false);
@@ -51,6 +51,18 @@ function InstrumentTable({ instruments = [], parentId, type, onRefresh }) {
                         </div>
                         <div className="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
                             <div className="flex items-center space-x-3 w-full md:w-auto">
+                                <div className="flex gap-2">
+                                {/* Toggle Table Button */}
+                                <button
+                                    onClick={toggleTable}
+                                    className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md bg-gradient-to-br from-indigo-500 to-purple-500 text-white hover:from-indigo-600 hover:to-purple-600 transition"
+                                >
+                                    <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M4 6h12M4 10h12M4 14h12" />
+                                    </svg>
+                                    View Packs
+                                </button>
+                                </div>
                                 <div className="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
                                     <button onClick={toggleAddModal} className="relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">                                <svg className="h-3.5 w-3.5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                         <path clipRule="evenodd" fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />

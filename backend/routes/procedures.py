@@ -12,7 +12,7 @@ from models.Pack import Pack
 from utils.dependencies import get_current_user
 from typing import Optional
 from models.User import User as UserModel
-
+from utils.activity_logger import log_activity
 
 router = APIRouter(
     prefix="/procedures",
@@ -39,6 +39,15 @@ def create_procedure(
     db.add(db_procedure)
     db.commit()
     db.refresh(db_procedure)
+
+    log_activity(
+    db=db,
+    user_id=user.id,
+    action="create",
+    target_type="procedure",
+    target_id=db_procedure.id,
+    message=f"Created procedure: {db_procedure.name}"
+)
 
     return db_procedure
 
@@ -91,42 +100,53 @@ def get_procedure(procedure_id: int, db: Session = Depends(get_db)):
 
 #Update a procedure
 @router.patch("/{procedure_id}", response_model=ProcedureResponse)
-def update_procedure(procedure_id: int, procedure: ProcedureCreate, db: Session = Depends(get_db)):
+def update_procedure(procedure_id: int, procedure: ProcedureCreate, db: Session = Depends(get_db), user: UserModel = Depends(get_current_user)):
     db_procedure = db.query(ProcedureModel).filter(ProcedureModel.id == procedure_id).first()
     if not db_procedure:
         raise HTTPException(status_code = status.HTTP_404_NOT_FOUND, detail = "Procedure not found")
+
     db_procedure.name = procedure.name
     db_procedure.description = procedure.description
     db.commit()
     db.refresh(db_procedure)
+
+    log_activity(
+        db=db,
+        user_id=user.id,
+        action="update",
+        target_type="procedure",
+        target_id=procedure_id,
+        message=f"Updated procedure: {db_procedure.name}"
+    )
+
     return db_procedure
+
 
 #Delete a procedure
 @router.delete("/{procedure_id}", response_model=DeleteResponse)
-def delete_procedure(procedure_id: int, db: Session = Depends(get_db)):
+def delete_procedure(procedure_id: int, db: Session = Depends(get_db), user: UserModel = Depends(get_current_user)):
     db_procedure = db.query(ProcedureModel).filter(ProcedureModel.id == procedure_id).first()
     if not db_procedure:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Procedure not found")
 
     try:
-        # Delete associated instruments
-        associated_instruments = db.query(InstrumentsAndProcedures).filter(InstrumentsAndProcedures.procedure_id == procedure_id).all()
-        for instrument in associated_instruments:
-            db.delete(instrument)
-
-        # Delete associated packs
-        associated_packs = db.query(PacksAndProcedures).filter(PacksAndProcedures.procedure_id == procedure_id).all()
-        for pack in associated_packs:
-            db.delete(pack)
-
-        # After removing all associations, delete the main procedure
+        # Delete associated instruments and packs
+        db.query(InstrumentsAndProcedures).filter_by(procedure_id=procedure_id).delete()
+        db.query(PacksAndProcedures).filter_by(procedure_id=procedure_id).delete()
         db.delete(db_procedure)
-
-        # Commit all changes at once
         db.commit()
 
+        log_activity(
+            db=db,
+            user_id=user.id,
+            action="delete",
+            target_type="procedure",
+            target_id=procedure_id,
+            message=f"Deleted procedure: {db_procedure.name}"
+        )
+
     except Exception as e:
-        db.rollback()  # Explicitly rolling back in case of error
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+        db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
 
     return {"message": "Successfully deleted"}

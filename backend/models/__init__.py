@@ -3,6 +3,8 @@ from .Clinic import Clinic
 from .Instrument import Instrument
 from .Pack import Pack
 from .Procedure import Procedure
+from .Logging import ActivityLog
+
 
 # Relationship tables
 from .relationships.instruments_and_procedures import InstrumentsAndProcedures  

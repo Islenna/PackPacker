@@ -61,6 +61,7 @@ from routes.instruments import router as InstrumentRouter
 from routes.procedures import router as ProcedureRouter
 from routes.relationships import router as RelationshipRouter
 from routes.uploads import router as UploadRouter
+from routes.logs import router as LogRouter
 
 # Register routes
 app.include_router(UserRouter, prefix="/api", tags=["Users"])
@@ -70,3 +71,4 @@ app.include_router(InstrumentRouter, prefix="/api", tags=["Instruments"])
 app.include_router(ProcedureRouter, prefix="/api", tags=["Procedures"])
 app.include_router(RelationshipRouter, prefix="/api", tags=["Relationships"])
 app.include_router(UploadRouter, prefix="/api", tags=["Uploads"])
+app.include_router(LogRouter, prefix="/api", tags=["Activity Logs"])

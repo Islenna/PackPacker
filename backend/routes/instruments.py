@@ -10,6 +10,7 @@ from repositories.repositories import query_database_with_search, calculate_tota
 from utils.dependencies import get_current_user
 from models.User import User as UserModel
 import os
+from utils.activity_logger import log_activity
 
 router = APIRouter(
     prefix="/instruments",
@@ -44,6 +45,15 @@ def create_instrument(
     db.add(db_instrument)
     db.commit()
     db.refresh(db_instrument)
+
+    log_activity(
+        db=db,
+        user_id=user.id,
+        action="create",
+        target_type="instrument",
+        target_id=db_instrument.id,
+        message=f"Created instrument: {db_instrument.name}"
+    )
 
     return db_instrument
 
@@ -96,7 +106,12 @@ def get_instrument(instrument_id: int, db: Session = Depends(get_db)):
 
 #Update an instrument
 @router.patch("/{instrument_id}", response_model=InstrumentResponse)
-def update_instrument(instrument_id: int, instrument: InstrumentCreate, db: Session = Depends(get_db)):
+def update_instrument(
+    instrument_id: int, 
+    instrument: InstrumentCreate, 
+    db: Session = Depends(get_db),
+    user: UserModel = Depends(get_current_user),
+):
     db_instrument = db.query(InstrumentModel).filter(InstrumentModel.id == instrument_id).first()
     if not db_instrument:
         raise HTTPException(status_code = status.HTTP_404_NOT_FOUND, detail = "Instrument not found")
@@ -108,6 +123,16 @@ def update_instrument(instrument_id: int, instrument: InstrumentCreate, db: Sess
     db_instrument.serial_number = instrument.serial_number
     db.commit()
     db.refresh(db_instrument)
+
+    log_activity(
+        db=db,
+        user_id=user.id,
+        action="update",
+        target_type="instrument",
+        target_id=db_instrument.id,
+        message=f"Updated instrument: {db_instrument.name}"
+    )
+    
     return db_instrument
 
 # Upload an image for an instrument
@@ -133,12 +158,17 @@ async def upload_instrument_image(
 
     db_instrument.img_url = f"/static/uploads/{filename}"
     db.commit()
+    
     db.refresh(db_instrument)
 
     return db_instrument
 
 @router.delete("/{instrument_id}", response_model=MessageResponse)
-async def delete_instrument(instrument_id: int, db: Session = Depends(get_db)):
+async def delete_instrument(
+    instrument_id: int, 
+    db: Session = Depends(get_db),
+    user: UserModel = Depends(get_current_user),
+    ):
     # Fetch the instrument from the database
     db_instrument = db.query(InstrumentModel).filter(InstrumentModel.id == instrument_id).first()
     
@@ -148,6 +178,17 @@ async def delete_instrument(instrument_id: int, db: Session = Depends(get_db)):
     try:
         db.delete(db_instrument)
         db.commit()
+
+
+        log_activity(
+            db=db,
+            user_id=user.id,
+            action="delete",
+            target_type="instrument",
+            target_id=instrument_id,
+            message=f"Deleted instrument: {db_instrument.name}"
+        )
+        
     except Exception as e:
         # Rollback the session in case of error
         db.rollback()
