@@ -18,7 +18,8 @@ function AddPackForm({ onClose, }) {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await axiosInstance.get(`packs?page=${currentPage}&items_per_page=${itemsPerPage}&search=${searchTerm}`);
+                const res = await axiosInstance.get(`/packs/pages?page=${currentPage}&items_per_page=${itemsPerPage}&search=${searchTerm}`);
+
 
                 // Filter the data based on partial match of name or description
                 const filteredData = res.data.filter(pack => {
@@ -31,7 +32,7 @@ function AddPackForm({ onClose, }) {
                         packDescription.includes(searchTermLower)
                     );
                 });
-                setPacks(res.data);
+                setPacks(res.data.packs);
                 setFilteredPacks(filteredData);
             } catch (err) {
                 console.log(err);

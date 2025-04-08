@@ -20,21 +20,12 @@ function AddInstrumentForm({ onClose, type }) {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await axiosInstance.get(`instruments?page=${currentPage}&items_per_page=${itemsPerPage}&search=${searchTerm}`);
+                const res = await axiosInstance.get(`/instruments/pages?page=${currentPage}&items_per_page=${itemsPerPage}&search=${searchTerm}`);
 
                 // Filter the data based on partial match of name or description
-                const filteredData = res.data.filter(instrument => {
-                    const instrumentName = instrument.name.toLowerCase();
-                    const instrumentDescription = instrument.description.toLowerCase();
-                    const searchTermLower = searchTerm.toLowerCase();
-
-                    return (
-                        instrumentName.includes(searchTermLower) ||
-                        instrumentDescription.includes(searchTermLower)
-                    );
-                });
-                setInstruments(filteredData);
-                setFilteredInventory(filteredData);
+                + setInstruments(res.data.instruments);
+                + setFilteredInventory(res.data.instruments);
+                + setTotalPages(res.data.total_pages);
             } catch (err) {
                 console.log(err);
                 console.log("Axios Error:", err);
@@ -113,7 +104,7 @@ function AddInstrumentForm({ onClose, type }) {
                     <div className="relative p-4 w-full max-w-2xl md:h-auto">
                         {/* <!-- Modal content --> */}
                         <div className="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
-                            
+
                             {/* <!-- Modal header --> */}
                             <div className="flex justify-between items-center pb-4 mb-4 rounded-t border-b sm:mb-5 dark:border-gray-600">
                                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
