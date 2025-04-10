@@ -7,3 +7,12 @@ __pycache__/
 
 # Uploaded media (e.g., user-uploaded pack/instrument images)
 static/uploads/
+# Ignore backup script
+backup_packnest.py
+
+# Backup files
+/backups/
+/*.sql
+/*.zip
+
+
