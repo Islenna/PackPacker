@@ -78,8 +78,11 @@ def login_user(user: UserCreate, response: Response, db: Session = Depends(get_d
         httponly=True,
         secure=True,
         samesite="none",
-        max_age=60 * 60 * 24 * 7
-    )
+        max_age=60 * 60 * 24 * 7,
+        domain="packnest.net",
+        path="/"
+)
+
 
     return {
         "access_token": access_token,

@@ -47,53 +47,49 @@ def add_pack_to_procedure(
         return {"message": "Pack added to procedure successfully"}
     
     return {"message": "Procedure or pack not found"}
-
 # Route to get all packs and instruments for a procedure
 @router.get("/procedures/{procedure_id}/get-equipment")
 def get_PacksAndInstruments_for_procedure(
     procedure_id: int, db: Session = Depends(get_db)
 ):
-    # Perform the logic to get all packs and instruments for a procedure
     procedure = db.query(Procedure).filter(Procedure.id == procedure_id).first()
     
     if procedure:
-        # Load the associated packs and instruments using the relationship
         packs = procedure.packs  
         instruments = procedure.instruments  
         
-        # Create a dictionary with procedure details, packs, and instruments
         procedure_details = {
             "procedure": {
                 "id": procedure.id,
                 "name": procedure.name,
                 "description": procedure.description,
-                # Include other procedure details as needed
             },
             "packs": [
                 {
                     "id": pack.id,
                     "name": pack.name,
                     "description": pack.description,
-                    # Include other pack details as needed
                 }
                 for pack in packs
             ],
             "instruments": [],
         }
 
-        # Fetch the quantity information for each instrument
         for instrument in instruments:
-            instrument_quantity = db.query(InstrumentsAndProcedures.quantity).filter(
-                InstrumentsAndProcedures.procedure_id == procedure_id,
-                InstrumentsAndProcedures.instrument_id == instrument.id
-            ).scalar()
+            instrument_quantity = (
+                db.query(InstrumentsAndProcedures.quantity)
+                .filter(
+                    InstrumentsAndProcedures.procedure_id == procedure_id,
+                    InstrumentsAndProcedures.instrument_id == instrument.id
+                )
+                .first()
+            )
             
-            # Create a dictionary for each instrument with quantity
             instrument_data = {
                 "id": instrument.id,
                 "name": instrument.name,
                 "description": instrument.description,
-                "quantity": instrument_quantity  # Include quantity
+                "quantity": instrument_quantity[0] if instrument_quantity else 0
             }
 
             procedure_details["instruments"].append(instrument_data)
