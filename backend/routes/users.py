@@ -49,9 +49,11 @@ def create_user(user: UserCreate, response: Response, db: Session = Depends(get_
         value=refresh_token,
         httponly=True,
         secure=True,
-        samesite="none",  # <-- instead of "strict"
-        max_age=60 * 60 * 24 * 7
+        samesite="none",
+        max_age=60 * 60 * 24 * 7,  # 7 days
+        path="/"
 )
+
 
 
     return {
@@ -78,10 +80,10 @@ def login_user(user: UserCreate, response: Response, db: Session = Depends(get_d
         httponly=True,
         secure=True,
         samesite="none",
-        max_age=60 * 60 * 24 * 7,
-        domain="packnest.net",
+        max_age=60 * 60 * 24 * 7,  # 7 days
         path="/"
 )
+
 
 
     return {
