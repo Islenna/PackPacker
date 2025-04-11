@@ -1,22 +1,30 @@
 from logging.config import fileConfig
-
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
-
+from sqlalchemy import engine_from_config, pool
 from alembic import context
-from models import *  # Import all models here to ensure they are registered with SQLAlchemy
+import os
 
-# this is the Alembic Config object, which provides
-# access to the values within the .ini file in use.
+# ✅ Load .env
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
+
+# ✅ Import your models so Alembic "sees" them
+from models import *
+from config.database import Base
+
+# Alembic config object
 config = context.config
 
-# Interpret the config file for Python logging.
-# This line sets up loggers basically.
+# Optional logging config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# add your model's MetaData object here
-from config.database import Base
+if os.getenv("DATABASE_URL"):
+    config.set_main_option("sqlalchemy.url", os.getenv("DATABASE_URL"))
+
+# Target metadata for autogenerate
 target_metadata = Base.metadata
 # for 'autogenerate' support
 # from myapp import mymodel
