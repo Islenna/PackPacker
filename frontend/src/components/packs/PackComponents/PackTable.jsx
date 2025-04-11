@@ -73,13 +73,14 @@ function PackTable({ packs = [], onRefresh, parentId, toggleTable }) {
                             </div>
                         </div>
 
-                        <div className="table-container" style={{ width: '800px', height: '530px', overflowY: 'auto' }}>
+                        <div className="overflow-x-auto max-h-[80vh]">
+
                             <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                     <tr>
-                                        <th scope="col" className="px-4 py-3">Pack Name</th>
-                                        <th scope="col" className="px-4 py-3">Description</th>
-                                        <th scope="col" className="px-4 py-3">
+                                        <th scope="col" className="px-2 py-2 sm:px-4 sm:py-3">Pack Name</th>
+                                        <th scope="col" className="px-2 py-2 sm:px-4 sm:py-3">Description</th>
+                                        <th scope="col" className="px-2 py-2 sm:px-4 sm:py-3">
                                             <span className="sr-only">Actions</span>
                                         </th>
                                     </tr>
@@ -91,7 +92,7 @@ function PackTable({ packs = [], onRefresh, parentId, toggleTable }) {
                                         >
                                             <th scope="row" className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">{pack.name}</th>
 
-                                            <td className="px-4 py-3">{pack.description}</td>
+                                            <td className="px-2 py-2 text-xs sm:text-sm truncate max-w-[160px]">{pack.description}</td>
                                         </tr>
                                     ))}
                                 </tbody>

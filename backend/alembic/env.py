@@ -4,11 +4,15 @@ from alembic import context
 import os
 
 # ✅ Load .env
-try:
-    from dotenv import load_dotenv
-    load_dotenv()
-except ImportError:
-    pass
+import os
+
+if os.getenv("RAILWAY_ENVIRONMENT") is None:
+    try:
+        from dotenv import load_dotenv
+        load_dotenv()
+    except ImportError:
+        pass
+
 
 # ✅ Import your models so Alembic "sees" them
 from models import *
