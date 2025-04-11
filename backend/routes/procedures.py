@@ -24,32 +24,48 @@ def create_procedure(
     db: Session = Depends(get_db),
     user: UserModel = Depends(get_current_user),
 ):
-    existing_procedure = db.query(ProcedureModel).filter_by(name=procedure.name).first()
+    if not user.clinics:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="User is not associated with any clinic"
+        )
+
+    clinic_id = user.clinics[0].id
+
+    existing_procedure = (
+        db.query(ProcedureModel)
+        .filter(ProcedureModel.name == procedure.name, ProcedureModel.clinic_id == clinic_id)
+        .first()
+    )
     if existing_procedure:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Procedure with this name already exists"
+            detail="Procedure with this name already exists in your clinic"
         )
-    
+
     db_procedure = ProcedureModel(
-        name=procedure.name, 
+        name=procedure.name,
         description=procedure.description,
-        clinic_id=user.clinics[0].id  # Assign to user's clinic
-        )
+        clinic_id=clinic_id
+    )
+    print(f"Creating procedure: {procedure.name} for clinic ID: {clinic_id}")
+
+
     db.add(db_procedure)
     db.commit()
     db.refresh(db_procedure)
 
     log_activity(
-    db=db,
-    user_id=user.id,
-    action="create",
-    target_type="procedure",
-    target_id=db_procedure.id,
-    message=f"Created procedure: {db_procedure.name}"
-)
+        db=db,
+        user_id=user.id,
+        action="create",
+        target_type="procedure",
+        target_id=db_procedure.id,
+        message=f"Created procedure: {db_procedure.name}"
+    )
 
     return db_procedure
+
 
 @router.get("/me")
 def read_users_me(user: UserModel = Depends(get_current_user)):

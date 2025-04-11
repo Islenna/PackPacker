@@ -22,36 +22,47 @@ router = APIRouter(
 ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png"}
 MAX_FILE_SIZE_MB = 5  # Maximum file size in MB
 
-#Create a new pack
 @router.post("/new", response_model=PackResponse, status_code=status.HTTP_201_CREATED)
 def create_pack(
     pack: PackCreate, 
     db: Session = Depends(get_db),
     user: UserModel = Depends(get_current_user)
 ):
-    existing_pack = db.query(PackModel).filter_by(name=pack.name).first()
+    clinic_id = user.clinics[0].id  # Assuming users are only scoped to one clinic
+
+    # ✅ Fix: Check for existing pack with same name in the same clinic
+    existing_pack = (
+        db.query(PackModel)
+        .filter(PackModel.name == pack.name, PackModel.clinic_id == clinic_id)
+        .first()
+    )
     if existing_pack:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Pack with this name already exists")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Pack with this name already exists in your clinic"
+        )
 
     db_pack = PackModel(
         name=pack.name,
         description=pack.description,
-        clinic_id=user.clinics[0].id
+        clinic_id=clinic_id
     )
 
     db.add(db_pack)
     db.commit()
-    log_activity(
-    db=db,
-    user_id=user.id,
-    action="create",  # or "update"/"delete"
-    target_type="pack",
-    target_id=db_pack.id,
-    message=f"Created pack: {db_pack.name}"
-)
-    db.refresh(db_pack)
 
+    log_activity(
+        db=db,
+        user_id=user.id,
+        action="create",
+        target_type="pack",
+        target_id=db_pack.id,
+        message=f"Created pack: {db_pack.name}"
+    )
+
+    db.refresh(db_pack)
     return db_pack
+
 
 #Get paginated packs.
 @router.get("/pages")
